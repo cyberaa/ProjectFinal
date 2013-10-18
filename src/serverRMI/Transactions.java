@@ -9,6 +9,7 @@ import common.rmi.RemoteTransactions;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,32 +39,32 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	public void setShareValue(int user_id, int idea_id, int new_value) throws RemoteException, SQLException
 	{
+        Connection db = ServerRMI.pool.connectionCheck();
+
 		PreparedStatement updateValue = null;
 
 		String query = "UPDATE shares SET value = ? WHERE user_id = ? AND idea_id = ?";
 
 		try {
-			ServerRMI.db.setAutoCommit(false);
+			db.setAutoCommit(false);
 
-			updateValue = ServerRMI.db.prepareStatement(query);
+			updateValue = db.prepareStatement(query);
 			updateValue.setInt(1, new_value);
 			updateValue.setInt(2, user_id);
 			updateValue.setInt(3, idea_id);
 
 			updateValue.executeQuery();
 
-			ServerRMI.db.commit();
+			db.commit();
 		} catch (SQLException e) {
 			System.out.println("\n"+e+"\n");
-			if(ServerRMI.db != null)
-				ServerRMI.db.rollback();
+			if(db != null)
+				db.rollback();
 			throw new SQLException();
-		}
-		finally {
+		} finally {
 			if(updateValue != null)
 				updateValue.close();
-
-			ServerRMI.db.setAutoCommit(true);
+			db.setAutoCommit(true);
 		}
 	}
 
@@ -84,8 +85,10 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	public void buyShares(int user_id, int idea_id, int share_num, int price_per_share, int new_price_share) throws RemoteException, SQLException, NotEnoughCashException, NotEnoughSharesException, NotEnoughSharesAtDesiredPriceException
 	{
+        Connection db = ServerRMI.pool.connectionCheck();
+
 		try {
-			ServerRMI.db.setAutoCommit(false);
+			db.setAutoCommit(false);
 
 			//Check if user has enough cash.
 			int userCash = getCash(user_id);
@@ -147,14 +150,14 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				createTransaction(idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
 			}
 
-			ServerRMI.db.commit();
+			db.commit();
 		} catch (SQLException e) {
 			System.out.println("\n"+e+"\n");
-			if(ServerRMI.db != null)
-				ServerRMI.db.rollback();
+			if(db != null)
+				db.rollback();
 			throw new SQLException();
 		} finally {
-			ServerRMI.db.setAutoCommit(true);
+			db.setAutoCommit(true);
 		}
 	}
 
@@ -166,6 +169,10 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	protected int getCash(int user_id) throws SQLException
 	{
+
+        Connection db = ServerRMI.pool.connectionCheck();
+
+
 		int tries = 0;
 		int maxTries = 3;
 		PreparedStatement gCash = null;
@@ -176,7 +183,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		while(tries < maxTries)
 		{
 			try {
-				gCash = ServerRMI.db.prepareStatement(cash);
+				gCash = db.prepareStatement(cash);
 				gCash.setInt(1, user_id);
 
 				rs = gCash.executeQuery();
@@ -185,7 +192,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 					return rs.getInt("cash");
 			} catch (SQLException e) {
 				System.out.println(e);
-				ServerRMI.reconnectDB();
+				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			} finally {
@@ -207,6 +214,9 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	public ArrayList<ShareInfo> getShares(int idea_id) throws RemoteException, SQLException
 	{
+
+        Connection db = ServerRMI.pool.connectionCheck();
+
 		int tries = 0;
 		int maxTries = 3;
 		PreparedStatement gShares = null;
@@ -218,7 +228,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		while(tries < maxTries)
 		{
 			try {
-				gShares = ServerRMI.db.prepareStatement(shares);
+				gShares = db.prepareStatement(shares);
 				gShares.setInt(1, idea_id);
 
 				rs = gShares.executeQuery();
@@ -230,7 +240,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 				break;
 			} catch (SQLException e) {
-				ServerRMI.reconnectDB();
+				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			} finally {
@@ -251,7 +261,10 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	protected int getNumberShares(int idea_id) throws SQLException
 	{
-		int tries = 0;
+
+        Connection db = ServerRMI.pool.connectionCheck();
+
+        int tries = 0;
 		int maxTries = 3;
 		PreparedStatement gParts = null;
 		ResultSet rs;
@@ -261,7 +274,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		while(tries < maxTries)
 		{
 			try {
-				gParts = ServerRMI.db.prepareStatement(parts);
+				gParts = db.prepareStatement(parts);
 				gParts.setInt(1, idea_id);
 
 				rs = gParts.executeQuery();
@@ -270,7 +283,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 					return rs.getInt("number_parts");
 			} catch (SQLException e) {
 				System.out.println(e);
-				ServerRMI.reconnectDB();
+				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			} finally {
@@ -295,7 +308,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	protected ArrayList<ShareToBuy> getSharesToBuy(ArrayList<ShareInfo> shares, int share_num, int price_per_share, int user_id) throws  NotEnoughSharesAtDesiredPriceException, NotEnoughSharesException
 	{
-		ShareInfo aux;
+        ShareInfo aux;
 		int auxPrice, auxNum;
 		int counterShares = 0;
 		ArrayList<ShareToBuy> sharesToBuy = new ArrayList<ShareToBuy>();
@@ -348,6 +361,9 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	protected void deleteShare(int id) throws SQLException
 	{
+
+        Connection db = ServerRMI.pool.connectionCheck();
+
 		int tries = 0;
 		int maxTries = 3;
 		PreparedStatement dShare = null;
@@ -357,14 +373,14 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		while(tries < maxTries)
 		{
 			try {
-				dShare = ServerRMI.db.prepareStatement(share);
+				dShare = db.prepareStatement(share);
 				dShare.setInt(1, id);
 
 				dShare.executeQuery();
 				break;
 			} catch (SQLException e) {
 				System.out.println(e);
-				ServerRMI.reconnectDB();
+				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			} finally {
@@ -383,6 +399,9 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	protected void updateShare(int id, int newNumParts, int value) throws SQLException
 	{
+
+        Connection db = ServerRMI.pool.connectionCheck();
+
 		int tries = 0;
 		int maxTries = 3;
 		PreparedStatement uShare = null;
@@ -392,7 +411,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		while(tries < maxTries)
 		{
 			try {
-				uShare = ServerRMI.db.prepareStatement(share);
+				uShare = db.prepareStatement(share);
 				uShare.setInt(1, newNumParts);
 				uShare.setInt(2, value);
 				uShare.setInt(3, id);
@@ -401,7 +420,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				break;
 			} catch (SQLException e) {
 				System.out.println("updateShare():\n"+e);
-				ServerRMI.reconnectDB();
+				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			} finally {
@@ -422,6 +441,9 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	public void createShare(int idea_id, int user_id, int share_num, int price) throws SQLException
 	{
+
+        Connection db = ServerRMI.pool.connectionCheck();
+
 		int tries = 0;
 		int maxTries = 3;
 		PreparedStatement cShare = null;
@@ -431,7 +453,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		while(tries < maxTries)
 		{
 			try {
-				cShare = ServerRMI.db.prepareStatement(share);
+				cShare = db.prepareStatement(share);
 				cShare.setInt(1, 1); //FIXME: how to set up new share ID?
 				cShare.setInt(2, idea_id);
 				cShare.setInt(3, user_id);
@@ -442,7 +464,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				break;
 			} catch (SQLException e) {
 				System.out.println(e);
-				ServerRMI.reconnectDB();
+				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			} finally {
@@ -461,6 +483,9 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	protected void giveOrTakeUserCash(int user_id, int money, boolean give) throws SQLException
 	{
+
+        Connection db = ServerRMI.pool.connectionCheck();
+
 		//Get current cash.
 		int curCash = 0;
 		int tries = 0, maxTries = 3;
@@ -472,7 +497,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		while(tries < maxTries)
 		{
 			try {
-				gotCash = ServerRMI.db.prepareStatement(cash);
+				gotCash = db.prepareStatement(cash);
 				gotCash.setInt(1, user_id);
 
 				rs = gotCash.executeQuery();
@@ -483,7 +508,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				}
 			} catch (SQLException e) {
 				System.out.println(e);
-				ServerRMI.reconnectDB();
+				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			} finally {
@@ -508,6 +533,9 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	protected void updateUserCash(int user_id, int cash) throws SQLException
 	{
+
+        Connection db = ServerRMI.pool.connectionCheck();
+
 		int tries = 0;
 		int maxTries = 3;
 		PreparedStatement uShare = null;
@@ -517,7 +545,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		while(tries < maxTries)
 		{
 			try {
-				uShare = ServerRMI.db.prepareStatement(share);
+				uShare = db.prepareStatement(share);
 				uShare.setInt(1, cash);
 				uShare.setInt(2, user_id);
 
@@ -525,7 +553,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				break;
 			} catch (SQLException e) {
 				System.out.println(e);
-				ServerRMI.reconnectDB();
+				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			}
@@ -548,6 +576,9 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	static int id = 1; //FIXME: remove this after implementing auto increment.
 	protected void createTransaction(int idea_id, int seller_id, int buyer_id, int share_num, int transactionMoney) throws SQLException
 	{
+
+        Connection db = ServerRMI.pool.connectionCheck();
+
 		int tries = 0;
 		int maxTries = 3;
 		PreparedStatement cShare = null;
@@ -557,7 +588,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		while(tries < maxTries)
 		{
 			try {
-				cShare = ServerRMI.db.prepareStatement(share);
+				cShare = db.prepareStatement(share);
 				cShare.setInt(1, id++); //FIXME: how to set up new share ID?
 				cShare.setInt(2, idea_id);
 				cShare.setInt(3, seller_id);
@@ -569,7 +600,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				break;
 			} catch (SQLException e) {
 				System.out.println(e);
-				ServerRMI.reconnectDB();
+				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			} finally {
@@ -581,6 +612,9 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 	public ArrayList<TransactionInfo> showHistory(int user_id) throws RemoteException, SQLException
 	{
+
+        Connection db = ServerRMI.pool.connectionCheck();
+
 		ArrayList<TransactionInfo> ret = new ArrayList<TransactionInfo>();
 
 		int tries = 0;
@@ -593,7 +627,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		while(tries < maxTries)
 		{
 			try {
-				gTransactions = ServerRMI.db.prepareStatement(transactions);
+				gTransactions = db.prepareStatement(transactions);
 				gTransactions.setInt(1, user_id);
 				gTransactions.setInt(2, user_id);
 
@@ -605,7 +639,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				break;
 			} catch (SQLException e) {
 				System.out.println(e);
-				ServerRMI.reconnectDB();
+				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			}

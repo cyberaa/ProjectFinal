@@ -31,7 +31,7 @@ public class ServerRMI
 	protected static int rmiPort;
 	protected static Registry rmiRegistry;
 
-	public static Connection db; //TODO: what if reconnectDB() is used while other thread is using the db?
+	public static ConnectionPool pool;
 	protected static String dbURL;
 
 	protected static UserManager um;
@@ -54,12 +54,15 @@ public class ServerRMI
 
 		//Connect to database.
 		dbURL = "jdbc:oracle:thin:@" + args[1] +":1521:XE";
-		connectDB();
-		if(db == null)
-		{
-			System.out.println("Could not connect to database!");
-			System.exit(-1);
-		}
+
+
+        //Create pool of connections
+        try {
+            pool = new ConnectionPool(dbURL, dbUser, dbPass);
+        } catch (SQLException se) {
+            System.out.print("Error creating pool of connections.\n" + se);
+        }
+
 
 		//Create remote RMI objects and bind them.
 		createAndBindObjects();
@@ -75,14 +78,6 @@ public class ServerRMI
 			System.out.println("Cannot register user:\n" + se);
 		} catch (RemoteException re) {
 			System.out.println("Cannot register user:\n" + re);
-		}
-
-		//Close connection to database.
-		try {
-			db.close();
-			System.out.println("Connection to database closed successfully.");
-		} catch (SQLException e) {
-			System.out.println("Could not close connection to database:\n" + e);
 		}
 
 		//Unbind RMI objects and close their threads.
@@ -109,29 +104,6 @@ public class ServerRMI
 		}
 
 		System.out.println("RMI registry started successfully!");
-	}
-
-	/**
-	 * Connect to database.
-	 */
-	protected static void connectDB()
-	{
-		try {
-			db = DriverManager.getConnection(dbURL, dbUser, dbPass);
-		} catch (SQLException e) {
-			System.out.println("Connection to database failed:\n" + e);
-			return;
-		}
-
-		System.out.println("Connection to database successful!");
-	}
-
-	/**
-	 * Reconnect to database.
-	 */
-	public static void reconnectDB()
-	{
-		connectDB();
 	}
 
 	/**

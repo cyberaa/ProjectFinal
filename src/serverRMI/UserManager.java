@@ -9,6 +9,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,6 +40,9 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	 */
 	public void authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException
 	{
+
+        Connection db = ServerRMI.pool.connectionCheck();
+
 		int tries = 0, maxTries = 3;
 
 		PreparedStatement queryUser = null;
@@ -49,7 +53,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 		while(tries < maxTries)
 		{
 			try {
-				queryUser = ServerRMI.db.prepareStatement(query);
+				queryUser = db.prepareStatement(query);
 				queryUser.setString(1, name);
 				queryUser.setString(2, hashPassword(pass));
 
@@ -64,7 +68,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 				break;
 			} catch (SQLException e) {
 				System.out.println("\n"+e+"\n");
-				ServerRMI.reconnectDB();
+				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			} finally {
@@ -84,6 +88,9 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	 */
 	public void register(String name, String pass, String nameAlias) throws RemoteException, ExistingUserException, SQLException
 	{
+
+        Connection db = ServerRMI.pool.connectionCheck();
+
 		int tries = 0, maxTries = 3;
 
 		PreparedStatement queryUser = null;
@@ -97,7 +104,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 		while(tries < maxTries)
 		{
 			try {
-				queryUser = ServerRMI.db.prepareStatement(query);
+				queryUser = db.prepareStatement(query);
 				queryUser.setString(1, name);
 
 				resultSet = queryUser.executeQuery();
@@ -108,7 +115,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 				break;
 			} catch (SQLException e) {
 				System.out.println("\n"+e+"\n");
-				ServerRMI.reconnectDB();
+				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			} finally {
@@ -119,9 +126,9 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 
 		//If execution reaches this point, insert new user.
 		try {
-			ServerRMI.db.setAutoCommit(false);
+			db.setAutoCommit(false);
 
-			insertUser = ServerRMI.db.prepareStatement(insert);
+			insertUser = db.prepareStatement(insert);
 			insertUser.setString(1, name);
 			insertUser.setString(2, hashPassword(pass));
 			insertUser.setString(3, nameAlias);
@@ -129,18 +136,18 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 
 			insertUser.executeQuery();
 
-			ServerRMI.db.commit();
+			db.commit();
 		} catch (SQLException e) {
 			System.out.println("\n"+e+"\n");
-			if(ServerRMI.db != null)
-				ServerRMI.db.rollback();
+			if(db != null)
+				db.rollback();
 			throw new SQLException();
 		}
 		finally {
 			if(insertUser != null)
 				insertUser.close();
 
-			ServerRMI.db.setAutoCommit(true);
+			db.setAutoCommit(true);
 		}
 	}
 
