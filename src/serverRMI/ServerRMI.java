@@ -44,7 +44,7 @@ public class ServerRMI
 		//Verify the number of given arguments.
 		if(args.length != 2)
 		{
-			System.out.println("Usage: java ServerRMI <rmi_port> <db_IP>");
+			System.out.println("Usage: java ServerRMI <rmi_port> <db_IP_teste>");
 			return;
 		}
 
