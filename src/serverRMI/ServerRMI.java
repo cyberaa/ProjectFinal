@@ -74,7 +74,7 @@ public class ServerRMI
                 System.out.println("\n Database URL: "+dbURL);
             }
             else if (command.equals("nconnections")) {
-                System.out.println("\n Number of active connections to database: "+pool.connectionsAvailable.size());
+                System.out.println("\n Number of active connections to database: "+pool.connectionsUsed.size());
             }
             else if (command.equals("help")) {
                 System.out.println("\n Commands: \n \t \t rmiport -> See RMI registry port. \n \t \t dburl -> See database url. \n \t \t nconnections -> Check number of active connections to database. \n \t \t exit -> Shutdown server.");
