@@ -28,7 +28,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
     /**
      * Insert new idea in database.
-     * @param topic Topic text. If topic not exists, a new topic is created.
+     * @param topics Topic text. If topic not exists, a new topic is created.
      * @param user_id User who posted idea.
      * @param parent_id
      * @param number_parts
@@ -38,30 +38,29 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
      * @throws RemoteException
      * @throws SQLException
      */
-    public void submitIdea(String topic, int user_id, int parent_id, int number_parts, int part_val, int stance, String text) throws RemoteException, SQLException {
+    public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text) throws RemoteException, SQLException {
 
         Connection db = ServerRMI.pool.connectionCheck();
 
         int tries = 0;
         int maxTries = 3;
         PreparedStatement stmt = null;
-        int topicId = 0;
+        ArrayList<Integer> topicIds = new ArrayList<Integer>();
 
 	    try {
 		    db.setAutoCommit(false);
 
 		    //Get topic ID.
-		    try {
-			    topicId = ServerRMI.topics.getTopicID(topic);
-			    ServerRMI.topics.newTopic(topic);
-		    } catch (ExistingTopicException ete) {
-			    // Topic already exists
-		    } catch (SQLException se) {
-			    System.out.println("Error submitting idea:\n"+se);
-		    } catch (RemoteException re) {
-			    System.out.println("Error submitting idea:\n"+re);
-		    } finally {
-			    db.setAutoCommit(true);
+		    String aux;
+		    for(int i=0; i < topics.size(); i++)
+		    {
+			    aux = topics.get(i);
+			    try {
+				    topicIds.add(ServerRMI.topics.getTopicID(aux));
+				    ServerRMI.topics.newTopic(aux);
+			    } catch (ExistingTopicException ete) {
+				    // Topic already exists
+			    }
 		    }
 
 		    //Insert idea.
@@ -89,35 +88,36 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 					    throw new SQLException();
 				    }
 				    db = ServerRMI.pool.connectionCheck();
-			    } finally {
-				    if(stmt != null) {
-					    stmt.close();
-				    }
 			    }
 		    }
 
 		    //Create relationship between topic and idea.
 		    query = "INSERT INTO idea_has_topic (idea_id,topic_id) VALUES (?,?)";
 
-		    while(tries < maxTries)
+		    for(int i=0; i < topicIds.size(); i++)
 		    {
-			    try {
-				    stmt = db.prepareStatement(query);
-				    stmt.setInt(1, 1);
-				    stmt.setInt(1, topicId);
-				    stmt.executeQuery();
-				    break;
-			    } catch (SQLException e) {
-				    if(db != null) {
-					    db.rollback();
-				    }
-				    if(tries++ > maxTries) {
-					    throw new SQLException();
-				    }
-				    db = ServerRMI.pool.connectionCheck();
-			    } finally {
-				    if(stmt != null) {
-					    stmt.close();
+			    while(tries < maxTries)
+			    {
+				    try {
+					    stmt = db.prepareStatement(query);
+					    stmt.setInt(1, 1);
+					    stmt.setInt(1, topicIds.get(i));
+
+					    stmt.executeQuery();
+
+					    break;
+				    } catch (SQLException e) {
+					    if(db != null) {
+						    db.rollback();
+					    }
+					    if(tries++ > maxTries) {
+						    throw new SQLException();
+					    }
+					    db = ServerRMI.pool.connectionCheck();
+				    } finally {
+					    if(stmt != null) {
+						    stmt.close();
+					    }
 				    }
 			    }
 		    }
