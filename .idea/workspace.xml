@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" name="Default" comment="Upload First Time">
+    <list default="true" readonly="true" id="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/ServerRMI.java" afterPath="$PROJECT_DIR$/src/serverRMI/ServerRMI.java" />
     </list>
     <ignored path="ProjectFinal.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/fragment.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382134948507" ignored="false" />
-    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382148601613" ignored="false" />
+    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382148701475" ignored="false" />
     <file path="/Ideas.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382138061265" ignored="false" />
     <file path="/ServerRMI.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135786303" ignored="false" />
     <file path="/ConnectionPool.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135673425" ignored="false" />
@@ -134,7 +133,7 @@
       <file leaf-file-name=".gitignore" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="43" selection-start="23" selection-end="23" vertical-scroll-proportion="0.053412464">
+            <state line="2" column="7" selection-start="23" selection-end="23" vertical-scroll-proportion="0.053412464">
               <folding />
             </state>
           </provider>
@@ -441,7 +440,11 @@
       <created>1382148585666</created>
       <updated>1382148585666</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Upload First Time">
+      <created>1382148708285</created>
+      <updated>1382148708285</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -678,7 +681,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="43" selection-start="23" selection-end="23" vertical-scroll-proportion="0.053412464">
+        <state line="2" column="7" selection-start="23" selection-end="23" vertical-scroll-proportion="0.053412464">
           <folding />
         </state>
       </provider>
