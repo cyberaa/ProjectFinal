@@ -7,7 +7,7 @@
     <ignored path="ProjectFinal.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/fragment.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382134948507" ignored="false" />
-    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382147164029" ignored="false" />
+    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382147170833" ignored="false" />
     <file path="/Ideas.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382138061265" ignored="false" />
     <file path="/ServerRMI.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135786303" ignored="false" />
     <file path="/ConnectionPool.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135673425" ignored="false" />
@@ -111,7 +111,7 @@
       <file leaf-file-name="Transactions.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/serverRMI/Transactions.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="18" column="21" selection-start="486" selection-end="486" vertical-scroll-proportion="0.509434">
+            <state line="18" column="56" selection-start="486" selection-end="486" vertical-scroll-proportion="0.509434">
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#6580#6591#0" expanded="true" />
@@ -420,7 +420,11 @@
       <created>1382147168669</created>
       <updated>1382147168669</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Upload First Time">
+      <created>1382147172632</created>
+      <updated>1382147172632</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -658,7 +662,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/serverRMI/Transactions.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="21" selection-start="486" selection-end="486" vertical-scroll-proportion="0.509434">
+        <state line="18" column="56" selection-start="486" selection-end="486" vertical-scroll-proportion="0.509434">
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#6580#6591#0" expanded="true" />
