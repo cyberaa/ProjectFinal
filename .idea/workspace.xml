@@ -2,16 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" name="Default" comment="Upload First Time">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/Ideas.java" afterPath="$PROJECT_DIR$/src/serverRMI/Ideas.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/Topics.java" afterPath="$PROJECT_DIR$/src/serverRMI/Topics.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/Transactions.java" afterPath="$PROJECT_DIR$/src/serverRMI/Transactions.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/UserManager.java" afterPath="$PROJECT_DIR$/src/serverRMI/UserManager.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ProjectFinal.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/fragment.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382134948507" ignored="false" />
-    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382146242377" ignored="false" />
+    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382146867885" ignored="false" />
     <file path="/Ideas.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382138061265" ignored="false" />
     <file path="/ServerRMI.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135786303" ignored="false" />
     <file path="/ConnectionPool.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135673425" ignored="false" />
@@ -115,7 +111,7 @@
       <file leaf-file-name="Transactions.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/serverRMI/Transactions.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="584" column="87" selection-start="16537" selection-end="16537" vertical-scroll-proportion="16.528301">
+            <state line="18" column="21" selection-start="486" selection-end="486" vertical-scroll-proportion="0.509434">
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#6580#6591#0" expanded="true" />
@@ -294,6 +290,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ProjectFinal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ProjectFinal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value=".idea" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="PackagesPane" />
@@ -306,7 +316,7 @@
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
-    <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
+    <property name="options.lastSelected" value="project.propVCSSupport.Ignored.Files" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.side.proportion" value="0.0" />
     <property name="MemberChooser.copyJavadoc" value="false" />
@@ -398,7 +408,11 @@
       <created>1382138328865</created>
       <updated>1382138328865</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Upload First Time">
+      <created>1382146747720</created>
+      <updated>1382146747720</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -636,7 +650,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/serverRMI/Transactions.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="584" column="87" selection-start="16537" selection-end="16537" vertical-scroll-proportion="16.528301">
+        <state line="18" column="21" selection-start="486" selection-end="486" vertical-scroll-proportion="0.509434">
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#6580#6591#0" expanded="true" />
