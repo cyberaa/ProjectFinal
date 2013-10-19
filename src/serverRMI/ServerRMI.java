@@ -71,7 +71,7 @@ public class ServerRMI
                 System.out.println("\n RMI registry port: "+rmiPort);
             }
             else if (command.equals("dburl")) {
-                System.out.println("\n Database URL"+dbURL);
+                System.out.println("\n Database URL: "+dbURL);
             }
             else if (command.equals("nconnections")) {
                 System.out.println("\n Number of active connections to database: "+pool.connectionsUsed.size());
