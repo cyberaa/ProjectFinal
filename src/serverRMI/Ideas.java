@@ -5,6 +5,8 @@ import common.rmi.ExistingTopicException;
 import common.rmi.NonExistingIdeaException;
 import common.rmi.RemoteIdeas;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
@@ -38,6 +40,8 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
      * @throws RemoteException
      * @throws SQLException
      */
+
+
     public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text) throws RemoteException, SQLException {
 
         Connection db = ServerRMI.pool.connectionCheck();

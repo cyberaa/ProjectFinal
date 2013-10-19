@@ -10,6 +10,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Created with IntelliJ IDEA.
@@ -68,8 +69,16 @@ public class ServerRMI
 		//TODO: More stuff.
 		//TODO: test transactions.buyShares()
 
+        String comand = "";
 
+        Scanner sc = new Scanner(System.in);
 
+        while(!comand.equals("exit")) {
+            System.out.print("Comand: ");
+            comand = sc.next();
+        }
+
+        System.out.println("Starting RMI server shutdown...");
 
 		try {
 			ArrayList<TransactionInfo> aux = transactions.showHistory(3);
