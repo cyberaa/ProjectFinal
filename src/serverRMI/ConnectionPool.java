@@ -10,7 +10,6 @@ import java.sql.*;
  * To change this template use File | Settings | File Templates.
  */
 
-
 public class ConnectionPool implements Runnable {
     int initialConnections = 5;
     Vector connectionsAvailable = new Vector();
@@ -21,7 +20,7 @@ public class ConnectionPool implements Runnable {
     String userPassword ;
 
 
-    public ConnectionPool(String url,String userName, String userPass) throws SQLException {
+    public ConnectionPool(String url, String userName, String userPass) throws SQLException {
         this.connectionUrl = url;
         this.userName = userName;
         this.userPassword = userPass;
@@ -32,8 +31,7 @@ public class ConnectionPool implements Runnable {
 
 
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(connectionUrl, userName,
-                userPassword);
+        return DriverManager.getConnection(connectionUrl, userName, userPassword);
     }
 
 
@@ -57,6 +55,7 @@ public class ConnectionPool implements Runnable {
     public int availableCount() {
         return connectionsAvailable.size();
     }
+
     public void run() {
         try {
             while (true) {
