@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" name="Default" comment="">
+    <list default="true" readonly="true" id="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" name="Default" comment="Upload First Time">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ProjectFinal.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/fragment.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382134948507" ignored="false" />
-    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382147170833" ignored="false" />
+    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382147885458" ignored="false" />
     <file path="/Ideas.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382138061265" ignored="false" />
     <file path="/ServerRMI.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135786303" ignored="false" />
     <file path="/ConnectionPool.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135673425" ignored="false" />
@@ -108,16 +108,25 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Transactions.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Transactions.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/serverRMI/Transactions.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="18" column="56" selection-start="486" selection-end="486" vertical-scroll-proportion="0.509434">
+            <state line="19" column="47" selection-start="490" selection-end="490" vertical-scroll-proportion="-13.68">
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#6580#6591#0" expanded="true" />
                 <element signature="e#9256#9268#0" expanded="true" />
                 <element signature="e#17348#17365#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="3" column="5" selection-start="29" selection-end="29" vertical-scroll-proportion="0.08011869">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -164,6 +173,7 @@
         <option value="$PROJECT_DIR$/src/serverRMI/Ideas.java" />
         <option value="$PROJECT_DIR$/src/serverRMI/UserManager.java" />
         <option value="$PROJECT_DIR$/src/serverRMI/Transactions.java" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -229,64 +239,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ProjectFinal" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ProjectFinal" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="serverRMI" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ProjectFinal" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ProjectFinal" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ProjectFinal" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ProjectFinal" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rmi" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -424,7 +376,19 @@
       <created>1382147172632</created>
       <updated>1382147172632</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Upload First Time">
+      <created>1382147671611</created>
+      <updated>1382147671611</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Upload First Time">
+      <created>1382147803350</created>
+      <updated>1382147803350</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Upload First Time">
+      <created>1382147886818</created>
+      <updated>1382147886818</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -449,7 +413,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-209" y="-1050" width="1680" height="1050" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3277592" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -464,7 +428,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18543452" sideWeight="0.7548387" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18543452" sideWeight="0.7548387" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2451613" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -539,13 +503,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/serverRMI/ServerRMI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/serverRMI/Transactions.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="434" column="39" selection-start="12641" selection-end="12641" vertical-scroll-proportion="0.0">
@@ -662,13 +619,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/serverRMI/Transactions.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="56" selection-start="486" selection-end="486" vertical-scroll-proportion="0.509434">
+        <state line="19" column="47" selection-start="490" selection-end="490" vertical-scroll-proportion="-13.68">
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#6580#6591#0" expanded="true" />
             <element signature="e#9256#9268#0" expanded="true" />
             <element signature="e#17348#17365#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="5" selection-start="29" selection-end="29" vertical-scroll-proportion="0.08011869">
+          <folding />
         </state>
       </provider>
     </entry>
