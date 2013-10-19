@@ -69,7 +69,7 @@ public class ServerRMI
 		//TODO: More stuff.
 		//TODO: test transactions.buyShares()
 
-        String comand = "";
+        String comand = " ";
 
         Scanner sc = new Scanner(System.in);
 
