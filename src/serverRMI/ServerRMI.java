@@ -66,32 +66,29 @@ public class ServerRMI
 		//Create remote RMI objects and bind them.
 		createAndBindObjects();
 
-		//TODO: More stuff.
-		//TODO: test transactions.buyShares()
-
-        String comand = " ";
-
+		//Menu.
+        String command = "";
         Scanner sc = new Scanner(System.in);
 
         System.out.print("\nType \"help\" to see help menu.");
 
-        while(!comand.equals("exit")) {
+        while(!command.equals("exit")) {
             System.out.print("\n>> ");
-            comand = sc.next();
-            if(comand.equals("rmiport")) {
+            command = sc.next();
+            if(command.equals("rmiport")) {
                 System.out.println("\n RMI registry port: "+rmiPort);
             }
-            else if (comand.equals("dburl")) {
+            else if (command.equals("dburl")) {
                 System.out.println("\n Database URL"+dbURL);
             }
-            else if (comand.equals("nconnections")) {
+            else if (command.equals("nconnections")) {
                 System.out.println("\n Number of active connections to database: "+pool.connectionsUsed.size());
             }
-            else if (comand.equals("help")) {
+            else if (command.equals("help")) {
                 System.out.println("\n Commands: \n \t \t rmiport -> See RMI registry port. \n \t \t dburl -> See database url. \n \t \t nconnections -> Check number of active connections to database.    ");
             }
             else {
-                System.out.println("\n"+comand+": command not found");
+                System.out.println("\n"+command+": command not found");
             }
         }
 
