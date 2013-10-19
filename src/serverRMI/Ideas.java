@@ -45,116 +45,149 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         int tries = 0;
         int maxTries = 3;
         PreparedStatement stmt = null;
-        ResultSet rs;
         int topicId = 0;
 
-        try {
-            db.setAutoCommit(false);
-            topicId = ServerRMI.topics.getTopicID(topic);
-            ServerRMI.topics.newTopic(topic);
-        } catch (ExistingTopicException ete) {
-            // Topic already exists
-        } catch (SQLException se) {
-            System.out.println("Error submitting idea:\n"+se);
-        } catch (RemoteException re) {
-            System.out.println("Error submitting idea:\n"+re);
-        }
+	    try {
+		    db.setAutoCommit(false);
 
-        String query = "INSERT INTO idea (id,user_id,parent_id,number_parts,part_val,stance,text) VALUES (idea_id_inc.nextval,?,?,?,?,?,?)";
+		    //Get topic ID.
+		    try {
+			    topicId = ServerRMI.topics.getTopicID(topic);
+			    ServerRMI.topics.newTopic(topic);
+		    } catch (ExistingTopicException ete) {
+			    // Topic already exists
+		    } catch (SQLException se) {
+			    System.out.println("Error submitting idea:\n"+se);
+		    } catch (RemoteException re) {
+			    System.out.println("Error submitting idea:\n"+re);
+		    } finally {
+			    db.setAutoCommit(true);
+		    }
 
-        while(tries < maxTries)
-        {
-            try {
-                db.setAutoCommit(false);
-                stmt = db.prepareStatement(query);
-                stmt.setInt(1, user_id);
-                stmt.setInt(2, parent_id);
-                stmt.setInt(3, number_parts);
-                stmt.setInt(4, part_val);
-                stmt.setInt(5, stance);
-                stmt.setString(6, text);
-                rs = stmt.executeQuery();
-                break;
-            } catch (SQLException e) {
-                if(db != null) {
-                    db.rollback();
-                }
-                if(tries++ > maxTries) {
-                    throw new SQLException();
-                }
-                db = ServerRMI.pool.connectionCheck();
-            } finally {
-                if(stmt != null) {
-                    stmt.close();
-                }
-                db.setAutoCommit(true);
-            }
-        }
+		    //Insert idea.
+		    String query = "INSERT INTO idea (id,user_id,parent_id,number_parts,part_val,stance,text) VALUES (idea_id_inc.nextval,?,?,?,?,?,?)";
 
-        query = "INSERT INTO idea_has_topic (idea_id,topic_id) VALUES (?,?)";
+		    while(tries < maxTries)
+		    {
+			    try {
+				    stmt = db.prepareStatement(query);
+				    stmt.setInt(1, user_id);
+				    stmt.setInt(2, parent_id);
+				    stmt.setInt(3, number_parts);
+				    stmt.setInt(4, part_val);
+				    stmt.setInt(5, stance);
+				    stmt.setString(6, text);
 
-        while(tries < maxTries)
-        {
-            try {
-                db.setAutoCommit(false);
-                stmt = db.prepareStatement(query);
-                stmt.setInt(1, 1);
-                stmt.setInt(1, topicId);
-                rs = stmt.executeQuery();
-                break;
-            } catch (SQLException e) {
-                if(db != null) {
-                    db.rollback();
-                }
-                if(tries++ > maxTries) {
-                    throw new SQLException();
-                }
-                db = ServerRMI.pool.connectionCheck();
-            } finally {
-                if(stmt != null) {
-                    stmt.close();
-                }
-                db.setAutoCommit(true);
-            }
-        }
+				    stmt.executeQuery();
 
+				    break;
+			    } catch (SQLException e) {
+				    if(db != null) {
+					    db.rollback();
+				    }
+				    if(tries++ > maxTries) {
+					    throw new SQLException();
+				    }
+				    db = ServerRMI.pool.connectionCheck();
+			    } finally {
+				    if(stmt != null) {
+					    stmt.close();
+				    }
+			    }
+		    }
 
-    }
+		    //Create relationship between topic and idea.
+		    query = "INSERT INTO idea_has_topic (idea_id,topic_id) VALUES (?,?)";
 
+		    while(tries < maxTries)
+		    {
+			    try {
+				    stmt = db.prepareStatement(query);
+				    stmt.setInt(1, 1);
+				    stmt.setInt(1, topicId);
+				    stmt.executeQuery();
+				    break;
+			    } catch (SQLException e) {
+				    if(db != null) {
+					    db.rollback();
+				    }
+				    if(tries++ > maxTries) {
+					    throw new SQLException();
+				    }
+				    db = ServerRMI.pool.connectionCheck();
+			    } finally {
+				    if(stmt != null) {
+					    stmt.close();
+				    }
+			    }
+		    }
+
+		    db.commit();
+	    } catch (SQLException e) {
+		    System.out.println("\n"+e+"\n");
+		    if(db != null)
+			    db.rollback();
+		    throw new SQLException();
+	    } finally {
+		    db.setAutoCommit(true);
+	    }
+	}
+
+	/**
+	 *
+	 * @param idea_id
+	 * @throws RemoteException
+	 * @throws SQLException
+	 */
     public void deleteIdea(int idea_id) throws RemoteException, SQLException {
 
         Connection db = ServerRMI.pool.connectionCheck();
 
         int tries = 0;
         int maxTries = 3;
-        PreparedStatement stmt;
-        ResultSet rs;
+        PreparedStatement stmt = null;
 
         String query = "DELETE FROM idea WHERE idea.id = ?";
 
         while(tries < maxTries)
         {
             try {
+	            db.setAutoCommit(false);
+
                 stmt = db.prepareStatement(query);
                 stmt.setInt(1, idea_id);
+
                 stmt.executeQuery();
+	            db.commit();
                 break;
             } catch (SQLException e) {
                 db = ServerRMI.pool.connectionCheck();
                 if(tries++ > maxTries) {
                     throw new SQLException();
                 }
+            } finally {
+	            if(stmt != null) {
+		            stmt.close();
+	            }
+	            db.setAutoCommit(true);
             }
         }
     }
 
+	/**
+	 *
+	 * @param topic_id
+	 * @return
+	 * @throws RemoteException
+	 * @throws SQLException
+	 */
     public ArrayList<IdeaInfo> viewIdeasTopic(int topic_id) throws RemoteException, SQLException {
 
         Connection db = ServerRMI.pool.connectionCheck();
 
         int tries = 0;
         int maxTries = 3;
-        PreparedStatement stmt;
+        PreparedStatement stmt = null;
         ResultSet rs;
         ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
 
@@ -165,7 +198,9 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
             try {
                 stmt = db.prepareStatement(query);
                 stmt.setInt(1, topic_id);
+
                 rs = stmt.executeQuery();
+
                 while(rs.next()) {
                     ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("namealias"), rs.getString("text"), rs.getInt("stance")));
 
@@ -176,18 +211,30 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                 if(tries++ > maxTries) {
                     throw new SQLException();
                 }
+            } finally {
+	            if(stmt != null)
+		            stmt.close();
             }
         }
+
         return ideas;
     }
 
+	/**
+	 *
+	 * @param idea_id
+	 * @return
+	 * @throws RemoteException
+	 * @throws SQLException
+	 * @throws NonExistingIdeaException
+	 */
     public ArrayList<IdeaInfo> viewIdeasNested(int idea_id) throws RemoteException, SQLException, NonExistingIdeaException {
 
         Connection db = ServerRMI.pool.connectionCheck();
 
         int tries = 0;
         int maxTries = 3;
-        PreparedStatement stmt;
+        PreparedStatement stmt = null;
         ResultSet rs;
         ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
 
@@ -198,24 +245,30 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
             try {
                 stmt = db.prepareStatement(query);
                 stmt.setInt(1, idea_id);
+
                 rs = stmt.executeQuery();
+
                 if(!rs.next()) {
                     throw new NonExistingIdeaException();
                 }
-                ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("namealias"), rs.getString("text"), rs.getInt("stance")));
-                while(rs.next()) {
+
+                do {
                     ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("namealias"), rs.getString("text"), rs.getInt("stance")));
-                }
+                } while(rs.next());
+
                 break;
             } catch (SQLException e) {
                 db = ServerRMI.pool.connectionCheck();
                 if(tries++ > maxTries) {
                     throw new SQLException();
                 }
+            } finally {
+	            if(stmt != null)
+		            stmt.close();
             }
         }
-        return ideas;
 
+        return ideas;
     }
 
 	/**

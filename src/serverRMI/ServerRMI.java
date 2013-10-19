@@ -1,8 +1,6 @@
 package serverRMI;
 
-import common.IdeaInfo;
 import common.TransactionInfo;
-import common.rmi.*;
 
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
@@ -10,10 +8,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -58,7 +53,6 @@ public class ServerRMI
 
 		//Connect to database.
 		dbURL = "jdbc:oracle:thin:@" + args[1] +":1521:XE";
-
 
         //Create pool of connections
         try {
