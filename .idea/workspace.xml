@@ -7,7 +7,7 @@
     <ignored path="ProjectFinal.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/fragment.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382134948507" ignored="false" />
-    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382147155890" ignored="false" />
+    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382147164029" ignored="false" />
     <file path="/Ideas.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382138061265" ignored="false" />
     <file path="/ServerRMI.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135786303" ignored="false" />
     <file path="/ConnectionPool.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135673425" ignored="false" />
@@ -416,7 +416,11 @@
       <created>1382147158359</created>
       <updated>1382147158359</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Upload First Time">
+      <created>1382147168669</created>
+      <updated>1382147168669</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
