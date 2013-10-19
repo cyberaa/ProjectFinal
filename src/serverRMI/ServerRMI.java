@@ -68,6 +68,9 @@ public class ServerRMI
 		//TODO: More stuff.
 		//TODO: test transactions.buyShares()
 
+
+
+
 		try {
 			ArrayList<TransactionInfo> aux = transactions.showHistory(3);
 			for(int i=0; i < aux.size(); i++)
