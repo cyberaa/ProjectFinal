@@ -73,14 +73,31 @@ public class ServerRMI
 
         Scanner sc = new Scanner(System.in);
 
+        System.out.print("\nType \"help\" to see help menu.");
+
         while(!comand.equals("exit")) {
-            System.out.print("Comand: ");
+            System.out.print("\n>> ");
             comand = sc.next();
+            if(comand.equals("rmiport")) {
+                System.out.println("\n RMI registry port: "+rmiPort);
+            }
+            else if (comand.equals("dburl")) {
+                System.out.println("\n Database URL"+dbURL);
+            }
+            else if (comand.equals("nconnections")) {
+                System.out.println("\n Number of active connections to database: "+pool.connectionsUsed.size());
+            }
+            else if (comand.equals("help")) {
+                System.out.println("\n Commands: \n \t \t rmiport -> See RMI registry port. \n \t \t dburl -> See database url. \n \t \t nconnections -> Check number of active connections to database.    ");
+            }
+            else {
+                System.out.println("\n"+comand+": command not found");
+            }
         }
 
         System.out.println("Starting RMI server shutdown...");
 
-		try {
+		/*try {
 			ArrayList<TransactionInfo> aux = transactions.showHistory(3);
 			for(int i=0; i < aux.size(); i++)
 				System.out.println(aux.get(i));
@@ -88,7 +105,7 @@ public class ServerRMI
 			System.out.println("Cannot register user:\n" + se);
 		} catch (RemoteException re) {
 			System.out.println("Cannot register user:\n" + re);
-		}
+		}*/
 
 		//Unbind RMI objects and close their threads.
 		unbindAndDestroyObjects();
