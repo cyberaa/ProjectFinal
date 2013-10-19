@@ -68,7 +68,6 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 				break;
 			} catch (SQLException e) {
 				System.out.println("\n"+e+"\n");
-				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			} finally {
@@ -115,7 +114,6 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 				break;
 			} catch (SQLException e) {
 				System.out.println("\n"+e+"\n");
-				db = ServerRMI.pool.connectionCheck();
 				if(tries++ > maxTries)
 					throw new SQLException();
 			} finally {

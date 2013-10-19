@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" name="Default" comment="Corrected use of setAutoCommit(), commit() and rollback().">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverTCP/Connection.java" afterPath="$PROJECT_DIR$/src/serverTCP/Connection.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+    <list default="true" readonly="true" id="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/Ideas.java" afterPath="$PROJECT_DIR$/src/serverRMI/Ideas.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/Topics.java" afterPath="$PROJECT_DIR$/src/serverRMI/Topics.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/Transactions.java" afterPath="$PROJECT_DIR$/src/serverRMI/Transactions.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/UserManager.java" afterPath="$PROJECT_DIR$/src/serverRMI/UserManager.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ProjectFinal.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/fragment.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382134948507" ignored="false" />
-    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382200715808" ignored="false" />
+    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382208887501" ignored="false" />
     <file path="/Ideas.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382183931039" ignored="false" />
     <file path="/ServerRMI.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135786303" ignored="false" />
     <file path="/ConnectionPool.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135673425" ignored="false" />
@@ -76,20 +78,67 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ServerTCP.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/serverTCP/ServerTCP.java">
+      <file leaf-file-name="Transactions.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/serverRMI/Transactions.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="13" selection-start="251" selection-end="251" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="454" column="31" selection-start="12949" selection-end="12949" vertical-scroll-proportion="0.2547332">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <marker date="1382208977764" expanded="true" signature="1312:1373" placeholder="UPDATE share..." />
+                <marker date="1382208977764" expanded="true" signature="5474:5510" placeholder="SELECT cash ..sduser..." />
+                <marker date="1382208977764" expanded="true" signature="6572:6629" placeholder="SELECT * FRO..shares..." />
+                <marker date="1382208977764" expanded="true" signature="7680:7722" placeholder="SELECT numbe..idea..." />
+                <marker date="1382208977764" expanded="true" signature="10637:10668" placeholder="DELETE FROM ..." />
+                <marker date="1382208977764" expanded="true" signature="11568:11619" placeholder="UPDATE share..." />
+                <marker date="1382208977764" expanded="true" signature="12690:12751" placeholder="INSERT INTO shares..." />
+                <marker date="1382208977764" expanded="true" signature="13793:13829" placeholder="SELECT cash ..sduser..." />
+                <marker date="1382208977764" expanded="true" signature="14924:14963" placeholder="UPDATE sduse..." />
+                <marker date="1382208977764" expanded="true" signature="16130:16209" placeholder="INSERT INTO idea_transaction..." />
+                <marker date="1382208977764" expanded="true" signature="17039:17296" placeholder="SELECT u1.us..sduser..." />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Connection.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/serverTCP/Connection.java">
+      <file leaf-file-name="Ideas.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/serverRMI/Ideas.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="74" selection-start="672" selection-end="672" vertical-scroll-proportion="0.3525641">
-              <folding />
+            <state line="256" column="38" selection-start="6916" selection-end="6916" vertical-scroll-proportion="0.0">
+              <folding>
+                <marker date="1382208742012" expanded="true" signature="1831:1945" placeholder="INSERT INTO idea..." />
+                <marker date="1382208742012" expanded="true" signature="2597:2655" placeholder="INSERT INTO idea_has_topic..." />
+                <marker date="1382208742012" expanded="true" signature="3778:3812" placeholder="DELETE FROM ..." />
+                <marker date="1382208742012" expanded="true" signature="4861:5034" placeholder="SELECT idea...idea..." />
+                <marker date="1382208742012" expanded="true" signature="6242:6355" placeholder="SELECT idea...idea..." />
+                <marker date="1382208742012" expanded="true" signature="7680:7721" placeholder="UPDATE idea ..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Topics.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/serverRMI/Topics.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="140" column="38" selection-start="3677" selection-end="3677" vertical-scroll-proportion="0.0">
+              <folding>
+                <marker date="1382208742016" expanded="true" signature="1059:1119" placeholder="INSERT INTO topic..." />
+                <marker date="1382208742016" expanded="true" signature="2138:2157" placeholder="SELECT * FRO..topic..." />
+                <marker date="1382208742016" expanded="true" signature="3243:3293" placeholder="SELECT topic..topic..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UserManager.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/serverRMI/UserManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="115" column="48" selection-start="3203" selection-end="3203" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <marker date="1382208761932" expanded="true" signature="1414:1477" placeholder="SELECT id FR..sduser..." />
+                <marker date="1382208761932" expanded="true" signature="2693:2736" placeholder="SELECT id FR..sduser..." />
+                <marker date="1382208761932" expanded="true" signature="2758:2856" placeholder="INSERT INTO sduser..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -113,14 +162,14 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/src/serverRMI/ConnectionPool.java" />
-        <option value="$PROJECT_DIR$/src/serverRMI/UserManager.java" />
-        <option value="$PROJECT_DIR$/src/serverRMI/Transactions.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/serverRMI/ServerRMI.java" />
-        <option value="$PROJECT_DIR$/src/serverRMI/Topics.java" />
-        <option value="$PROJECT_DIR$/src/serverRMI/Ideas.java" />
         <option value="$PROJECT_DIR$/src/common/rmi/RemoteIdeas.java" />
         <option value="$PROJECT_DIR$/src/serverTCP/Connection.java" />
+        <option value="$PROJECT_DIR$/src/serverRMI/Ideas.java" />
+        <option value="$PROJECT_DIR$/src/serverRMI/Topics.java" />
+        <option value="$PROJECT_DIR$/src/serverRMI/UserManager.java" />
+        <option value="$PROJECT_DIR$/src/serverRMI/Transactions.java" />
       </list>
     </option>
   </component>
@@ -415,7 +464,11 @@
       <created>1382184030050</created>
       <updated>1382184030050</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Changed order of assignment of outStream and inStream. Caceiro mentioned an error they had was caused by assigning the input stream before the output stream.">
+      <created>1382206574882</created>
+      <updated>1382206574882</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -453,19 +506,19 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36902288" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32885906" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18490566" sideWeight="0.7141372" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18490566" sideWeight="0.63097715" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2451613" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28586277" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -511,7 +564,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed RemoteIdeas and Ideas to allow the creation of ideas with several topics associated." />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed pseudo-reconnect after some SQLExceptions." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -528,6 +581,8 @@
     <MESSAGE value="Upload First Time" />
     <MESSAGE value="Corrected use of setAutoCommit(), commit() and rollback()." />
     <MESSAGE value="Changed RemoteIdeas and Ideas to allow the creation of ideas with several topics associated." />
+    <MESSAGE value="Changed order of assignment of outStream and inStream. Caceiro mentioned an error they had was caused by assigning the input stream before the output stream." />
+    <MESSAGE value="Removed pseudo-reconnect after some SQLExceptions." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -558,13 +613,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/serverRMI/Transaction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="13" selection-start="190" selection-end="190" vertical-scroll-proportion="0.24035609">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/serverRMI/ConnectionPool.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="13" column="48" selection-start="268" selection-end="268" vertical-scroll-proportion="0.0">
@@ -581,19 +629,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state line="3" column="5" selection-start="29" selection-end="29" vertical-scroll-proportion="0.07234727" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/serverRMI/UserManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="88" column="4" selection-start="2390" selection-end="2390" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/serverRMI/ServerRMI.java">
@@ -605,38 +648,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/serverRMI/Topics.java">
+    <entry file="file://$PROJECT_DIR$/src/common/rmi/RemoteIdeas.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="0" selection-start="967" selection-end="967" vertical-scroll-proportion="0.61270803">
-          <folding>
-            <element signature="method#listTopics#0;class#Topics#0" expanded="false" />
-            <element signature="method#getTopicID#0;class#Topics#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/serverRMI/Transactions.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="153" column="34" selection-start="4932" selection-end="5034" vertical-scroll-proportion="0.7473525">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#getCash#0;class#Transactions#0" expanded="false" />
-            <element signature="method#getShares#0;class#Transactions#0" expanded="false" />
-            <element signature="method#getNumberShares#0;class#Transactions#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/serverRMI/Ideas.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="51" selection-start="1058" selection-end="1082" vertical-scroll-proportion="0.0">
+        <state line="28" column="0" selection-start="929" selection-end="929" vertical-scroll-proportion="0.36858973">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/common/rmi/RemoteIdeas.java">
+    <entry file="file://$PROJECT_DIR$/src/serverRMI/Transaction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="0" selection-start="929" selection-end="929" vertical-scroll-proportion="0.36858973">
+        <state line="9" column="13" selection-start="190" selection-end="190" vertical-scroll-proportion="0.14423077">
           <folding />
         </state>
       </provider>
@@ -650,8 +671,65 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/serverTCP/Connection.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="74" selection-start="672" selection-end="672" vertical-scroll-proportion="0.3525641">
+        <state line="38" column="0" selection-start="846" selection-end="846" vertical-scroll-proportion="0.0">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/serverRMI/Ideas.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="256" column="38" selection-start="6916" selection-end="6916" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1382208742012" expanded="true" signature="1831:1945" placeholder="INSERT INTO idea..." />
+            <marker date="1382208742012" expanded="true" signature="2597:2655" placeholder="INSERT INTO idea_has_topic..." />
+            <marker date="1382208742012" expanded="true" signature="3778:3812" placeholder="DELETE FROM ..." />
+            <marker date="1382208742012" expanded="true" signature="4861:5034" placeholder="SELECT idea...idea..." />
+            <marker date="1382208742012" expanded="true" signature="6242:6355" placeholder="SELECT idea...idea..." />
+            <marker date="1382208742012" expanded="true" signature="7680:7721" placeholder="UPDATE idea ..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/serverRMI/Topics.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="140" column="38" selection-start="3677" selection-end="3677" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1382208742016" expanded="true" signature="1059:1119" placeholder="INSERT INTO topic..." />
+            <marker date="1382208742016" expanded="true" signature="2138:2157" placeholder="SELECT * FRO..topic..." />
+            <marker date="1382208742016" expanded="true" signature="3243:3293" placeholder="SELECT topic..topic..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/serverRMI/UserManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="115" column="48" selection-start="3203" selection-end="3203" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <marker date="1382208761932" expanded="true" signature="1414:1477" placeholder="SELECT id FR..sduser..." />
+            <marker date="1382208761932" expanded="true" signature="2693:2736" placeholder="SELECT id FR..sduser..." />
+            <marker date="1382208761932" expanded="true" signature="2758:2856" placeholder="INSERT INTO sduser..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/serverRMI/Transactions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="454" column="31" selection-start="12949" selection-end="12949" vertical-scroll-proportion="0.2547332">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <marker date="1382208977764" expanded="true" signature="1312:1373" placeholder="UPDATE share..." />
+            <marker date="1382208977764" expanded="true" signature="5474:5510" placeholder="SELECT cash ..sduser..." />
+            <marker date="1382208977764" expanded="true" signature="6572:6629" placeholder="SELECT * FRO..shares..." />
+            <marker date="1382208977764" expanded="true" signature="7680:7722" placeholder="SELECT numbe..idea..." />
+            <marker date="1382208977764" expanded="true" signature="10637:10668" placeholder="DELETE FROM ..." />
+            <marker date="1382208977764" expanded="true" signature="11568:11619" placeholder="UPDATE share..." />
+            <marker date="1382208977764" expanded="true" signature="12690:12751" placeholder="INSERT INTO shares..." />
+            <marker date="1382208977764" expanded="true" signature="13793:13829" placeholder="SELECT cash ..sduser..." />
+            <marker date="1382208977764" expanded="true" signature="14924:14963" placeholder="UPDATE sduse..." />
+            <marker date="1382208977764" expanded="true" signature="16130:16209" placeholder="INSERT INTO idea_transaction..." />
+            <marker date="1382208977764" expanded="true" signature="17039:17296" placeholder="SELECT u1.us..sduser..." />
+          </folding>
         </state>
       </provider>
     </entry>

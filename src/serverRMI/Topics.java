@@ -95,7 +95,6 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
                 }
                 break;
             } catch (SQLException e) {
-                db = ServerRMI.pool.connectionCheck();
                 if(tries++ > maxTries) {
                     throw new SQLException();
                 }
@@ -140,7 +139,6 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
                 }
                 return rs.getInt("id");
             } catch (SQLException e) {
-                db = ServerRMI.pool.connectionCheck();
                 if(tries++ > maxTries) {
                     throw new SQLException();
                 }

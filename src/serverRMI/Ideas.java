@@ -113,7 +113,6 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 					    if(tries++ > maxTries) {
 						    throw new SQLException();
 					    }
-					    db = ServerRMI.pool.connectionCheck();
 				    } finally {
 					    if(stmt != null) {
 						    stmt.close();
@@ -161,7 +160,6 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	            db.commit();
                 break;
             } catch (SQLException e) {
-                db = ServerRMI.pool.connectionCheck();
                 if(tries++ > maxTries) {
                     throw new SQLException();
                 }
@@ -207,7 +205,6 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                 }
                 break;
             } catch (SQLException e) {
-                db = ServerRMI.pool.connectionCheck();
                 if(tries++ > maxTries) {
                     throw new SQLException();
                 }
@@ -258,7 +255,6 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
                 break;
             } catch (SQLException e) {
-                db = ServerRMI.pool.connectionCheck();
                 if(tries++ > maxTries) {
                     throw new SQLException();
                 }
