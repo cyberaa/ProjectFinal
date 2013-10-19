@@ -64,7 +64,7 @@ public class ServerRMI
 
         System.out.print("\nType \"help\" to see help menu.");
 
-        while(!command.equals("exit")) {
+        while(true) {
             System.out.print("\n>> ");
             command = sc.next();
             if(command.equals("rmiport")) {
@@ -77,7 +77,10 @@ public class ServerRMI
                 System.out.println("\n Number of active connections to database: "+pool.connectionsAvailable.size());
             }
             else if (command.equals("help")) {
-                System.out.println("\n Commands: \n \t \t rmiport -> See RMI registry port. \n \t \t dburl -> See database url. \n \t \t nconnections -> Check number of active connections to database.    ");
+                System.out.println("\n Commands: \n \t \t rmiport -> See RMI registry port. \n \t \t dburl -> See database url. \n \t \t nconnections -> Check number of active connections to database. \n \t \t exit -> Shutdown server.");
+            }
+            else if (command.equals("exit")) {
+	            break;
             }
             else {
                 System.out.println("\n"+command+": command not found");
