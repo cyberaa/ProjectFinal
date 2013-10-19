@@ -154,7 +154,6 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	 * @param pass The plaintext password to be hashed.
 	 * @return The hashed password.
 	 */
-	//TODO: implement hashing.
 	protected String hashPassword(String pass)
 	{
 		MessageDigest m = null;

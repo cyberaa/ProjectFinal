@@ -254,7 +254,6 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 * Get the number of share parts of the idea identified by <em>idea_id</em>.
 	 * @param idea_id The identifier of the idea whose number of parts we want to retrieve.
 	 * @return The number of parts of the idea identified by <em>idea_id</em>.
-	 * @throws RemoteException
 	 * @throws SQLException
 	 */
 	protected int getNumberShares(int idea_id) throws SQLException
@@ -312,7 +311,6 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		for(int i = 0; i < shares.size(); i++)
 		{
 			aux = shares.get(i);
-			//System.out.println(aux); //Debugging.
 
 			//User cannot buy shares from himself.
 			if(aux.user_id == user_id)
@@ -564,7 +562,6 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 * @param transactionMoney The total money involved in the transaction.
 	 * @throws SQLException
 	 */
-	static int id = 1; //FIXME: remove this after implementing auto increment.
 	protected void createTransaction(int idea_id, int seller_id, int buyer_id, int share_num, int transactionMoney) throws SQLException
 	{
 

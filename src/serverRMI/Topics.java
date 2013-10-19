@@ -25,9 +25,8 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
 
     }
 
-
     /**
-     * Insert a new Topic in database if not exists.
+     * Insert a new Topic in database if it does not exists.
      * @param name New topic name.
      * @throws RemoteException
      * @throws ExistingTopicException
