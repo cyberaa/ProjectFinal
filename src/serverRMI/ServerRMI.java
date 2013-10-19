@@ -25,6 +25,10 @@ import java.util.ArrayList;
  */
 public class ServerRMI
 {
+
+    //TODO: Peguntar ao paneleiro do Maxi como configurar o .gitignore para não fazer push do workspace
+
+
 	protected static final String dbUser = "sd2013";
 	protected static final String dbPass = "sd2013";
 
