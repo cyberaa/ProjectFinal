@@ -103,7 +103,7 @@ public class ServerRMI
 			System.out.println("Could not start RMI registry:\n" + e);
 		}
 
-		System.out.println("RMI registry started successfully!");
+		System.out.println("RMI registry started successfully! ");
 	}
 
 	/**
