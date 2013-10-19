@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    <list default="true" readonly="true" id="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" name="Default" comment="Upload First Time">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/Ideas.java" afterPath="$PROJECT_DIR$/src/serverRMI/Ideas.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/ServerRMI.java" afterPath="$PROJECT_DIR$/src/serverRMI/ServerRMI.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/Topics.java" afterPath="$PROJECT_DIR$/src/serverRMI/Topics.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/Transactions.java" afterPath="$PROJECT_DIR$/src/serverRMI/Transactions.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serverRMI/UserManager.java" afterPath="$PROJECT_DIR$/src/serverRMI/UserManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ProjectFinal.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/fragment.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382134948507" ignored="false" />
-    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382134935233" ignored="false" />
+    <file path="/Dummy.txt" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382146242377" ignored="false" />
     <file path="/Ideas.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382138061265" ignored="false" />
     <file path="/ServerRMI.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135786303" ignored="false" />
     <file path="/ConnectionPool.java" changelist="d50aa42e-2cfd-4b49-bc6f-0eada8c2619b" time="1382135673425" ignored="false" />
@@ -80,23 +79,23 @@
       <file leaf-file-name="Ideas.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/serverRMI/Ideas.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="152" column="57" selection-start="4592" selection-end="4641" vertical-scroll-proportion="0.0">
+            <state line="93" column="72" selection-start="2986" selection-end="2986" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#4795#4805#0" expanded="true" />
-                <element signature="e#6004#6014#0" expanded="true" />
+                <element signature="e#4813#4823#0" expanded="true" />
+                <element signature="e#6022#6032#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Topics.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Topics.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/serverRMI/Topics.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="35" selection-start="349" selection-end="349" vertical-scroll-proportion="0.40449437">
+            <state line="47" column="48" selection-start="1207" selection-end="1207" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2009#2020#0" expanded="true" />
+                <element signature="e#2028#2039#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -105,7 +104,7 @@
       <file leaf-file-name="UserManager.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/serverRMI/UserManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="43" column="57" selection-start="1244" selection-end="1293" vertical-scroll-proportion="-5.8235292">
+            <state line="100" column="114" selection-start="2890" selection-end="2890" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -113,15 +112,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Transactions.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Transactions.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/serverRMI/Transactions.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="61" column="20" selection-start="1706" selection-end="1706" vertical-scroll-proportion="-19.88">
+            <state line="584" column="87" selection-start="16537" selection-end="16537" vertical-scroll-proportion="16.528301">
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#6580#6591#0" expanded="true" />
                 <element signature="e#9256#9268#0" expanded="true" />
-                <element signature="e#17365#17382#0" expanded="true" />
+                <element signature="e#17348#17365#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -165,10 +164,10 @@
       <list>
         <option value="$PROJECT_DIR$/src/serverRMI/ConnectionPool.java" />
         <option value="$PROJECT_DIR$/src/serverRMI/ServerRMI.java" />
-        <option value="$PROJECT_DIR$/src/serverRMI/Transactions.java" />
+        <option value="$PROJECT_DIR$/src/serverRMI/Topics.java" />
         <option value="$PROJECT_DIR$/src/serverRMI/Ideas.java" />
         <option value="$PROJECT_DIR$/src/serverRMI/UserManager.java" />
-        <option value="$PROJECT_DIR$/src/serverRMI/Topics.java" />
+        <option value="$PROJECT_DIR$/src/serverRMI/Transactions.java" />
       </list>
     </option>
   </component>
@@ -395,7 +394,11 @@
       <created>1382124154164</created>
       <updated>1382124154164</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Upload First Time">
+      <created>1382138328865</created>
+      <updated>1382138328865</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -524,7 +527,7 @@
             <element signature="imports" expanded="true" />
             <element signature="e#6580#6591#0" expanded="true" />
             <element signature="e#9256#9268#0" expanded="true" />
-            <element signature="e#17365#17382#0" expanded="true" />
+            <element signature="e#17348#17365#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -601,44 +604,44 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/serverRMI/Transactions.java">
+    <entry file="file://$PROJECT_DIR$/src/serverRMI/UserManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="61" column="20" selection-start="1706" selection-end="1706" vertical-scroll-proportion="-19.88">
+        <state line="100" column="114" selection-start="2890" selection-end="2890" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#6580#6591#0" expanded="true" />
-            <element signature="e#9256#9268#0" expanded="true" />
-            <element signature="e#17365#17382#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/serverRMI/Ideas.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="152" column="57" selection-start="4592" selection-end="4641" vertical-scroll-proportion="0.0">
+        <state line="93" column="72" selection-start="2986" selection-end="2986" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#4795#4805#0" expanded="true" />
-            <element signature="e#6004#6014#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/serverRMI/UserManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="57" selection-start="1244" selection-end="1293" vertical-scroll-proportion="-5.8235292">
-          <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#4813#4823#0" expanded="true" />
+            <element signature="e#6022#6032#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/serverRMI/Topics.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="35" selection-start="349" selection-end="349" vertical-scroll-proportion="0.40449437">
+        <state line="47" column="48" selection-start="1207" selection-end="1207" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2009#2020#0" expanded="true" />
+            <element signature="e#2028#2039#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/serverRMI/Transactions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="584" column="87" selection-start="16537" selection-end="16537" vertical-scroll-proportion="16.528301">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#6580#6591#0" expanded="true" />
+            <element signature="e#9256#9268#0" expanded="true" />
+            <element signature="e#17348#17365#0" expanded="true" />
           </folding>
         </state>
       </provider>

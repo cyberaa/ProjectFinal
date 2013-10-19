@@ -60,7 +60,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
             System.out.println("Error submitting idea:\n"+re);
         }
 
-        String query = "INSERT INTO idea (id,user_id,parent_id,number_parts,part_val,stance,text) VALUES (1,?,?,?,?,?,?)";
+        String query = "INSERT INTO idea (id,user_id,parent_id,number_parts,part_val,stance,text) VALUES (idea_id_inc.nextval,?,?,?,?,?,?)";
 
         while(tries < maxTries)
         {

@@ -98,7 +98,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 		ResultSet resultSet = null;
 
 		String query = "SELECT id FROM sduser WHERE username LIKE ?";
-		String insert = "INSERT INTO sduser (id, username, password, namealias, cash) VALUES(1,?,?,?,?)";
+		String insert = "INSERT INTO sduser (id, username, password, namealias, cash) VALUES(sduser_id_inc.nextval,?,?,?,?)";
 
 		//See if username is already in use.
 		while(tries < maxTries)

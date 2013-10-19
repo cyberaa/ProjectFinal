@@ -43,7 +43,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
 
         getTopicID(name);
 
-        String query = "INSERT INTO topic (id, text) VALUES (1,?)";
+        String query = "INSERT INTO topic (id, text) VALUES (topic_id_inc.nextval,?)";
 
         try {
             db.setAutoCommit(false);

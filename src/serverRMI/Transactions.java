@@ -448,13 +448,12 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		int maxTries = 3;
 		PreparedStatement cShare = null;
 
-		String share = "INSERT INTO shares VALUES (?, ?, ?, ?, ?)";
+		String share = "INSERT INTO shares VALUES (shares_id_inc.nextval, ?, ?, ?, ?)";
 
 		while(tries < maxTries)
 		{
 			try {
 				cShare = db.prepareStatement(share);
-				cShare.setInt(1, 1); //FIXME: how to set up new share ID?
 				cShare.setInt(2, idea_id);
 				cShare.setInt(3, user_id);
 				cShare.setInt(4, share_num);
@@ -583,7 +582,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		int maxTries = 3;
 		PreparedStatement cShare = null;
 
-		String share = "INSERT INTO idea_transaction VALUES (?, ?, ?, ?, ?, ?)";
+		String share = "INSERT INTO idea_transaction VALUES (transaction_id_inc.nextval, ?, ?, ?, ?, ?)";
 
 		while(tries < maxTries)
 		{
