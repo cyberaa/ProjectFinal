@@ -1,7 +1,5 @@
 package serverRMI;
 
-import common.TransactionInfo;
-
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -9,7 +7,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -21,10 +18,6 @@ import java.util.Scanner;
  */
 public class ServerRMI
 {
-
-    //TODO: Peguntar ao paneleiro do Maxi como configurar o .gitignore para não fazer push do workspace
-
-
 	protected static final String dbUser = "sd2013";
 	protected static final String dbPass = "sd2013";
 
@@ -62,7 +55,6 @@ public class ServerRMI
             System.out.print("Error creating pool of connections.\n" + se);
         }
 
-
 		//Create remote RMI objects and bind them.
 		createAndBindObjects();
 
@@ -93,16 +85,6 @@ public class ServerRMI
         }
 
         System.out.println("Starting RMI server shutdown...");
-
-		/*try {
-			ArrayList<TransactionInfo> aux = transactions.showHistory(3);
-			for(int i=0; i < aux.size(); i++)
-				System.out.println(aux.get(i));
-        } catch (SQLException se) {
-			System.out.println("Cannot register user:\n" + se);
-		} catch (RemoteException re) {
-			System.out.println("Cannot register user:\n" + re);
-		}*/
 
 		//Unbind RMI objects and close their threads.
 		unbindAndDestroyObjects();
