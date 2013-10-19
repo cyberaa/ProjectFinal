@@ -23,8 +23,8 @@ public class Connection extends Thread {
         clientSocket = cSocket;
         shutDown = false;
         try {
+	        outStream = new ObjectOutputStream(cSocket.getOutputStream());
             inStream = new ObjectInputStream(cSocket.getInputStream());
-            outStream = new ObjectOutputStream(cSocket.getOutputStream());
 
         } catch (IOException ie) {
 
