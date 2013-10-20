@@ -49,6 +49,8 @@ public class Connection extends Thread
 	    } catch (RemoteException re) {
 		    System.out.println("Error looking up remote objects:\n" + re);
 	    }
+
+	    start();
 	}
 
     @Override
