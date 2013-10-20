@@ -27,7 +27,7 @@ public class Connection extends Thread {
             inStream = new ObjectInputStream(cSocket.getInputStream());
 
         } catch (IOException ie) {
-
+	        System.out.println("Could not create connection:\n" + ie);
         }
     }
 
