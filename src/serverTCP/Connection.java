@@ -60,10 +60,11 @@ public class Connection extends Thread
 		    Authenticate auth = (Authenticate) inStream.readObject();
 		    um.authenticate(auth.username, auth.password);
 		    outStream.writeBoolean(true);
+            outStream.flush();
 		    success = true;
 	    } catch (UserAuthenticationException e) {
+            System.out.print("Login failed!");
 		    //Send information back that authentication failed.
-		    return;
 	    } catch (Exception e) {
 		    //Send information that authentication failed but not due to given data.
 		    return;
@@ -72,6 +73,7 @@ public class Connection extends Thread
 	    {
 		    try {
 			    outStream.writeBoolean(false);
+                outStream.flush();
 		    } catch (EOFException e) {
 			    System.out.println("Client disconnected.");
 			    return;

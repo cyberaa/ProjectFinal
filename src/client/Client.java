@@ -74,10 +74,10 @@ public class Client {
 
         choose = sc.nextInt();
 
-        int success;
+        boolean success;
 
         do {
-            success = 0;
+            success = false;
             switch(choose) {
                 case 1:
                     System.out.println(delimiter);
@@ -88,10 +88,9 @@ public class Client {
                     Authenticate auth = new Authenticate(username,password);
                     writeObject(auth);
                     try {
-                        System.out.print("Cheguei");
-                        success = in.readInt();
-                        System.out.print(success);
-                        System.out.print("Passei");
+                        System.out.println("Cheguei");
+                        success = in.readBoolean();
+                        System.out.println("Passei");
                     } catch (IOException e) {
                         System.out.println("Error reading authentication report from socket");
                     }
@@ -108,7 +107,7 @@ public class Client {
                 default:
                     System.out.println("Fizeste merda.");
             }
-        } while(false);
+        } while(!success);
 
         System.out.println(delimiter);
 
@@ -124,7 +123,8 @@ public class Client {
         try {
             out.writeObject(obj);
         } catch (IOException e) {
-            e.printStackTrace();  //TODO: Handle Exception
+            System.out.println(e);
+            System.exit(-1);
         }
     }
 
