@@ -20,6 +20,8 @@ public class ConnectionPool implements Runnable {
     String userPassword ;
 
 
+    //TODO: Detectar no check connection se a connection está activa. Se não, elimina-a e cria uma nova.
+
     public ConnectionPool(String url, String userName, String userPass) throws SQLException {
         this.connectionUrl = url;
         this.userName = userName;
