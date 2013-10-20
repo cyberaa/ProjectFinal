@@ -3,6 +3,7 @@ package serverRMI;
 import common.IdeaInfo;
 import common.rmi.ExistingTopicException;
 import common.rmi.NonExistingIdeaException;
+import common.rmi.NotFullOwnerException;
 import common.rmi.RemoteIdeas;
 
 import java.awt.event.KeyEvent;
@@ -92,6 +93,10 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 					    throw new SQLException();
 				    }
 				    db = ServerRMI.pool.connectionCheck();
+			    } finally {
+				    if(stmt != null) {
+					    stmt.close();
+				    }
 			    }
 		    }
 
@@ -137,44 +142,83 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	}
 
 	/**
-	 *
-	 * @param idea_id
+	 * Delete idea identified by <em>idea_id</em>.
+	 * @param idea_id The identifier of the idea to delete.
+	 * @param user_id The identifier of the user trying to delete the idea.
 	 * @throws RemoteException
 	 * @throws SQLException
+	 * @throws NotFullOwnerException
 	 */
-    public void deleteIdea(int idea_id) throws RemoteException, SQLException {
+    public void deleteIdea(int idea_id, int user_id) throws RemoteException, SQLException, NotFullOwnerException
+    {
+	    Connection db = ServerRMI.pool.connectionCheck();
 
-        Connection db = ServerRMI.pool.connectionCheck();
+	    try {
+		    //Verify that user owns all shares.
+		    int numParts = ServerRMI.transactions.getNumberShares(idea_id);
 
-        int tries = 0;
-        int maxTries = 3;
-        PreparedStatement stmt = null;
+		    int tries = 0;
+		    int maxTries = 3;
+		    PreparedStatement stmt = null;
+		    ResultSet rs;
 
-        String query = "DELETE FROM idea WHERE idea.id = ?";
+		    String verify = "SELECT parts FROM shares WHERE idea_id = ? AND user_id = ?";
 
-        while(tries < maxTries)
-        {
-            try {
-	            db.setAutoCommit(false);
+		    while(tries < maxTries)
+		    {
+			    try {
+				    stmt = db.prepareStatement(verify);
+				    stmt.setInt(1, idea_id);
+				    stmt.setInt(2, user_id);
 
-                stmt = db.prepareStatement(query);
-                stmt.setInt(1, idea_id);
+				    rs = stmt.executeQuery();
 
-                stmt.executeQuery();
-	            db.commit();
-                break;
-            } catch (SQLException e) {
-                if(tries++ > maxTries) {
-                    throw new SQLException();
-                }
-            } finally {
-	            if(stmt != null) {
-		            stmt.close();
-	            }
-	            db.setAutoCommit(true);
-            }
-        }
-    }
+				    if(rs.next())
+				    {
+					    if(rs.getInt("parts") == numParts)
+						    break;
+				    }
+				    else
+					    throw new NotFullOwnerException();
+			    } catch (SQLException e) {
+				    if(tries++ > maxTries) {
+					    throw new SQLException();
+				    }
+			    } finally {
+				    if(stmt != null)
+					    stmt.close();
+			    }
+		    }
+
+		    //Update active field to 0.
+
+		    String update = "UPDATE idea SET parts = 0 WHERE id = ?";
+
+		    while(tries < maxTries)
+		    {
+			    try {
+				    stmt = db.prepareStatement(update);
+				    stmt.setInt(1, idea_id);
+
+				    stmt.executeQuery();
+				    break;
+			    } catch (SQLException e) {
+				    System.out.println(e);
+				    if(tries++ > maxTries)
+					    throw new SQLException();
+			    } finally {
+				    if(stmt != null)
+					    stmt.close();
+			    }
+		    }
+	    } catch (SQLException e) {
+		    System.out.println("\n"+e+"\n");
+		    if(db != null)
+			    db.rollback();
+	    } finally {
+		    db.setAutoCommit(true);
+	    }
+	}
 
 	/**
 	 *
@@ -193,7 +237,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         ResultSet rs;
         ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
 
-        String query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, idea_has_topic, sduser WHERE topic_id = ? AND idea_id = idea.id AND idea.user_id = sduser.id AND idea.parent_id = 0";
+        String query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, idea_has_topic, sduser WHERE topic_id = ? AND idea_id = idea.id AND idea.user_id = sduser.id AND idea.parent_id = 0 AND idea.active = 1";
 
         while(tries < maxTries)
         {
@@ -239,7 +283,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         ResultSet rs;
         ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
 
-        String query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, sduser WHERE parent_id = ? AND idea.user_id = sduser.id";
+        String query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, sduser WHERE parent_id = ? AND idea.user_id = sduser.id AND idea.active = 1";
 
         while(tries < maxTries)
         {
