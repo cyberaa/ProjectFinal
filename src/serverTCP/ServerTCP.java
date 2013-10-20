@@ -24,6 +24,7 @@ public class ServerTCP {
     protected static ServerSocket listenSocket;
 
 
+
     public static void main(String args[]) {
         //Verify the number of given arguments.
         if(args.length != 3)
@@ -52,7 +53,7 @@ public class ServerTCP {
         while (true) {
             try {
                 s = listenSocket.accept();
-                Connection con = new Connection(s);
+                new Connection(s);
             } catch (IOException e) {
                 System.out.print("LOL" + e);
                 return;

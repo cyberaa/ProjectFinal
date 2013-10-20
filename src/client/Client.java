@@ -56,10 +56,34 @@ public class Client {
 
         }
 
+        int choose;
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("\t \t IDEA BROKEN - WE DON'T NEED GUI TO BE THE BEST\n");
+
+        System.out.println("1 - Login");
+        System.out.println("2 - Register\n");
+
+        System.out.print("Option: ");
+
+        choose = sc.nextInt();
+
+        switch(choose) {
+            case 1:
+
+                break;
+            case 2:
+                break;
+        }
+
+
+
+
         String username;
         String password;
 
-        Scanner sc = new Scanner(System.in);
+
         System.out.print("Username: ");
         username = sc.next();
         System.out.print("Password: ");
