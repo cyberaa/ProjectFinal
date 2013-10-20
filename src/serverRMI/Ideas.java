@@ -314,43 +314,4 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
         return ideas;
     }
-
-	/**
-	 * Changes the value per share of the idea identified by <em>idea_id</em> to new_value.
-	 * @param idea_id The identifier of the idea to update.
-	 * @param new_value The new share value to have for the idea identified by <em>idea_id</em>.
-	 * @throws RemoteException
-	 * @throws SQLException
-	 */
-	public void setShareValue(int idea_id, int new_value) throws RemoteException, SQLException
-	{
-        Connection db = ServerRMI.pool.connectionCheck();
-
-        PreparedStatement updateValue = null;
-
-		String query = "UPDATE idea SET part_val = ? WHERE id = ?";
-
-		try {
-			db.setAutoCommit(false);
-
-			updateValue = db.prepareStatement(query);
-			updateValue.setInt(1, new_value);
-			updateValue.setInt(2, idea_id);
-
-			updateValue.executeQuery();
-
-			db.commit();
-		} catch (SQLException e) {
-			System.out.println("\n"+e+"\n");
-			if(db != null)
-				db.rollback();
-			throw new SQLException();
-		}
-		finally {
-			if(updateValue != null)
-				updateValue.close();
-
-			db.setAutoCommit(true);
-		}
-	}
 }
