@@ -32,6 +32,8 @@ public class Connection extends Thread
 	protected RemoteTopics topics;
 	protected RemoteTransactions transactions;
 
+	protected boolean shutdown = false;
+
     public Connection(Socket cSocket)
     {
         clientSocket = cSocket;
@@ -55,35 +57,12 @@ public class Connection extends Thread
     @Override
     public void run()
     {
-	    boolean success = false;
-	    try {
-		    Authenticate auth = (Authenticate) inStream.readObject();
-		    um.authenticate(auth.username, auth.password);
-		    outStream.writeBoolean(true);
-		    success = true;
-	    } catch (UserAuthenticationException e) {
-		    //Send information back that authentication failed.
-		    return;
-	    } catch (Exception e) {
-		    //Send information that authentication failed but not due to given data.
-		    return;
-	    }
-	    if(!success)
-	    {
-		    try {
-			    outStream.writeBoolean(false);
-		    } catch (EOFException e) {
-			    System.out.println("Client disconnected.");
-			    return;
-		    } catch (IOException e) {
-			    e.printStackTrace();
-			    return;
-		    }
-	    }
+	    //TODO: registration occurs before authentication.
+	    authenticateUser();
 
 	    Object cmd;
 
-	    while(true)
+	    while(!shutdown)
 	    {
 		    try {
 			    cmd = inStream.readObject();
@@ -230,6 +209,38 @@ public class Connection extends Thread
 		    }
 	    }
     }
+
+	/**
+	 * Authenticate user after logging in.
+	 */
+	protected void authenticateUser()
+	{
+		boolean success = false;
+		try {
+			Authenticate auth = (Authenticate) inStream.readObject();
+			um.authenticate(auth.username, auth.password);
+			outStream.writeBoolean(true);
+			success = true;
+		} catch (UserAuthenticationException e) {
+			//Send information back that authentication failed.
+			return;
+		} catch (Exception e) {
+			//Send information that authentication failed but not due to given data.
+			return;
+		}
+		if(!success)
+		{
+			try {
+				outStream.writeBoolean(false);
+			} catch (EOFException e) {
+				System.out.println("Client disconnected.");
+				return;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return;
+			}
+		}
+	}
 
 	/**
 	 * Lookup the remote objects and save them to class variables.
