@@ -11,7 +11,9 @@ import java.io.Serializable;
  */
 public class CreateTopic implements Serializable {
 
-    public String name;
+	private static final long serialVersionUID = -6185094221610527798L;
+
+	public String name;
 
     public CreateTopic(String name) {
         this.name = name;

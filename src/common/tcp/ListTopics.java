@@ -11,5 +11,7 @@ import java.io.Serializable;
  */
 public class ListTopics implements Serializable {
 
-    public ListTopics() {}
+	private static final long serialVersionUID = 4559176328971984941L;
+
+	public ListTopics() {}
 }

@@ -11,7 +11,9 @@ import java.io.Serializable;
  */
 public class BuyShares implements Serializable {
 
-    public int user_id;
+	private static final long serialVersionUID = -3146535575461402799L;
+
+	public int user_id;
     public int idea_id;
     public int share_num;
     public int price_per_share;

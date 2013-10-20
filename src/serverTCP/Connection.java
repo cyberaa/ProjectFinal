@@ -1,9 +1,9 @@
 package serverTCP;
 
-import common.rmi.RemoteIdeas;
-import common.rmi.RemoteTopics;
-import common.rmi.RemoteTransactions;
-import common.rmi.RemoteUserManager;
+import common.rmi.*;
+import common.tcp.Authenticate;
+import common.tcp.CreateTopic;
+import common.tcp.Register;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -57,9 +57,50 @@ public class Connection extends Thread
     public void run()
     {
 	    try {
-		    um.register("joao", "merda", "O MAIOR");
+		    Authenticate auth = (Authenticate) inStream.readObject();
+		    um.authenticate(auth.username, auth.password);
+	    } catch (UserAuthenticationException e) {
+		    //Send information back that authentication failed.
 	    } catch (Exception e) {
-		    System.out.println("DEU MEGA BODE LOL:\n" + e);
+		    //Send information that authentication failed but not due to given data.
+	    }
+
+	    Object cmd;
+
+	    while(true)
+	    {
+		    try {
+			    cmd = inStream.readObject();
+		    } catch (ClassNotFoundException cnfe) {
+			    System.out.println("Object class not found:\n" + cnfe);
+			    continue;
+		    } catch (IOException ioe) {
+			    System.out.println("Object class not found:\n" + ioe);
+			    continue;
+		    }
+
+		    if(cmd instanceof Register)
+		    {
+			    Register aux = (Register) cmd;
+			    try {
+				    um.register(aux.name, aux.pass, aux.nameAlias);
+			    } catch (ExistingUserException e) {
+				    //Send information that username is already in use.
+			    } catch (Exception e) {
+				    //Send information that registration failed but not because username is in use.
+			    }
+		    }
+		    else if(cmd instanceof CreateTopic)
+		    {
+			    CreateTopic aux = (CreateTopic) cmd;
+			    try {
+				    topics.newTopic(aux.name);
+			    } catch (ExistingTopicException e) {
+				    //Send information that topic already exists.
+			    } catch (Exception e) {
+				    //Send information that topic creation failed but not because it already exists.
+			    }
+		    }
 	    }
     }
 

@@ -11,7 +11,9 @@ import java.io.Serializable;
  */
 public class SetShareValue implements Serializable {
 
-    public int share_id;
+	private static final long serialVersionUID = 6208565993764399537L;
+
+	public int share_id;
     public int new_value;
 
     public SetShareValue(int share_id, int new_value) {

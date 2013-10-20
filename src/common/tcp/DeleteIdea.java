@@ -11,7 +11,9 @@ import java.io.Serializable;
  */
 public class DeleteIdea implements Serializable {
 
-    public int idea_id;
+	private static final long serialVersionUID = -3945309271203987397L;
+
+	public int idea_id;
 
     public DeleteIdea(int idea_id) {
         this.idea_id = idea_id;

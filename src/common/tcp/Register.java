@@ -11,7 +11,9 @@ import java.io.Serializable;
  */
 public class Register implements Serializable {
 
-    public String name;
+	private static final long serialVersionUID = 5725716949582791422L;
+
+	public String name;
     public String pass;
     public String nameAlias;
 

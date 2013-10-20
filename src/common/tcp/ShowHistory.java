@@ -11,7 +11,9 @@ import java.io.Serializable;
  */
 public class ShowHistory implements Serializable {
 
-    public int user_id;
+	private static final long serialVersionUID = 2016719737672685327L;
+
+	public int user_id;
 
     public ShowHistory(int user_id) {
         this.user_id = user_id;
