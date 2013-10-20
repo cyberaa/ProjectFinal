@@ -23,6 +23,4 @@ public interface RemoteIdeas extends Remote
 	public ArrayList<IdeaInfo> viewIdeasTopic(int topic_id) throws RemoteException, SQLException;
 
 	public ArrayList<IdeaInfo> viewIdeasNested(int idea_id) throws RemoteException, SQLException, NonExistingIdeaException;
-
-	public void setShareValue(int share_id, int new_value) throws RemoteException, SQLException;
 }
