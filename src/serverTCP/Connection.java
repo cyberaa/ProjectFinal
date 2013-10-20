@@ -61,6 +61,7 @@ public class Connection extends Thread
 		    um.authenticate(auth.username, auth.password);
 	    } catch (UserAuthenticationException e) {
 		    //Send information back that authentication failed.
+            System.out.println("Error");
 	    } catch (Exception e) {
 		    //Send information that authentication failed but not due to given data.
 	    }
