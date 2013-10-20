@@ -3,6 +3,8 @@ package serverTCP;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.rmi.RMISecurityManager;
+
 /**
  * Created with IntelliJ IDEA.
  * User: joaosimoes
@@ -29,11 +31,14 @@ public class ServerTCP {
             return;
         }
 
+	    //Get command line arguments.
         serverPort = Integer.parseInt(args[0]);
-
         rmiServerAddress = args[2];
-
         rmiRegistryPort = Integer.parseInt(args[1]);
+
+	    //Set system policies.
+	    System.getProperties().put("java.security.policy", "policy.all");
+	    System.setSecurityManager(new RMISecurityManager());
 
         try {
             listenSocket = new ServerSocket(serverPort);

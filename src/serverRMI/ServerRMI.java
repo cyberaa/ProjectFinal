@@ -2,6 +2,7 @@ package serverRMI;
 
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -40,6 +41,10 @@ public class ServerRMI
 			System.out.println("Usage: java ServerRMI <rmi_port> <db_IP_teste>");
 			return;
 		}
+
+		//Set system policies.
+		System.getProperties().put("java.security.policy", "policy.all");
+		System.setSecurityManager(new RMISecurityManager());
 
 		//Start RMI registry.
 		rmiPort = Integer.parseInt(args[0]);
