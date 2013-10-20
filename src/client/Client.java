@@ -1,6 +1,7 @@
 package client;
 
 import common.tcp.Authenticate;
+import common.tcp.Register;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -27,6 +28,8 @@ public class Client {
 
     protected static ObjectInputStream in;
     protected  static ObjectOutputStream out;
+
+    protected static String delimiter = "\n----------------------------------------------\n";
 
     public static void main(String args[]) {
 
@@ -57,10 +60,12 @@ public class Client {
         }
 
         int choose;
+        String username;
+        String password;
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("\t \t IDEA BROKEN - WE DON'T NEED GUI TO BE THE BEST\n");
+        System.out.println("\t \t IDEA BROKER - WE DON'T NEED GUI TO BE THE BEST\n");
 
         System.out.println("1 - Login");
         System.out.println("2 - Register\n");
@@ -69,34 +74,57 @@ public class Client {
 
         choose = sc.nextInt();
 
-        switch(choose) {
-            case 1:
+        boolean success;
 
-                break;
-            case 2:
-                break;
-        }
+        do {
+            success = false;
+            switch(choose) {
+                case 1:
+                    System.out.println(delimiter);
+                    System.out.print("Username: ");
+                    username = sc.next();
+                    System.out.print("Password: ");
+                    password = sc.next();
+                    Authenticate auth = new Authenticate(username,password);
+                    writeObject(auth);
+                    try {
+                        success = in.readBoolean();
+                    } catch (IOException e) {
+                        System.out.println("Error reading authentication report from socket");
+                    }
+                    break;
+                case 2:
+                    System.out.println(delimiter);
+                    System.out.print("Username: ");
+                    username = sc.next();
+                    System.out.print("Password: ");
+                    password = sc.next();
+                    Register reg = new Register(username,password, "");
+                    writeObject(reg);
+                    break;
+                default:
+                    System.out.println("Fizeste merda.");
+            }
+        } while(!success);
 
+        System.out.println(delimiter);
 
+        System.out.println("\t \t IDEA BROKER - WE DON'T NEED GUI TO BE THE BEST\n");
 
+        System.out.println("1 - Login");
+        System.out.println("2 - Register\n");
 
-        String username;
-        String password;
-
-
-        System.out.print("Username: ");
-        username = sc.next();
-        System.out.print("Password: ");
-        password = sc.next();
-
-        Authenticate auth = new Authenticate(username,password);
-
-        try {
-            out.writeObject(auth);
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
+        System.out.print("Option: ");
     }
+
+    protected static void writeObject(Object obj) {
+        try {
+            out.writeObject(obj);
+        } catch (IOException e) {
+            e.printStackTrace();  //TODO: Handle Exception
+        }
+    }
+
+
 
 }
