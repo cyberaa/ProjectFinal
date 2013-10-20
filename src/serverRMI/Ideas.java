@@ -41,8 +41,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
      * @throws RemoteException
      * @throws SQLException
      */
-
-
+    //TODO: create idea shares.
     public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text) throws RemoteException, SQLException {
 
         Connection db = ServerRMI.pool.connectionCheck();
