@@ -165,7 +165,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         ResultSet rs;
         ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
 
-        String query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, idea_has_topic, sduser WHERE topic_id = ? AND idea_id = idea.id AND idea.user_id = sduser.id AND idea.parent_id = 0 AND active = 1";
+        String query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, idea_has_topic, sduser WHERE topic_id = ? AND idea_id = idea.id AND idea.user_id = sduser.id AND idea.parent_id = 0 AND idea.active = 1";
 
         while(tries < maxTries)
         {
@@ -211,7 +211,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         ResultSet rs;
         ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
 
-        String query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, sduser WHERE parent_id = ? AND idea.user_id = sduser.id";
+        String query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, sduser WHERE parent_id = ? AND idea.user_id = sduser.id AND idea.active = 1";
 
         while(tries < maxTries)
         {
