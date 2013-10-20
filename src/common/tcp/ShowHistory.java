@@ -1,5 +1,7 @@
 package common.tcp;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: joaosimoes
@@ -7,7 +9,7 @@ package common.tcp;
  * Time: 4:13 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ShowHistory {
+public class ShowHistory implements Serializable {
 
     public int user_id;
 

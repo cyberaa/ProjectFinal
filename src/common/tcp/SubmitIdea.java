@@ -1,5 +1,6 @@
 package common.tcp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  * Time: 4:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SubmitIdea {
+public class SubmitIdea implements Serializable {
 
     public ArrayList<String> topics;
     public int user_id;
