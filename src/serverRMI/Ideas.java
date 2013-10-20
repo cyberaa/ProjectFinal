@@ -142,38 +142,10 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-    public void deleteIdea(int idea_id) throws RemoteException, SQLException {
+    public void deleteIdea(int idea_id, int user_id) throws RemoteException, SQLException {
 
-        Connection db = ServerRMI.pool.connectionCheck();
-
-        int tries = 0;
-        int maxTries = 3;
-        PreparedStatement stmt = null;
-
-        String query = "DELETE FROM idea WHERE idea.id = ?";
-
-        while(tries < maxTries)
-        {
-            try {
-	            db.setAutoCommit(false);
-
-                stmt = db.prepareStatement(query);
-                stmt.setInt(1, idea_id);
-
-                stmt.executeQuery();
-	            db.commit();
-                break;
-            } catch (SQLException e) {
-                if(tries++ > maxTries) {
-                    throw new SQLException();
-                }
-            } finally {
-	            if(stmt != null) {
-		            stmt.close();
-	            }
-	            db.setAutoCommit(true);
-            }
-        }
+        //TODO: verify that user has 100% shares
+	    //TODO: update active field to 0
     }
 
 	/**
@@ -193,7 +165,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         ResultSet rs;
         ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
 
-        String query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, idea_has_topic, sduser WHERE topic_id = ? AND idea_id = idea.id AND idea.user_id = sduser.id AND idea.parent_id = 0";
+        String query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, idea_has_topic, sduser WHERE topic_id = ? AND idea_id = idea.id AND idea.user_id = sduser.id AND idea.parent_id = 0 AND active = 1";
 
         while(tries < maxTries)
         {
