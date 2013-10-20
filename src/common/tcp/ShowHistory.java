@@ -8,4 +8,11 @@ package common.tcp;
  * To change this template use File | Settings | File Templates.
  */
 public class ShowHistory {
+
+    public int user_id;
+
+    public ShowHistory(int user_id) {
+        this.user_id = user_id;
+    }
+
 }

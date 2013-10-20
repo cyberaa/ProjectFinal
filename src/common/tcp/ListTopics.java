@@ -8,4 +8,6 @@ package common.tcp;
  * To change this template use File | Settings | File Templates.
  */
 public class ListTopics {
+
+    public ListTopics() {}
 }

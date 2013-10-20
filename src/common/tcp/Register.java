@@ -8,4 +8,14 @@ package common.tcp;
  * To change this template use File | Settings | File Templates.
  */
 public class Register {
+
+    public String name;
+    public String pass;
+    public String nameAlias;
+
+    public Register(String name, String pass, String nameAlias) {
+        this.name = name;
+        this.pass = pass;
+        this.nameAlias = nameAlias;
+    }
 }

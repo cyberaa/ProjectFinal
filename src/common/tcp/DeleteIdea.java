@@ -8,4 +8,10 @@ package common.tcp;
  * To change this template use File | Settings | File Templates.
  */
 public class DeleteIdea {
+
+    public int idea_id;
+
+    public DeleteIdea(int idea_id) {
+        this.idea_id = idea_id;
+    }
 }

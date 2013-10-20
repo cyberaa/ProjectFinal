@@ -8,4 +8,12 @@ package common.tcp;
  * To change this template use File | Settings | File Templates.
  */
 public class Authenticate {
+
+    public String username;
+    public String password;
+
+    public Authenticate(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }

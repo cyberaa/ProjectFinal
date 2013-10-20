@@ -8,4 +8,10 @@ package common.tcp;
  * To change this template use File | Settings | File Templates.
  */
 public class ViewIdeasTopic {
+
+    public int topic_id;
+
+    public ViewIdeasTopic(int topic_id) {
+        this.topic_id = topic_id;
+    }
 }

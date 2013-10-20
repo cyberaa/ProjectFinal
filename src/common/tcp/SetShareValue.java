@@ -8,4 +8,12 @@ package common.tcp;
  * To change this template use File | Settings | File Templates.
  */
 public class SetShareValue {
+
+    public int share_id;
+    public int new_value;
+
+    public SetShareValue(int share_id, int new_value) {
+        this.share_id = share_id;
+        this.new_value = new_value;
+    }
 }

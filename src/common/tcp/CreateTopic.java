@@ -8,4 +8,10 @@ package common.tcp;
  * To change this template use File | Settings | File Templates.
  */
 public class CreateTopic {
+
+    public String name;
+
+    public CreateTopic(String name) {
+        this.name = name;
+    }
 }
