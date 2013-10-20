@@ -12,7 +12,9 @@ import java.util.ArrayList;
  */
 public class SubmitIdea implements Serializable {
 
-    public ArrayList<String> topics;
+	private static final long serialVersionUID = -1136702940620141852L;
+
+	public ArrayList<String> topics;
     public int user_id;
     public int parent_id;
     public int number_parts;

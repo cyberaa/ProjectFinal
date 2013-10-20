@@ -11,7 +11,9 @@ import java.io.Serializable;
  */
 public class Authenticate implements Serializable {
 
-    public String username;
+	private static final long serialVersionUID = -2553657545086064836L;
+
+	public String username;
     public String password;
 
     public Authenticate(String username, String password) {

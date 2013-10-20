@@ -11,7 +11,9 @@ import java.io.Serializable;
  */
 public class ViewIdeasTopic implements Serializable {
 
-    public int topic_id;
+	private static final long serialVersionUID = 8506156349359930961L;
+
+	public int topic_id;
 
     public ViewIdeasTopic(int topic_id) {
         this.topic_id = topic_id;

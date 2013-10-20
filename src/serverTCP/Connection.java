@@ -4,6 +4,7 @@ import common.rmi.RemoteIdeas;
 import common.rmi.RemoteTopics;
 import common.rmi.RemoteTransactions;
 import common.rmi.RemoteUserManager;
+import common.tcp.Authenticate;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -57,9 +58,28 @@ public class Connection extends Thread
     public void run()
     {
 	    try {
-		    um.register("joao", "merda", "O MAIOR");
+		    Authenticate auth = (Authenticate) inStream.readObject();
+		    um.authenticate(auth.username, auth.password);
 	    } catch (Exception e) {
-		    System.out.println("DEU MEGA BODE LOL:\n" + e);
+		    //Send information back that authentication failed.
+	    }
+
+	    Object command;
+
+	    while(true)
+	    {
+		    try {
+			    command = inStream.readObject();
+		    } catch (ClassNotFoundException cnfe) {
+			    System.out.println("Object class not found:\n" + cnfe);
+		    } catch (IOException ioe) {
+
+		    }
+
+		    /*if(command instanceof )
+		    {
+
+		    }*/
 	    }
     }
 

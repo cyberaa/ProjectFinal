@@ -11,7 +11,9 @@ import java.io.Serializable;
  */
 public class ViewIdeasNested implements Serializable {
 
-    public int idea_id;
+	private static final long serialVersionUID = -1630261562598510737L;
+
+	public int idea_id;
 
     public ViewIdeasNested(int idea_id) {
         this.idea_id = idea_id;
