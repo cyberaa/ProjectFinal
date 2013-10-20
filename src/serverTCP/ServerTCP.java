@@ -41,5 +41,9 @@ public class ServerTCP {
             System.out.println("Error in server socket creation.\n"+ ie);
         }
 
+        Connection con = new Connection(null);
+
+
+
     }
 }
