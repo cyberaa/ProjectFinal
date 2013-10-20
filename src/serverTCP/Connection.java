@@ -55,14 +55,30 @@ public class Connection extends Thread
     @Override
     public void run()
     {
+	    boolean success = false;
 	    try {
 		    Authenticate auth = (Authenticate) inStream.readObject();
 		    um.authenticate(auth.username, auth.password);
+		    outStream.writeBoolean(true);
+		    success = true;
 	    } catch (UserAuthenticationException e) {
 		    //Send information back that authentication failed.
 		    return;
 	    } catch (Exception e) {
 		    //Send information that authentication failed but not due to given data.
+		    return;
+	    }
+	    if(!success)
+	    {
+		    try {
+			    outStream.writeBoolean(false);
+		    } catch (EOFException e) {
+			    System.out.println("Client disconnected.");
+			    return;
+		    } catch (IOException e) {
+			    e.printStackTrace();
+			    return;
+		    }
 	    }
 
 	    Object cmd;
@@ -168,19 +184,49 @@ public class Connection extends Thread
 		    }
 		    else if(cmd instanceof SetShareValue)
 		    {
-
+			    SetShareValue aux = (SetShareValue) cmd;
+			    try {
+				    transactions.setShareValue(aux.user_id, aux.share_id, aux.new_value);
+			    } catch (Exception e) {
+				    //Send information that requested data cannot be fetched.
+			    }
 		    }
 		    else if(cmd instanceof BuyShares)
 		    {
-
+			    BuyShares aux = (BuyShares) cmd;
+			    try {
+				    transactions.buyShares(aux.user_id, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share);
+			    } catch (Exception e) {
+				    //Send information that requested data cannot be fetched.
+			    }
 		    }
 		    else if(cmd instanceof ViewIdeasShares)
 		    {
-
+			    ViewIdeasShares aux = (ViewIdeasShares) cmd;
+			    try {
+				    outStream.writeObject(transactions.getShares(aux.idea_id));
+			    } catch (EOFException e) {
+				    System.out.println("Client disconnected.");
+				    return;
+			    } catch (IOException e) {
+				    //Could not write to socket, what now?!
+			    } catch (Exception e) {
+				    //Send information that requested data cannot be fetched.
+			    }
 		    }
 		    else if(cmd instanceof ShowHistory)
 		    {
-
+			    ShowHistory aux = (ShowHistory) cmd;
+			    try {
+				    outStream.writeObject(transactions.showHistory(aux.user_id));
+			    } catch (EOFException e) {
+				    System.out.println("Client disconnected.");
+				    return;
+			    } catch (IOException e) {
+				    //Could not write to socket, what now?!
+			    } catch (Exception e) {
+				    //Send information that requested data cannot be fetched.
+			    }
 		    }
 	    }
     }
