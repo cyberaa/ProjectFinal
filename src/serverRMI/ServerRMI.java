@@ -56,6 +56,7 @@ public class ServerRMI
         //Create pool of connections
         try {
             pool = new ConnectionPool(dbURL, dbUser, dbPass);
+            System.out.println("Server connected to database.");
         } catch (SQLException se) {
             System.out.print("Error creating pool of connections.\n" + se);
         }
