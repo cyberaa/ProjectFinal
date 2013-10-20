@@ -87,7 +87,6 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	 */
 	public void register(String name, String pass, String nameAlias) throws RemoteException, ExistingUserException, SQLException
 	{
-
         Connection db = ServerRMI.pool.connectionCheck();
 
 		int tries = 0, maxTries = 3;
