@@ -37,18 +37,28 @@ public class Connection extends Thread
     {
         clientSocket = cSocket;
 
-        try {
+        /*try {
 	        outStream = new ObjectOutputStream(cSocket.getOutputStream());
             inStream = new ObjectInputStream(cSocket.getInputStream());
         } catch (IOException ie) {
 	        System.out.println("Could not create input and output streams:\n" + ie);
-        }
-    }
+        }*/
+
+	    try {
+		    lookupRemotes();
+	    } catch (RemoteException re) {
+		    System.out.println("Error looking up remote objects:\n" + re);
+	    }
+	}
 
     @Override
     public void run()
     {
-
+	    try {
+		    um.register("joao", "merda", "O MAIOR");
+	    } catch (Exception e) {
+		    System.out.println("DEU MEGA BODE LOL:\n" + e);
+	    }
     }
 
 	/**

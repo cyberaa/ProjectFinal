@@ -3,6 +3,7 @@ package serverTCP;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.rmi.RMISecurityManager;
 
 /**
@@ -37,18 +38,13 @@ public class ServerTCP {
         rmiRegistryPort = Integer.parseInt(args[1]);
 
 	    //Set system policies.
-	    System.getProperties().put("java.security.policy", "policy.all");
-	    System.setSecurityManager(new RMISecurityManager());
+	    //System.getProperties().put("java.security.policy", "policy.all");
+	    //System.setSecurityManager(new RMISecurityManager());
 
         try {
             listenSocket = new ServerSocket(serverPort);
         } catch (IOException ie) {
             System.out.println("Error in server socket creation.\n"+ ie);
         }
-
-        Connection con = new Connection(null);
-
-
-
     }
 }

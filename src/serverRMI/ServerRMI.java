@@ -43,8 +43,8 @@ public class ServerRMI
 		}
 
 		//Set system policies.
-		System.getProperties().put("java.security.policy", "policy.all");
-		System.setSecurityManager(new RMISecurityManager());
+		//System.getProperties().put("java.security.policy", "policy.all");
+		//System.setSecurityManager(new RMISecurityManager());
 
 		//Start RMI registry.
 		rmiPort = Integer.parseInt(args[0]);
