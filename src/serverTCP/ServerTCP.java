@@ -47,6 +47,16 @@ public class ServerTCP {
             System.out.println("Error in server socket creation.\n"+ ie);
         }
 
-        Connection con = new Connection(new Socket());
+        Socket s;
+
+        while (true) {
+            try {
+                s = listenSocket.accept();
+                Connection con = new Connection(s);
+            } catch (IOException e) {
+                System.out.print("LOL" + e);
+                return;
+            }
+        }
     }
 }

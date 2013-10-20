@@ -59,13 +59,14 @@ public class ServerRMI
             System.out.println("Server connected to database.");
         } catch (SQLException se) {
             System.out.print("Error creating pool of connections.\n" + se);
+            return;
         }
 
 		//Create remote RMI objects and bind them.
 		createAndBindObjects();
 
 		//Menu.
-        String command = "";
+        String command;
         Scanner sc = new Scanner(System.in);
 
         System.out.print("\nType \"help\" to see help menu.");
