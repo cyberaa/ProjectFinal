@@ -27,6 +27,9 @@ public class Client {
     protected static int serverPort1;
     protected static int serverPort2;
 
+    protected static int server1_not_port;
+    protected static int server2_not_port;
+
     protected static ObjectInputStream in;
     protected static ObjectOutputStream out;
 
@@ -34,24 +37,33 @@ public class Client {
 
     public static void main(String args[]) {
 
-        if(args.length != 4)
+        if(args.length != 6)
         {
-            System.out.println("Usage: java ServerTCP <server1_address> <server1_port> <server2_address> <server2_port>");
+            System.out.println("Usage: java ServerTCP <server1_address> <server1_port> <server1_not_port> <server2_address> <server2_port> <server2_not_port>");
             return;
         }
 
         serverAddress_1 = args[0];
         serverPort1 = Integer.parseInt(args[1]);
+        server1_not_port = Integer.parseInt(args[2]);
 
-        serverAddress_2 = args[2];
-        serverPort2 = Integer.parseInt(args[3]);
+        serverAddress_2 = args[3];
+        serverPort2 = Integer.parseInt(args[4]);
+        server1_not_port = Integer.parseInt(args[5]);
+
+        Socket notif_socket;
 
         try {
+            notif_socket = new Socket(serverAddress_1, server1_not_port);
             s = new Socket(serverAddress_1, serverPort1);
         } catch(IOException ioe) {
             System.out.println("Error in socket creation.\n" + ioe);
             return;
         }
+
+
+        new Notifications(notif_socket);
+
 
         try {
             out = new ObjectOutputStream(s.getOutputStream());
@@ -199,17 +211,15 @@ public class Client {
                 case 2:
                     int topic;
                     System.out.println(delimiter);
-                    System.out.print("Insert topic id: ");
+                    System.out.println("Insert topic id: ");
                     topic = scInt.nextInt();
                     ViewIdeasTopic ideasTopic = new ViewIdeasTopic(topic);
                     writeObject(topic);
 
                     try {
-                        System.out.println("Entrei no try");
                         returnComand = in.readObject();
-                        System.out.println("Li o objecto");
+
                         if(returnComand instanceof ArrayList<?>) {
-                            System.out.println("Entrei no instance of");
                             System.out.println(delimiter);
                             ArrayList<TopicInfo> topics = (ArrayList) returnComand;
                             for (int i=0; i<topics.size(); i++) {
