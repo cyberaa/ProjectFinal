@@ -79,6 +79,8 @@ public class Connection extends Thread
 			    continue;
 		    }
 
+		    //TODO: create a new thread to deal with notifications to send to user.
+
 		    //Interpret and execute command. Send answer back.
 		    executeCommand(cmd);
 	    }
@@ -95,6 +97,7 @@ public class Connection extends Thread
 			CreateTopic aux = (CreateTopic) cmd;
 			try {
 				topics.newTopic(aux.name);
+				sendInt(0);
 			} catch (ExistingTopicException e) {
 				//Send information that topic already exists.
 				sendInt(-2);
@@ -116,6 +119,7 @@ public class Connection extends Thread
 			SubmitIdea aux = (SubmitIdea) cmd;
 			try {
 				ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text);
+				sendInt(0);
 			} catch (Exception e) {
 				//Send information that idea was not correctly submitted.
 				sendInt(-1);
@@ -126,6 +130,7 @@ public class Connection extends Thread
 			DeleteIdea aux = (DeleteIdea) cmd;
 			try {
 				ideas.deleteIdea(aux.idea_id, userID);
+				sendInt(0);
 			} catch (NotFullOwnerException e) {
 				//Send information that to delete idea one must own all of its shares.
 				sendInt(-2);
@@ -159,6 +164,7 @@ public class Connection extends Thread
 			SetShareValue aux = (SetShareValue) cmd;
 			try {
 				transactions.setShareValue(userID, aux.idea_id, aux.new_value);
+				sendInt(0);
 			} catch (Exception e) {
 				//Send information that requested data cannot be fetched.
 				sendInt(-1);
@@ -169,6 +175,7 @@ public class Connection extends Thread
 			BuyShares aux = (BuyShares) cmd;
 			try {
 				transactions.buyShares(aux.user_id, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share);
+				sendInt(0);
 			} catch (Exception e) {
 				//Send information that requested data cannot be fetched.
 				sendInt(-1);
