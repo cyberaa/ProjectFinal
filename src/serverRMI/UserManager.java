@@ -38,7 +38,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	 * @throws UserAuthenticationException
 	 * @throws SQLException
 	 */
-	public void authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException
+	public int authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException
 	{
 
         Connection db = ServerRMI.pool.connectionCheck();
@@ -65,7 +65,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 					throw new UserAuthenticationException();
 				}
 
-				break;
+				return resultSet.getInt("id");
 			} catch (SQLException e) {
 				System.out.println("\n"+e+"\n");
 				if(tries++ > maxTries)
@@ -75,6 +75,8 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 					queryUser.close();
 			}
 		}
+
+		return -1;
 	}
 
 	/**

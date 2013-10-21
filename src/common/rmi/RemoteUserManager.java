@@ -13,7 +13,7 @@ import java.sql.SQLException;
  */
 public interface RemoteUserManager extends Remote
 {
-	public void authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException;
+	public int authenticate(String name, String pass) throws RemoteException, UserAuthenticationException, SQLException;
 
 	public void register(String name, String pass, String nameAlias) throws RemoteException, ExistingUserException, SQLException;
 }

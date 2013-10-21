@@ -22,6 +22,7 @@ import java.rmi.RemoteException;
  */
 public class Connection extends Thread
 {
+	//Socket and streams.
 	protected Socket clientSocket;
 	protected ObjectInputStream inStream;
 	protected ObjectOutputStream outStream;
@@ -31,6 +32,9 @@ public class Connection extends Thread
 	protected RemoteIdeas ideas;
 	protected RemoteTopics topics;
 	protected RemoteTransactions transactions;
+
+	protected boolean shutdown = false;
+	protected int userID;
 
     public Connection(Socket cSocket)
     {
@@ -55,37 +59,11 @@ public class Connection extends Thread
     @Override
     public void run()
     {
-	    boolean success = false;
-	    try {
-		    Authenticate auth = (Authenticate) inStream.readObject();
-		    um.authenticate(auth.username, auth.password);
-		    outStream.writeBoolean(true);
-            outStream.flush();
-		    success = true;
-	    } catch (UserAuthenticationException e) {
-            System.out.print("Login failed!");
-		    //Send information back that authentication failed.
-	    } catch (Exception e) {
-		    //Send information that authentication failed but not due to given data.
-		    return;
-	    }
-	    if(!success)
-	    {
-		    try {
-			    outStream.writeBoolean(false);
-                outStream.flush();
-		    } catch (EOFException e) {
-			    System.out.println("Client disconnected.");
-			    return;
-		    } catch (IOException e) {
-			    e.printStackTrace();
-			    return;
-		    }
-	    }
-
 	    Object cmd;
 
-	    while(true)
+	    authenticateOrRegister();
+
+	    while(!shutdown)
 	    {
 		    try {
 			    cmd = inStream.readObject();
@@ -96,22 +74,11 @@ public class Connection extends Thread
 			    System.out.println("Client disconnected.");
 			    return;
 		    } catch (IOException ioe) {
-			    System.out.println("Object class not found:\n" + ioe);
+			    System.out.println("Could not read from socket:\n" + ioe);
 			    continue;
 		    }
 
-		    if(cmd instanceof Register)
-		    {
-			    Register aux = (Register) cmd;
-			    try {
-				    um.register(aux.name, aux.pass, aux.nameAlias);
-			    } catch (ExistingUserException e) {
-				    //Send information that username is already in use.
-			    } catch (Exception e) {
-				    //Send information that registration failed but not because username is in use.
-			    }
-		    }
-		    else if(cmd instanceof CreateTopic)
+		    if(cmd instanceof CreateTopic)
 		    {
 			    CreateTopic aux = (CreateTopic) cmd;
 			    try {
@@ -232,6 +199,75 @@ public class Connection extends Thread
 		    }
 	    }
     }
+
+	/**
+	 * Wait for user authentication but allowing for registration
+	 * in the meantime.
+	 */
+	protected void authenticateOrRegister()
+	{
+		Object cmd = null;
+
+		int ret = -1;
+		boolean success = false;
+		while(!success)
+		{
+			//Read next command.
+			try {
+				cmd = inStream.readObject();
+			} catch (ClassNotFoundException cnfe) {
+				System.out.println("Object class not found:\n" + cnfe);
+				ret = -1;
+			} catch (EOFException eofe) {
+				System.out.println("Client disconnected.");
+				shutdown = true;
+				return;
+			} catch (IOException ioe) {
+				System.out.println("Could not read from socket:\n" + ioe);
+				ret = -1;
+			}
+
+			//Interpret and execute command.
+			if(cmd == null)
+				continue;
+			else if(cmd instanceof Register)
+			{
+				Register aux = (Register) cmd;
+				try {
+					um.register(aux.name, aux.pass, aux.nameAlias);
+					ret = 0;
+				} catch (ExistingUserException e) {
+					ret = -2;
+				} catch (Exception e) {
+					ret = -1;
+				}
+			}
+			else if(cmd instanceof Authenticate)
+			{
+				Authenticate aux = (Authenticate) cmd;
+				try {
+					userID = um.authenticate(aux.username, aux.password);
+					success = true;
+					ret = 0;
+				} catch (UserAuthenticationException e) {
+					ret = -2;
+				} catch (Exception e) {
+					ret = -1;
+				}
+			}
+
+			//Send return.
+			try {
+				outStream.writeInt(ret);
+			} catch (EOFException e) {
+				System.out.println("Client disconnected.");
+				shutdown = true;
+				return;
+			} catch (IOException ioe) {
+				System.out.println("Could not read from socket:\n" + ioe);
+			}
+		}
+	}
 
 	/**
 	 * Lookup the remote objects and save them to class variables.
