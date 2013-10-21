@@ -113,146 +113,153 @@ public class Client {
 
         System.out.println("\t \t IDEA BROKER - WE DON'T NEED GUI TO BE THE BEST\n");
 
-        System.out.println("1 - Create topic");
-        System.out.println("2 - View topic ideas");
-        System.out.println("3 - List topics");
-        System.out.println("4 - Submit idea");
-        System.out.println("5 - View topic ideas");
-        System.out.println("6 - View ideas nested");
-        System.out.println("7 - View user transactions history");
-        System.out.println("8 - View idea shares");
-        System.out.println("9 - Set Share Value");
-        System.out.println("10 - Delete Idea\n");
+        do {
 
-        System.out.print("Option: ");
+            System.out.println("1 - Create topic");
+            System.out.println("2 - View topic ideas");
+            System.out.println("3 - List topics");
+            System.out.println("4 - Submit idea");
+            System.out.println("5 - View topic ideas");
+            System.out.println("6 - View ideas nested");
+            System.out.println("7 - View user transactions history");
+            System.out.println("8 - View idea shares");
+            System.out.println("9 - Set Share Value");
+            System.out.println("10 - Delete Idea\n");
 
-        choose = sc.nextInt();
+            System.out.print("Option: ");
 
-        switch(choose) {
-            case 1:
-                String name;
-                System.out.println(delimiter);
-                System.out.print("Insert new topic: ");
-                name = sc.next();
-                CreateTopic cTopic = new CreateTopic(name);
-                writeObject(cTopic);
-                break;
-            case 2:
-                int topic;
-                System.out.println(delimiter);
-                System.out.println("Insert topic id: ");
-                topic = sc.nextInt();
-                ViewIdeasTopic ideasTopic = new ViewIdeasTopic(topic);
-                writeObject(topic);
-                break;
-            case 3:
-                //TODO: Read topics from socket.
-                System.out.println(delimiter);
-                ListTopics lTopics = new ListTopics();
-                writeObject(lTopics);
-                break;
-            case 4:
-                String topicName;
-                int relatedIdea;
-                int nParts;
-                int valueShare;
-                int stance;
-                String text;
-                ArrayList<String> topics = new ArrayList<String>();
+            choose = sc.nextInt();
 
-                // Get related topics
-                do {
-                    System.out.print("Related Topic: ");
-                    topicName = sc.next();
-                    if(!topicName.equals("")) {
-                        topics.add(topicName);
+            switch(choose) {
+                case 1:
+                    String name;
+                    System.out.println(delimiter);
+                    System.out.print("Insert new topic: ");
+                    name = sc.next();
+                    CreateTopic cTopic = new CreateTopic(name);
+                    writeObject(cTopic);
+                    break;
+                case 2:
+                    int topic;
+                    System.out.println(delimiter);
+                    System.out.println("Insert topic id: ");
+                    topic = sc.nextInt();
+                    ViewIdeasTopic ideasTopic = new ViewIdeasTopic(topic);
+                    writeObject(topic);
+                    break;
+                case 3:
+                    //TODO: Read topics from socket.
+                    System.out.println(delimiter);
+                    ListTopics lTopics = new ListTopics();
+                    writeObject(lTopics);
+                    break;
+                case 4:
+                    String topicName;
+                    int relatedIdea;
+                    int nParts;
+                    int valueShare;
+                    int stance;
+                    String text;
+                    ArrayList<String> topics = new ArrayList<String>();
+
+                    // Get related topics
+                    do {
+                        System.out.print("Related Topic: ");
+                        topicName = sc.next();
+                        if(!topicName.equals("")) {
+                            topics.add(topicName);
+                        }
+                    } while(!topicName.equals(""));
+
+                    //Get related idea
+                    System.out.print("Related Idea: ");
+                    relatedIdea = sc.nextInt();
+
+                    // Get number of parts
+                    System.out.print("Total of shares: ");
+                    nParts = sc.nextInt();
+
+                    // Get value of each share
+                    System.out.print("Value of each share: ");
+                    valueShare = sc.nextInt();
+
+                    //Get stance if exists
+                    if (relatedIdea > 0) {
+                        System.out.print("Stance: ");
+                        stance = sc.nextInt();
                     }
-                } while(!topicName.equals(""));
+                    else {
+                        stance = -2;
+                    }
 
-                //Get related idea
-                System.out.print("Related Idea: ");
-                relatedIdea = sc.nextInt();
+                    // Get idea text
+                    System.out.print("Idea: ");
+                    text = sc.next();
 
-                // Get number of parts
-                System.out.print("Total of shares: ");
-                nParts = sc.nextInt();
+                    SubmitIdea sIdea = new SubmitIdea(topics,relatedIdea,nParts,valueShare,stance,text);
 
-                // Get value of each share
-                System.out.print("Value of each share: ");
-                valueShare = sc.nextInt();
+                    writeObject(sIdea);
+                    break;
+                case 5:
+                    int topicId;
+                    System.out.print("Topic ID: ");
+                    topicId = sc.nextInt();
 
-                //Get stance if exists
-                if (relatedIdea > 0) {
-                    System.out.print("Stance: ");
-                    stance = sc.nextInt();
-                }
-                else {
-                    stance = -2;
-                }
+                    ViewIdeasTopic vIdeasTopic = new ViewIdeasTopic(topicId);
 
-                // Get idea text
-                System.out.print("Idea: ");
-                text = sc.next();
+                    writeObject(vIdeasTopic);
+                    break;
+                case 6:
+                    int ideaId;
+                    System.out.print("Idea ID: ");
+                    ideaId = sc.nextInt();
 
-                SubmitIdea sIdea = new SubmitIdea(topics,relatedIdea,nParts,valueShare,stance,text);
+                    ViewIdeasNested vIdeasNested = new ViewIdeasNested(ideaId);
 
-                writeObject(sIdea);
-                break;
-            case 5:
-                int topicId;
-                System.out.print("Topic ID: ");
-                topicId = sc.nextInt();
+                    writeObject(vIdeasNested);
+                    break;
+                case 7:
+                    ShowHistory showHist = new ShowHistory();
 
-                ViewIdeasTopic vIdeasTopic = new ViewIdeasTopic(topicId);
+                    writeObject(showHist);
+                    break;
+                case 8:
+                    int ideaId_shares;
+                    System.out.print("Idea ID: ");
+                    ideaId_shares = sc.nextInt();
 
-                writeObject(vIdeasTopic);
-                break;
-            case 6:
-                int ideaId;
-                System.out.print("Idea ID: ");
-                ideaId = sc.nextInt();
+                    ViewIdeasNested vIdeasShares = new ViewIdeasNested(ideaId_shares);
 
-                ViewIdeasNested vIdeasNested = new ViewIdeasNested(ideaId);
+                    writeObject(vIdeasShares);
+                    break;
+                case 9:
+                    int ideaId_Set;
+                    int newValue;
+                    System.out.print("Idea ID: ");
+                    ideaId_Set = sc.nextInt();
 
-                writeObject(vIdeasNested);
-                break;
-            case 7:
-                ShowHistory showHist = new ShowHistory();
+                    System.out.print("New Share Value: ");
+                    newValue = sc.nextInt();
 
-                writeObject(showHist);
-                break;
-            case 8:
-                int ideaId_shares;
-                System.out.print("Idea ID: ");
-                ideaId_shares = sc.nextInt();
+                    SetShareValue setValue = new SetShareValue(ideaId_Set,newValue);
 
-                ViewIdeasNested vIdeasShares = new ViewIdeasNested(ideaId_shares);
+                    writeObject(setValue);
+                    break;
+                case 10:
+                    int ideaToDelete;
+                    System.out.print("Idea ID: ");
+                    ideaToDelete = sc.nextInt();
 
-                writeObject(vIdeasShares);
-                break;
-            case 9:
-                int ideaId_Set;
-                int newValue;
-                System.out.print("Idea ID: ");
-                ideaId_Set = sc.nextInt();
+                    DeleteIdea del = new DeleteIdea(ideaToDelete);
 
-                System.out.print("New Share Value: ");
-                newValue = sc.nextInt();
-
-                SetShareValue setValue = new SetShareValue(ideaId_Set,newValue);
-
-                writeObject(setValue);
-                break;
-            case 10:
-                int ideaToDelete;
-                System.out.print("Idea ID: ");
-                ideaToDelete = sc.nextInt();
-
-                DeleteIdea del = new DeleteIdea(ideaToDelete);
-
-                writeObject(del);
-                break;
-        }
+                    writeObject(del);
+                    break;
+                case 11:
+                    System.out.println("Exiting...");
+                    break;
+            }
+            System.out.print(delimiter);
+        } while(choose != 11);
     }
 
     protected static void writeObject(Object obj) {
