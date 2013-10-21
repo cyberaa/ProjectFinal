@@ -65,6 +65,7 @@ public class Connection extends Thread
 
 	    while(!shutdown)
 	    {
+		    //Read next command.
 		    try {
 			    cmd = inStream.readObject();
 		    } catch (ClassNotFoundException cnfe) {
@@ -78,127 +79,141 @@ public class Connection extends Thread
 			    continue;
 		    }
 
-		    if(cmd instanceof CreateTopic)
-		    {
-			    CreateTopic aux = (CreateTopic) cmd;
-			    try {
-				    topics.newTopic(aux.name);
-			    } catch (ExistingTopicException e) {
-				    //Send information that topic already exists.
-			    } catch (Exception e) {
-				    //Send information that topic creation failed but not because it already exists.
-			    }
-		    }
-		    else if(cmd instanceof ListTopics)
-		    {
-			    ListTopics aux = (ListTopics) cmd;
-			    try {
-				    outStream.writeObject(topics.listTopics());
-			    } catch (EOFException e) {
-				    System.out.println("Client disconnected.");
-				    return;
-			    } catch (IOException e) {
-				    //Could not write to socket, what now?!
-			    } catch (Exception e) {
-				    //Send information that server was unable to fetch topics list.
-			    }
-		    }
-		    else if(cmd instanceof SubmitIdea)
-		    {
-			    SubmitIdea aux = (SubmitIdea) cmd;
-			    try {
-				    ideas.submitIdea(aux.topics, aux.user_id, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text);
-			    } catch (Exception e) {
-				    //Send information that idea was not correctly submitted.
-			    }
-		    }
-		    else if(cmd instanceof DeleteIdea)
-		    {
-			    DeleteIdea aux = (DeleteIdea) cmd;
-			    try {
-				    ideas.deleteIdea(aux.idea_id, aux.user_id);
-			    } catch (NotFullOwnerException e) {
-				    //Send information that to delete idea one must own all of its shares.
-			    } catch (Exception e) {
-				    //Send information that deletion was unsuccessful.
-			    }
-		    }
-		    else if(cmd instanceof ViewIdeasTopic)
-		    {
-			    ViewIdeasTopic aux = (ViewIdeasTopic) cmd;
-			    try {
-				    outStream.writeObject(ideas.viewIdeasTopic(aux.topic_id));
-			    } catch (EOFException e) {
-				    System.out.println("Client disconnected.");
-				    return;
-			    } catch (IOException e) {
-				    //Could not write to socket, what now?!
-			    } catch (Exception e) {
-				    //Send information that requested data cannot be fetched.
-			    }
-		    }
-		    else if(cmd instanceof ViewIdeasNested)
-		    {
-			    ViewIdeasNested aux = (ViewIdeasNested) cmd;
-			    try {
-				    outStream.writeObject(ideas.viewIdeasNested(aux.idea_id));
-			    } catch (EOFException e) {
-				    System.out.println("Client disconnected.");
-				    return;
-			    } catch (IOException e) {
-				    //Could not write to socket, what now?!
-			    } catch (Exception e) {
-				    //Send information that requested data cannot be fetched.
-			    }
-		    }
-		    else if(cmd instanceof SetShareValue)
-		    {
-			    SetShareValue aux = (SetShareValue) cmd;
-			    try {
-				    transactions.setShareValue(aux.user_id, aux.share_id, aux.new_value);
-			    } catch (Exception e) {
-				    //Send information that requested data cannot be fetched.
-			    }
-		    }
-		    else if(cmd instanceof BuyShares)
-		    {
-			    BuyShares aux = (BuyShares) cmd;
-			    try {
-				    transactions.buyShares(aux.user_id, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share);
-			    } catch (Exception e) {
-				    //Send information that requested data cannot be fetched.
-			    }
-		    }
-		    else if(cmd instanceof ViewIdeasShares)
-		    {
-			    ViewIdeasShares aux = (ViewIdeasShares) cmd;
-			    try {
-				    outStream.writeObject(transactions.getShares(aux.idea_id));
-			    } catch (EOFException e) {
-				    System.out.println("Client disconnected.");
-				    return;
-			    } catch (IOException e) {
-				    //Could not write to socket, what now?!
-			    } catch (Exception e) {
-				    //Send information that requested data cannot be fetched.
-			    }
-		    }
-		    else if(cmd instanceof ShowHistory)
-		    {
-			    ShowHistory aux = (ShowHistory) cmd;
-			    try {
-				    outStream.writeObject(transactions.showHistory(aux.user_id));
-			    } catch (EOFException e) {
-				    System.out.println("Client disconnected.");
-				    return;
-			    } catch (IOException e) {
-				    //Could not write to socket, what now?!
-			    } catch (Exception e) {
-				    //Send information that requested data cannot be fetched.
-			    }
-		    }
+		    //Interpret and execute command. Send answer back.
+		    executeCommand(cmd);
 	    }
     }
+
+	/**
+	 * Execute the next command.
+	 * @param cmd The next command to be executed.
+	 */
+	protected void executeCommand(Object cmd)
+	{
+		int ret = -1;
+
+		if(cmd instanceof CreateTopic)
+		{
+			CreateTopic aux = (CreateTopic) cmd;
+			try {
+				topics.newTopic(aux.name);
+			} catch (ExistingTopicException e) {
+				//Send information that topic already exists.
+			} catch (Exception e) {
+				//Send information that topic creation failed but not because it already exists.
+			}
+		}
+		else if(cmd instanceof ListTopics)
+		{
+			ListTopics aux = (ListTopics) cmd;
+			try {
+				outStream.writeObject(topics.listTopics());
+				return;
+			} catch (EOFException e) {
+				System.out.println("Client disconnected.");
+				shutdown = false;
+				return;
+			} catch (IOException e) {
+				//Could not write to socket, what now?!
+			} catch (Exception e) {
+				//Send information that server was unable to fetch topics list.
+			}
+		}
+		else if(cmd instanceof SubmitIdea)
+		{
+			SubmitIdea aux = (SubmitIdea) cmd;
+			try {
+				ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text);
+			} catch (Exception e) {
+				//Send information that idea was not correctly submitted.
+			}
+		}
+		else if(cmd instanceof DeleteIdea)
+		{
+			DeleteIdea aux = (DeleteIdea) cmd;
+			try {
+				ideas.deleteIdea(aux.idea_id, userID);
+			} catch (NotFullOwnerException e) {
+				//Send information that to delete idea one must own all of its shares.
+			} catch (Exception e) {
+				//Send information that deletion was unsuccessful.
+			}
+		}
+		else if(cmd instanceof ViewIdeasTopic)
+		{
+			ViewIdeasTopic aux = (ViewIdeasTopic) cmd;
+			try {
+				outStream.writeObject(ideas.viewIdeasTopic(aux.topic_id));
+			} catch (EOFException e) {
+				System.out.println("Client disconnected.");
+				return;
+			} catch (IOException e) {
+				//Could not write to socket, what now?!
+			} catch (Exception e) {
+				//Send information that requested data cannot be fetched.
+			}
+		}
+		else if(cmd instanceof ViewIdeasNested)
+		{
+			ViewIdeasNested aux = (ViewIdeasNested) cmd;
+			try {
+				outStream.writeObject(ideas.viewIdeasNested(aux.idea_id));
+			} catch (EOFException e) {
+				System.out.println("Client disconnected.");
+				return;
+			} catch (IOException e) {
+				//Could not write to socket, what now?!
+			} catch (Exception e) {
+				//Send information that requested data cannot be fetched.
+			}
+		}
+		else if(cmd instanceof SetShareValue)
+		{
+			SetShareValue aux = (SetShareValue) cmd;
+			try {
+				transactions.setShareValue(userID, aux.idea_id, aux.new_value);
+			} catch (Exception e) {
+				//Send information that requested data cannot be fetched.
+			}
+		}
+		else if(cmd instanceof BuyShares)
+		{
+			BuyShares aux = (BuyShares) cmd;
+			try {
+				transactions.buyShares(aux.user_id, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share);
+			} catch (Exception e) {
+				//Send information that requested data cannot be fetched.
+			}
+		}
+		else if(cmd instanceof ViewIdeasShares)
+		{
+			ViewIdeasShares aux = (ViewIdeasShares) cmd;
+			try {
+				outStream.writeObject(transactions.getShares(aux.idea_id));
+			} catch (EOFException e) {
+				System.out.println("Client disconnected.");
+				return;
+			} catch (IOException e) {
+				//Could not write to socket, what now?!
+			} catch (Exception e) {
+				//Send information that requested data cannot be fetched.
+			}
+		}
+		else if(cmd instanceof ShowHistory)
+		{
+			ShowHistory aux = (ShowHistory) cmd;
+			try {
+				outStream.writeObject(transactions.showHistory(userID));
+			} catch (EOFException e) {
+				System.out.println("Client disconnected.");
+				return;
+			} catch (IOException e) {
+				//Could not write to socket, what now?!
+			} catch (Exception e) {
+				//Send information that requested data cannot be fetched.
+			}
+		}
+	}
 
 	/**
 	 * Wait for user authentication but allowing for registration
@@ -257,15 +272,24 @@ public class Connection extends Thread
 			}
 
 			//Send return.
-			try {
-				outStream.writeInt(ret);
-			} catch (EOFException e) {
-				System.out.println("Client disconnected.");
-				shutdown = true;
-				return;
-			} catch (IOException ioe) {
-				System.out.println("Could not read from socket:\n" + ioe);
-			}
+			sendInt(ret);
+		}
+	}
+
+	/**
+	 * Send an integer to the client.
+	 * @param value The integer to be sent.
+	 */
+	protected void sendInt(int value)
+	{
+		try {
+			outStream.writeInt(value);
+		} catch (EOFException e) {
+			System.out.println("Client disconnected.");
+			shutdown = true;
+			return;
+		} catch (IOException ioe) {
+			System.out.println("Could not read from socket:\n" + ioe);
 		}
 	}
 
