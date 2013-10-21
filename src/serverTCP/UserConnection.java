@@ -20,7 +20,7 @@ import java.rmi.RemoteException;
  * Time: 4:44 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Connection extends Thread
+public class UserConnection extends Thread
 {
 	//Socket and streams.
 	protected Socket clientSocket;
@@ -36,7 +36,7 @@ public class Connection extends Thread
 	protected boolean shutdown = false;
 	protected int userID;
 
-    public Connection(Socket cSocket)
+    public UserConnection(Socket cSocket)
     {
         clientSocket = cSocket;
 

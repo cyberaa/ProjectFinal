@@ -15,11 +15,11 @@ import java.net.SocketTimeoutException;
  */
 public class ServerTCP {
 
-    //RMI Connection
+    //RMI UserConnection
     protected static String rmiServerAddress;
     protected static int rmiRegistryPort;
 
-    //TCP Connection
+    //TCP UserConnection
     protected static int conPort;
     protected static ServerSocket conListenSocket;
 	protected static int notPort;
@@ -61,11 +61,11 @@ public class ServerTCP {
         {
             try {
                 s = conListenSocket.accept();
-                new Connection(s);
+                new UserConnection(s);
             } catch (SocketTimeoutException e) {
 	            //Do nothing.
             } catch (IOException e) {
-	            System.out.print("Connection listen socket error:\n" + e);
+	            System.out.print("UserConnection listen socket error:\n" + e);
 	            return;
             }
 
@@ -75,7 +75,7 @@ public class ServerTCP {
 	        } catch (SocketTimeoutException e) {
 		        //Do nothing.
 	        } catch (IOException e) {
-		        System.out.print("Connection listen socket error:\n" + e);
+		        System.out.print("UserConnection listen socket error:\n" + e);
 		        return;
 	        }
 
