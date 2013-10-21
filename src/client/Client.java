@@ -49,13 +49,16 @@ public class Client {
 
         serverAddress_2 = args[3];
         serverPort2 = Integer.parseInt(args[4]);
-        server1_not_port = Integer.parseInt(args[5]);
+        server2_not_port = Integer.parseInt(args[5]);
 
         Socket notif_socket;
 
         try {
             notif_socket = new Socket(serverAddress_1, server1_not_port);
             s = new Socket(serverAddress_1, serverPort1);
+	        System.out.println("Connections at:\t\t"+serverAddress_1+":"+serverPort1);
+	        System.out.println("Notifications at:\t"+serverAddress_1+":"+server1_not_port);
+	        System.out.println();
         } catch(IOException ioe) {
             System.out.println("Error in socket creation.\n" + ioe);
             return;

@@ -31,15 +31,15 @@ public class ServerTCP {
         //Verify the number of given arguments.
         if(args.length != 4)
         {
-            System.out.println("Usage: java ServerTCP <server_connection_port> <server_notify_port> <rmi_registry_port> <rmi_registry_address>");
+            System.out.println("Usage: java ServerTCP <server_connection_port> <server_notify_port> <rmi_registry_address> <rmi_registry_port>");
             return;
         }
 
 	    //Get command line arguments.
         conPort = Integer.parseInt(args[0]);
 	    notPort = Integer.parseInt(args[1]);
-        rmiServerAddress = args[3];
-        rmiRegistryPort = Integer.parseInt(args[2]);
+        rmiServerAddress = args[2];
+        rmiRegistryPort = Integer.parseInt(args[3]);
 
 	    //Set system policies.
 	    //System.getProperties().put("java.security.policy", "policy.all");
@@ -55,7 +55,8 @@ public class ServerTCP {
             System.out.println("Error in server socket creation.\n"+ ie);
         }
 
-	    System.out.println("Ready to accept connections.");
+	    System.out.println("RMI server at: "+rmiServerAddress+":"+rmiRegistryPort);
+	    System.out.println("Ready to accept connections.\nConnection port:\t"+conPort+"\nNotifications port:\t"+notPort);
 
         Socket s;
 	    UserNotifications notifs;
