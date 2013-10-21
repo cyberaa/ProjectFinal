@@ -68,7 +68,6 @@ public class ServerTCP {
 	            System.out.print("UserConnection listen socket error:\n" + e);
 	            return;
             }
-
 	        try {
 		        s = notListenSocket.accept();
 		        //new Notifications(s); //TODO: implement thread to deal with notifications.
