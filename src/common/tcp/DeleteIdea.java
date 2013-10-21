@@ -14,10 +14,8 @@ public class DeleteIdea implements Serializable {
 	private static final long serialVersionUID = -3945309271203987397L;
 
 	public int idea_id;
-	public int user_id;
 
-    public DeleteIdea(int idea_id, int user_id) {
+    public DeleteIdea(int idea_id) {
         this.idea_id = idea_id;
-	    this.user_id = user_id;
     }
 }
