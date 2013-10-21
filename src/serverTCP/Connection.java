@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -98,29 +99,17 @@ public class Connection extends Thread
 			} catch (ExistingTopicException e) {
 				//Send information that topic already exists.
 				sendInt(-2);
-				return;
 			} catch (Exception e) {
 				//Send information that topic creation failed but not because it already exists.
 				sendInt(-1);
-				return;
 			}
 		}
 		else if(cmd instanceof ListTopics)
 		{
-			ListTopics aux = (ListTopics) cmd;
 			try {
-				outStream.writeObject(topics.listTopics());
-				outStream.flush();
-				return;
-			} catch (EOFException e) {
-				System.out.println("Client disconnected.");
-				shutdown = false;
-				return;
-			} catch (IOException e) {
-				//TODO: could not write to socket, what now?!
+				sendObject(topics.listTopics());
 			} catch (Exception e) {
 				sendInt(-1);
-				return;
 			}
 		}
 		else if(cmd instanceof SubmitIdea)
@@ -130,6 +119,7 @@ public class Connection extends Thread
 				ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text);
 			} catch (Exception e) {
 				//Send information that idea was not correctly submitted.
+				sendInt(-1);
 			}
 		}
 		else if(cmd instanceof DeleteIdea)
@@ -139,40 +129,30 @@ public class Connection extends Thread
 				ideas.deleteIdea(aux.idea_id, userID);
 			} catch (NotFullOwnerException e) {
 				//Send information that to delete idea one must own all of its shares.
+				sendInt(-2);
 			} catch (Exception e) {
 				//Send information that deletion was unsuccessful.
+				sendInt(-1);
 			}
 		}
 		else if(cmd instanceof ViewIdeasTopic)
 		{
 			ViewIdeasTopic aux = (ViewIdeasTopic) cmd;
 			try {
-				outStream.writeObject(ideas.viewIdeasTopic(aux.topic_id));
-				outStream.flush();
-				return;
-			} catch (EOFException e) {
-				System.out.println("Client disconnected.");
-				return;
-			} catch (IOException e) {
-				//Could not write to socket, what now?!
+				sendObject(ideas.viewIdeasTopic(aux.topic_id));
 			} catch (Exception e) {
 				//Send information that requested data cannot be fetched.
+				sendInt(-1);
 			}
 		}
 		else if(cmd instanceof ViewIdeasNested)
 		{
 			ViewIdeasNested aux = (ViewIdeasNested) cmd;
 			try {
-				outStream.writeObject(ideas.viewIdeasNested(aux.idea_id));
-				outStream.flush();
-				return;
-			} catch (EOFException e) {
-				System.out.println("Client disconnected.");
-				return;
-			} catch (IOException e) {
-				//Could not write to socket, what now?!
+				sendObject(ideas.viewIdeasNested(aux.idea_id));
 			} catch (Exception e) {
 				//Send information that requested data cannot be fetched.
+				sendInt(-1);
 			}
 		}
 		else if(cmd instanceof SetShareValue)
@@ -182,6 +162,7 @@ public class Connection extends Thread
 				transactions.setShareValue(userID, aux.idea_id, aux.new_value);
 			} catch (Exception e) {
 				//Send information that requested data cannot be fetched.
+				sendInt(-1);
 			}
 		}
 		else if(cmd instanceof BuyShares)
@@ -191,38 +172,27 @@ public class Connection extends Thread
 				transactions.buyShares(aux.user_id, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share);
 			} catch (Exception e) {
 				//Send information that requested data cannot be fetched.
+				sendInt(-1);
 			}
 		}
 		else if(cmd instanceof ViewIdeasShares)
 		{
 			ViewIdeasShares aux = (ViewIdeasShares) cmd;
 			try {
-				outStream.writeObject(transactions.getShares(aux.idea_id));
-				outStream.flush();
-				return;
-			} catch (EOFException e) {
-				System.out.println("Client disconnected.");
-				return;
-			} catch (IOException e) {
-				//Could not write to socket, what now?!
+				sendObject(transactions.getShares(aux.idea_id));
 			} catch (Exception e) {
 				//Send information that requested data cannot be fetched.
+				sendInt(-1);
 			}
 		}
 		else if(cmd instanceof ShowHistory)
 		{
 			ShowHistory aux = (ShowHistory) cmd;
 			try {
-				outStream.writeObject(transactions.showHistory(userID));
-				outStream.flush();
-				return;
-			} catch (EOFException e) {
-				System.out.println("Client disconnected.");
-				return;
-			} catch (IOException e) {
-				//Could not write to socket, what now?!
+				sendObject(transactions.showHistory(userID));
 			} catch (Exception e) {
 				//Send information that requested data cannot be fetched.
+				sendInt(-1);
 			}
 		}
 	}
@@ -295,7 +265,7 @@ public class Connection extends Thread
 	protected void sendInt(int value)
 	{
 		try {
-			outStream.writeInt(value);
+			outStream.writeObject(new Integer(value));
 			outStream.flush();
 		} catch (EOFException e) {
 			System.out.println("Client disconnected.");
