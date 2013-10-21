@@ -22,4 +22,13 @@ public class Register implements Serializable {
         this.pass = pass;
         this.nameAlias = nameAlias;
     }
+
+	@Override
+	public String toString() {
+		return "Register{" +
+				       "name='" + name + '\'' +
+				       ", pass='" + pass + '\'' +
+				       ", nameAlias='" + nameAlias + '\'' +
+				       '}';
+	}
 }
