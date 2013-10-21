@@ -64,7 +64,8 @@ public class Client {
         String username;
         String password;
 
-        Scanner sc = new Scanner(System.in);
+        Scanner scString = new Scanner(System.in);
+        Scanner scInt = new Scanner(System.in);
 
         System.out.println("\t \t IDEA BROKER - WE DON'T NEED GUI TO BE THE BEST\n");
 
@@ -73,7 +74,7 @@ public class Client {
 
         System.out.print("Option: ");
 
-        choose = sc.nextInt();
+        choose = scInt.nextInt();
 
         Object returnComand;
 
@@ -85,9 +86,9 @@ public class Client {
                 case 1:
                     System.out.println(delimiter);
                     System.out.print("Username: ");
-                    username = sc.next();
+                    username = scInt.next();
                     System.out.print("Password: ");
-                    password = sc.next();
+                    password = scInt.next();
                     Authenticate auth = new Authenticate(username,password);
                     writeObject(auth);
                     try {
@@ -114,9 +115,9 @@ public class Client {
                 case 2:
                     System.out.println(delimiter);
                     System.out.print("Username: ");
-                    username = sc.next();
+                    username = scInt.next();
                     System.out.print("Password: ");
-                    password = sc.next();
+                    password = scInt.next();
                     Register reg = new Register(username,password, "");
                     writeObject(reg);
                     try {
@@ -163,14 +164,14 @@ public class Client {
 
             System.out.print("Option: ");
 
-            choose = sc.nextInt();
+            choose = scInt.nextInt();
 
             switch(choose) {
                 case 1:
                     String name;
                     System.out.println(delimiter);
                     System.out.print("Insert new topic: ");
-                    name = sc.next();
+                    name = scString.nextLine();
                     CreateTopic cTopic = new CreateTopic(name);
                     writeObject(cTopic);
 
@@ -198,14 +199,17 @@ public class Client {
                 case 2:
                     int topic;
                     System.out.println(delimiter);
-                    System.out.println("Insert topic id: ");
-                    topic = sc.nextInt();
+                    System.out.print("Insert topic id: ");
+                    topic = scInt.nextInt();
                     ViewIdeasTopic ideasTopic = new ViewIdeasTopic(topic);
                     writeObject(topic);
 
                     try {
+                        System.out.println("Entrei no try");
                         returnComand = in.readObject();
+                        System.out.println("Li o objecto");
                         if(returnComand instanceof ArrayList<?>) {
+                            System.out.println("Entrei no instance of");
                             System.out.println(delimiter);
                             ArrayList<TopicInfo> topics = (ArrayList) returnComand;
                             for (int i=0; i<topics.size(); i++) {
@@ -253,7 +257,7 @@ public class Client {
                     // Get related topics
                     do {
                         System.out.print("Related Topic: ");
-                        topicName = sc.next();
+                        topicName = scString.next();
                         if(!topicName.equals("")) {
                             topics.add(topicName);
                         }
@@ -261,20 +265,20 @@ public class Client {
 
                     //Get related idea
                     System.out.print("Related Idea: ");
-                    relatedIdea = sc.nextInt();
+                    relatedIdea = scInt.nextInt();
 
                     // Get number of parts
                     System.out.print("Total of shares: ");
-                    nParts = sc.nextInt();
+                    nParts = scInt.nextInt();
 
                     // Get value of each share
                     System.out.print("Value of each share: ");
-                    valueShare = sc.nextInt();
+                    valueShare = scInt.nextInt();
 
                     //Get stance if exists
                     if (relatedIdea > 0) {
                         System.out.print("Stance: ");
-                        stance = sc.nextInt();
+                        stance = scInt.nextInt();
                     }
                     else {
                         stance = -2;
@@ -282,7 +286,7 @@ public class Client {
 
                     // Get idea text
                     System.out.print("Idea: ");
-                    text = sc.next();
+                    text = scString.nextLine();
 
                     SubmitIdea sIdea = new SubmitIdea(topics,relatedIdea,nParts,valueShare,stance,text);
 
@@ -291,7 +295,7 @@ public class Client {
                 case 5:
                     int topicId;
                     System.out.print("Topic ID: ");
-                    topicId = sc.nextInt();
+                    topicId = scInt.nextInt();
 
                     ViewIdeasTopic vIdeasTopic = new ViewIdeasTopic(topicId);
 
@@ -300,7 +304,7 @@ public class Client {
                 case 6:
                     int ideaId;
                     System.out.print("Idea ID: ");
-                    ideaId = sc.nextInt();
+                    ideaId = scInt.nextInt();
 
                     ViewIdeasNested vIdeasNested = new ViewIdeasNested(ideaId);
 
@@ -314,7 +318,7 @@ public class Client {
                 case 8:
                     int ideaId_shares;
                     System.out.print("Idea ID: ");
-                    ideaId_shares = sc.nextInt();
+                    ideaId_shares = scInt.nextInt();
 
                     ViewIdeasNested vIdeasShares = new ViewIdeasNested(ideaId_shares);
 
@@ -324,10 +328,10 @@ public class Client {
                     int ideaId_Set;
                     int newValue;
                     System.out.print("Idea ID: ");
-                    ideaId_Set = sc.nextInt();
+                    ideaId_Set = scInt.nextInt();
 
                     System.out.print("New Share Value: ");
-                    newValue = sc.nextInt();
+                    newValue = scInt.nextInt();
 
                     SetShareValue setValue = new SetShareValue(ideaId_Set,newValue);
 
@@ -336,7 +340,7 @@ public class Client {
                 case 10:
                     int ideaToDelete;
                     System.out.print("Idea ID: ");
-                    ideaToDelete = sc.nextInt();
+                    ideaToDelete = scInt.nextInt();
 
                     DeleteIdea del = new DeleteIdea(ideaToDelete);
 
@@ -358,7 +362,5 @@ public class Client {
             System.exit(-1);
         }
     }
-
-
 
 }

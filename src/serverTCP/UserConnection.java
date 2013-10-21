@@ -146,6 +146,7 @@ public class UserConnection extends Thread
 				sendObject(ideas.viewIdeasTopic(aux.topic_id));
 			} catch (Exception e) {
 				//Send information that requested data cannot be fetched.
+                System.out.print("Merda\n");
 				sendInt(-1);
 			}
 		}
