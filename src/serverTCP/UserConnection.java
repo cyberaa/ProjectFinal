@@ -182,7 +182,7 @@ public class UserConnection extends Thread
 		{
 			BuyShares aux = (BuyShares) cmd;
 			try {
-				transactions.buyShares(aux.user_id, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share);
+				transactions.buyShares(aux.user_id, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share, false);
 				sendInt(0);
 			} catch (Exception e) {
 				//Send information that requested data cannot be fetched.
