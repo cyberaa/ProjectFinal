@@ -50,7 +50,7 @@ public class ServerTCP {
 	        conListenSocket.setSoTimeout(timeout);
 
 	        notListenSocket = new ServerSocket(notPort);
-	        //notListenSocket.setSoTimeout(timeout);
+	        notListenSocket.setSoTimeout(timeout);
         } catch (IOException ie) {
             System.out.println("Error in server socket creation.\n"+ ie);
         }
@@ -58,7 +58,7 @@ public class ServerTCP {
 	    System.out.println("RMI server at: "+rmiServerAddress+":"+rmiRegistryPort);
 	    System.out.println("Ready to accept connections.\nConnection port:\t"+conPort+"\nNotifications port:\t"+notPort+"\n");
 
-        Socket s;
+        Socket s1, s2;
 	    UserNotifications notifs;
 
         while (true)
@@ -66,8 +66,7 @@ public class ServerTCP {
 	        //TODO: UDP fail-over stuff.
 
 	        try {
-		        s = notListenSocket.accept();
-		        notifs = new UserNotifications(s);
+		        s1 = notListenSocket.accept();
 	        } catch (SocketTimeoutException e) {
 		        //Do nothing.
 		        continue;
@@ -77,8 +76,9 @@ public class ServerTCP {
 	        }
 
 	        try {
-                s = conListenSocket.accept();
-                new UserConnection(s, notifs);
+                s2 = conListenSocket.accept();
+		        notifs = new UserNotifications(s1);
+                new UserConnection(s2, notifs);
             } catch (SocketTimeoutException e) {
 	            //Do nothing.
             } catch (IOException e) {
