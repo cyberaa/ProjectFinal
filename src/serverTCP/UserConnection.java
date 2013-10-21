@@ -27,6 +27,9 @@ public class UserConnection extends Thread
 	protected ObjectInputStream inStream;
 	protected ObjectOutputStream outStream;
 
+	//Notifications thread.
+	protected UserNotifications notifsThread;
+
 	//Remote objects.
 	protected RemoteUserManager um;
 	protected RemoteIdeas ideas;
@@ -36,15 +39,16 @@ public class UserConnection extends Thread
 	protected boolean shutdown = false;
 	protected int userID;
 
-    public UserConnection(Socket cSocket)
+    public UserConnection(Socket cSocket, UserNotifications notifs)
     {
         clientSocket = cSocket;
+	    notifsThread = notifs;
 
         try {
 	        outStream = new ObjectOutputStream(cSocket.getOutputStream());
             inStream = new ObjectInputStream(cSocket.getInputStream());
         } catch (IOException ie) {
-	        System.out.println("Could not create input and output streams:\n" + ie);
+	        System.out.println("[Connection] Could not create input and output streams:\n" + ie);
         }
 
 	    try {
@@ -63,6 +67,10 @@ public class UserConnection extends Thread
 
 	    authenticateOrRegister();
 
+	    //Start notifications thread.
+	    notifsThread.setUserID(userID);
+	    notifsThread.start();
+
 	    while(!shutdown)
 	    {
 		    //Read next command.
@@ -78,8 +86,6 @@ public class UserConnection extends Thread
 			    System.out.println("Could not read from socket:\n" + ioe);
 			    continue;
 		    }
-
-		    //TODO: create a new thread to deal with notifications to send to user.
 
 		    //Interpret and execute command. Send answer back.
 		    executeCommand(cmd);
