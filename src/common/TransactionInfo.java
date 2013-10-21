@@ -1,5 +1,7 @@
 package common;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: joaonuno
@@ -7,8 +9,10 @@ package common;
  * Time: 6:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public class TransactionInfo
+public class TransactionInfo implements Serializable
 {
+	private static final long serialVersionUID = -6346265992255318206L;
+
 	String seller;
 	String buyer;
 
