@@ -71,6 +71,7 @@ public class UserConnection extends Thread
 	    notifsThread.setUserID(userID);
 	    notifsThread.start();
 
+	    //Loop to receive commands.
 	    while(!shutdown)
 	    {
 		    //Read next command.
@@ -291,7 +292,7 @@ public class UserConnection extends Thread
 	/**
 	 * Send an object. If the object cannot be sent it is put
 	 * in that user's notification queue.
-	 * @param obj
+	 * @param obj The object to be sent over the socket.
 	 */
 	//TODO: allow for passing of a notification.
 	protected void sendObject(Object obj)
