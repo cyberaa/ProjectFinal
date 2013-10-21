@@ -110,6 +110,7 @@ public class Connection extends Thread
 			ListTopics aux = (ListTopics) cmd;
 			try {
 				outStream.writeObject(topics.listTopics());
+				outStream.flush();
 				return;
 			} catch (EOFException e) {
 				System.out.println("Client disconnected.");
@@ -147,6 +148,8 @@ public class Connection extends Thread
 			ViewIdeasTopic aux = (ViewIdeasTopic) cmd;
 			try {
 				outStream.writeObject(ideas.viewIdeasTopic(aux.topic_id));
+				outStream.flush();
+				return;
 			} catch (EOFException e) {
 				System.out.println("Client disconnected.");
 				return;
@@ -161,6 +164,8 @@ public class Connection extends Thread
 			ViewIdeasNested aux = (ViewIdeasNested) cmd;
 			try {
 				outStream.writeObject(ideas.viewIdeasNested(aux.idea_id));
+				outStream.flush();
+				return;
 			} catch (EOFException e) {
 				System.out.println("Client disconnected.");
 				return;
@@ -193,6 +198,8 @@ public class Connection extends Thread
 			ViewIdeasShares aux = (ViewIdeasShares) cmd;
 			try {
 				outStream.writeObject(transactions.getShares(aux.idea_id));
+				outStream.flush();
+				return;
 			} catch (EOFException e) {
 				System.out.println("Client disconnected.");
 				return;
@@ -207,6 +214,8 @@ public class Connection extends Thread
 			ShowHistory aux = (ShowHistory) cmd;
 			try {
 				outStream.writeObject(transactions.showHistory(userID));
+				outStream.flush();
+				return;
 			} catch (EOFException e) {
 				System.out.println("Client disconnected.");
 				return;
@@ -294,6 +303,25 @@ public class Connection extends Thread
 			return;
 		} catch (IOException ioe) {
 			System.out.println("Could not read from socket:\n" + ioe);
+		}
+	}
+
+	/**
+	 * Send an object. If the object cannot be sent it is put
+	 * in that user's notification queue.
+	 * @param obj
+	 */
+	//TODO: allow for passing of a notification.
+	protected void sendObject(Object obj)
+	{
+		try {
+			outStream.writeObject(obj);
+			outStream.flush();
+		} catch (EOFException e) {
+			System.out.println("Client disconnected.");
+			shutdown = false;
+		} catch (IOException e) {
+			//TODO: put notification in a queue.
 		}
 	}
 
