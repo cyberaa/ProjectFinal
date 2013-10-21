@@ -90,8 +90,6 @@ public class Connection extends Thread
 	 */
 	protected void executeCommand(Object cmd)
 	{
-		int ret = -1;
-
 		if(cmd instanceof CreateTopic)
 		{
 			CreateTopic aux = (CreateTopic) cmd;
@@ -99,8 +97,12 @@ public class Connection extends Thread
 				topics.newTopic(aux.name);
 			} catch (ExistingTopicException e) {
 				//Send information that topic already exists.
+				sendInt(-2);
+				return;
 			} catch (Exception e) {
 				//Send information that topic creation failed but not because it already exists.
+				sendInt(-1);
+				return;
 			}
 		}
 		else if(cmd instanceof ListTopics)
@@ -114,9 +116,10 @@ public class Connection extends Thread
 				shutdown = false;
 				return;
 			} catch (IOException e) {
-				//Could not write to socket, what now?!
+				//TODO: could not write to socket, what now?!
 			} catch (Exception e) {
-				//Send information that server was unable to fetch topics list.
+				sendInt(-1);
+				return;
 			}
 		}
 		else if(cmd instanceof SubmitIdea)
@@ -284,6 +287,7 @@ public class Connection extends Thread
 	{
 		try {
 			outStream.writeInt(value);
+			outStream.flush();
 		} catch (EOFException e) {
 			System.out.println("Client disconnected.");
 			shutdown = true;
