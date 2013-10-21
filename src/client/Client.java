@@ -74,10 +74,10 @@ public class Client {
 
         choose = sc.nextInt();
 
-        boolean success;
+        int returnComand;
 
         do {
-            success = false;
+            returnComand = -1;
             switch(choose) {
                 case 1:
                     System.out.println(delimiter);
@@ -89,10 +89,19 @@ public class Client {
                     writeObject(auth);
                     try {
                         System.out.println("Cheguei");
-                        success = in.readBoolean();
+                        returnComand = in.readInt();
                         System.out.println("Passei");
                     } catch (IOException e) {
                         System.out.println("Error reading authentication report from socket");
+                    }
+                    if(returnComand == -1) {
+                        System.out.println("Server could not fulfill request.");
+                    }
+                    else if (returnComand == -2) {
+                        System.out.println("Username or password is not correct.");
+                    }
+                    else {
+                        System.out.println("You're logged!");
                     }
                     break;
                 case 2:
@@ -107,7 +116,7 @@ public class Client {
                 default:
                     System.out.println("Fizeste merda.");
             }
-        } while(!success);
+        } while(returnComand != 0);
 
         System.out.println(delimiter);
 
@@ -266,7 +275,7 @@ public class Client {
         try {
             out.writeObject(obj);
         } catch (IOException e) {
-            System.out.println(e);
+            System.out.println("Error writting object.\n" + e);
             System.exit(-1);
         }
     }
