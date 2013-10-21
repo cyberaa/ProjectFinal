@@ -56,30 +56,28 @@ public class ServerTCP {
         }
 
         Socket s;
-	    UserNotifications notifs;
 
         while (true)
         {
-	        try {
-		        s = notListenSocket.accept();
-		        notifs = new UserNotifications(s);
-	        } catch (SocketTimeoutException e) {
-		        //Do nothing.
-		        continue;
-	        } catch (IOException e) {
-		        System.out.print("UserConnection listen socket error:\n" + e);
-		        continue;
-	        }
-
-	        try {
+            try {
                 s = conListenSocket.accept();
-                new UserConnection(s, notifs);
+                new UserConnection(s);
             } catch (SocketTimeoutException e) {
 	            //Do nothing.
             } catch (IOException e) {
 	            System.out.print("UserConnection listen socket error:\n" + e);
-	            continue;
+	            return;
             }
+
+	        try {
+		        s = notListenSocket.accept();
+		        //new Notifications(s); //TODO: implement thread to deal with notifications.
+	        } catch (SocketTimeoutException e) {
+		        //Do nothing.
+	        } catch (IOException e) {
+		        System.out.print("UserConnection listen socket error:\n" + e);
+		        return;
+	        }
 
 	        //TODO: UDP fail-over stuff.
         }

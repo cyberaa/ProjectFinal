@@ -1,5 +1,6 @@
 package client;
 
+import common.TopicInfo;
 import common.tcp.*;
 
 import java.io.IOException;
@@ -74,10 +75,12 @@ public class Client {
 
         choose = sc.nextInt();
 
-        int returnComand;
+        Object returnComand;
+
+        int report;
 
         do {
-            returnComand = -1;
+            report = -1;
             switch(choose) {
                 case 1:
                     System.out.println(delimiter);
@@ -88,16 +91,20 @@ public class Client {
                     Authenticate auth = new Authenticate(username,password);
                     writeObject(auth);
                     try {
-                        System.out.println("Cheguei");
-                        returnComand = in.readInt();
-                        System.out.println("Passei");
+                        returnComand = in.readObject();
+                        report = (Integer) returnComand;
                     } catch (IOException e) {
-                        System.out.println("Error reading authentication report from socket");
+                        System.out.println("Error reading authentication report from socket.\n" + e);
+                        return;
+                    } catch (ClassNotFoundException e) {
+                        System.out.println(e);
+                        return;
                     }
-                    if(returnComand == -1) {
+
+                    if(report == -1) {
                         System.out.println("Server could not fulfill request.");
                     }
-                    else if (returnComand == -2) {
+                    else if (report == -2) {
                         System.out.println("Username or password is not correct.");
                     }
                     else {
@@ -112,11 +119,30 @@ public class Client {
                     password = sc.next();
                     Register reg = new Register(username,password, "");
                     writeObject(reg);
+                    try {
+                        returnComand = in.readObject();
+                        report = (Integer) returnComand;
+                    } catch (IOException e) {
+                        System.out.println("Error reading authentication report from socket.\n" + e);
+                        return;
+                    } catch (ClassNotFoundException e) {
+                        System.out.println(e);
+                        return;
+                    }
+                    if(report == -1) {
+                        System.out.println("Server could not fulfill request.");
+                    }
+                    else if (report == -2) {
+                        System.out.println("Username is already in use.");
+                    }
+                    else {
+                        System.out.println("Account creation successful.");
+                    }
                     break;
                 default:
                     System.out.println("Fizeste merda.");
             }
-        } while(returnComand != 0);
+        } while(report != 0);
 
         System.out.println(delimiter);
 
@@ -147,6 +173,27 @@ public class Client {
                     name = sc.next();
                     CreateTopic cTopic = new CreateTopic(name);
                     writeObject(cTopic);
+
+                    try {
+                        returnComand = in.readObject();
+                        report = (Integer) returnComand;
+                    } catch (IOException e) {
+                        System.out.println("Error reading authentication report from socket.\n" + e);
+                        return;
+                    } catch (ClassNotFoundException e) {
+                        System.out.println(e);
+                        return;
+                    }
+
+                    if(report == -1) {
+                        System.out.println("Server could not fulfill request.");
+                    }
+                    else if (report == -2) {
+                        System.out.println("Topic already exists.");
+                    }
+                    else {
+                        System.out.println("Topic created successful!");
+                    }
                     break;
                 case 2:
                     int topic;
@@ -155,6 +202,38 @@ public class Client {
                     topic = sc.nextInt();
                     ViewIdeasTopic ideasTopic = new ViewIdeasTopic(topic);
                     writeObject(topic);
+
+                    try {
+                        returnComand = in.readObject();
+                        if(returnComand instanceof ArrayList<?>) {
+                            System.out.println(delimiter);
+                            ArrayList<TopicInfo> topics = (ArrayList) returnComand;
+                            for (int i=0; i<topics.size(); i++) {
+                                System.out.println(topics.get(i));
+                            }
+                            report = 0;
+                        }
+                        else {
+                            report = (Integer) returnComand;
+                        }
+                    } catch (IOException e) {
+                        System.out.println("Error reading authentication report from socket.\n" + e);
+                        return;
+                    } catch (ClassNotFoundException e) {
+                        System.out.println(e);
+                        return;
+                    }
+
+                    if(report == -1) {
+                        System.out.println("Server could not fulfill request.");
+                    }
+                    else if (report == -2) {
+                        System.out.println("Topic already exists.");
+                    }
+                    else {
+                        System.out.println("Topic created successful!");
+                    }
+
                     break;
                 case 3:
                     //TODO: Read topics from socket.
