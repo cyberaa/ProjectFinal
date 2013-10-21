@@ -1,6 +1,5 @@
 package serverTCP;
 
-import common.IdeaInfo;
 import common.rmi.*;
 import common.tcp.*;
 
@@ -13,7 +12,6 @@ import java.net.Socket;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -152,10 +150,10 @@ public class UserConnection extends Thread
 		{
 			ViewIdeasTopic aux = (ViewIdeasTopic) cmd;
 			try {
-                ArrayList<IdeaInfo> ideasArray = ideas.viewIdeasTopic(aux.topic_id);
-				sendObject(ideasArray);
+				sendObject(ideas.viewIdeasTopic(aux.topic_id));
 			} catch (Exception e) {
 				//Send information that requested data cannot be fetched.
+                System.out.print("Merda\n");
 				sendInt(-1);
 			}
 		}
@@ -184,7 +182,7 @@ public class UserConnection extends Thread
 		{
 			BuyShares aux = (BuyShares) cmd;
 			try {
-				transactions.buyShares(userID, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share);
+				transactions.buyShares(userID, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share, false);
 				sendInt(0);
 			} catch (Exception e) {
 				//Send information that requested data cannot be fetched.

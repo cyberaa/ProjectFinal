@@ -26,9 +26,7 @@ import java.util.ArrayList;
  */
 public class Transactions extends UnicastRemoteObject implements RemoteTransactions
 {
-	public Transactions() throws RemoteException
-	{
-	}
+	public Transactions() throws RemoteException {}
 
 	/**
 	 * Changes the value per share of the idea identified by <em>idea_id</em> to new_value.
@@ -56,6 +54,9 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			updateValue.executeQuery();
 
 			db.commit();
+
+			//Check queue.
+			TransactionalTrading.checkQueue(idea_id);
 		} catch (SQLException e) {
 			System.out.println("\n"+e+"\n");
 			if(db != null)
@@ -83,7 +84,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 * @throws NotEnoughSharesException
 	 * @throws NotEnoughSharesAtDesiredPriceException
 	 */
-	public void buyShares(int user_id, int idea_id, int share_num, int price_per_share, int new_price_share) throws RemoteException, SQLException, NotEnoughCashException, NotEnoughSharesException, NotEnoughSharesAtDesiredPriceException
+	public int buyShares(int user_id, int idea_id, int share_num, int price_per_share, int new_price_share, boolean fromQueue) throws RemoteException, SQLException, NotEnoughCashException, NotEnoughSharesException
 	{
         Connection db = ServerRMI.pool.connectionCheck();
 
@@ -104,7 +105,17 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			ArrayList<ShareInfo> shares = getShares(idea_id);
 
 			//Select ideas to be bought and add them to sharesToBuy.
-			ArrayList<ShareToBuy> sharesToBuy = getSharesToBuy(shares, share_num, price_per_share, user_id);
+			ArrayList<ShareToBuy> sharesToBuy;
+			try {
+				sharesToBuy = getSharesToBuy(shares, share_num, price_per_share, user_id);
+			} catch (NotEnoughSharesAtDesiredPriceException e) {
+				if(!fromQueue)
+				{
+					TransactionalTrading.enqueue(user_id, idea_id, share_num, price_per_share, new_price_share);
+					return 0;
+				}
+				return -1;
+			}
 
 			//Remove (or update) all selected shares to be bought.
 			int lastIndex = sharesToBuy.size() -1;
@@ -150,6 +161,9 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				createTransaction(idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
 			}
 
+			//Check queue.
+			TransactionalTrading.checkQueue(idea_id);
+
 			db.commit();
 		} catch (SQLException e) {
 			System.out.println("\n"+e+"\n");
@@ -159,6 +173,8 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		} finally {
 			db.setAutoCommit(true);
 		}
+
+		return 0;
 	}
 
 	/**
@@ -434,7 +450,6 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 	 */
 	public void createShare(int idea_id, int user_id, int share_num, int price) throws SQLException
 	{
-
         Connection db = ServerRMI.pool.connectionCheck();
 
 		int tries = 0;
