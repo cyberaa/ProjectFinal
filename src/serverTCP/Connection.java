@@ -12,7 +12,6 @@ import java.net.Socket;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.sql.SQLException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -187,7 +186,6 @@ public class Connection extends Thread
 		}
 		else if(cmd instanceof ShowHistory)
 		{
-			ShowHistory aux = (ShowHistory) cmd;
 			try {
 				sendObject(transactions.showHistory(userID));
 			} catch (Exception e) {
@@ -259,7 +257,7 @@ public class Connection extends Thread
 	}
 
 	/**
-	 * Send an integer to the client.
+	 * Send an <em>Integer</em> to the client.
 	 * @param value The integer to be sent.
 	 */
 	protected void sendInt(int value)
