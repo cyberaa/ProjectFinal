@@ -76,9 +76,11 @@ public class Client {
 
         try {
             out = new ObjectOutputStream(s.getOutputStream());
+	        System.out.println("Created output stream.");
             in = new ObjectInputStream(s.getInputStream());
+	        System.out.println("Created input stream.");
         } catch (IOException ioe) {
-
+	        System.out.println("Could not create data streams:\n"+ioe);
         }
 
         int choose;

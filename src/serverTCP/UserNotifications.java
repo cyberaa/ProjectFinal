@@ -28,7 +28,6 @@ public class UserNotifications extends Thread
 
 		try {
 			outStream = new ObjectOutputStream(clientSocket.getOutputStream());
-            System.out.println("Output created");
 		} catch (IOException ie) {
 			System.out.println("[Notifications] Could not create input and output streams:\n" + ie);
 		}

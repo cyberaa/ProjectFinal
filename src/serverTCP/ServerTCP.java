@@ -50,13 +50,13 @@ public class ServerTCP {
 	        conListenSocket.setSoTimeout(timeout);
 
 	        notListenSocket = new ServerSocket(notPort);
-	        notListenSocket.setSoTimeout(timeout);
+	        //notListenSocket.setSoTimeout(timeout);
         } catch (IOException ie) {
             System.out.println("Error in server socket creation.\n"+ ie);
         }
 
 	    System.out.println("RMI server at: "+rmiServerAddress+":"+rmiRegistryPort);
-	    System.out.println("Ready to accept connections.\nConnection port:\t"+conPort+"\nNotifications port:\t"+notPort);
+	    System.out.println("Ready to accept connections.\nConnection port:\t"+conPort+"\nNotifications port:\t"+notPort+"\n");
 
         Socket s;
 	    UserNotifications notifs;
