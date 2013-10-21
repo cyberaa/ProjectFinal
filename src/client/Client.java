@@ -1,7 +1,9 @@
 package client;
 
 import common.tcp.Authenticate;
+import common.tcp.CreateTopic;
 import common.tcp.Register;
+import common.tcp.ViewIdeasTopic;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -113,10 +115,41 @@ public class Client {
 
         System.out.println("\t \t IDEA BROKER - WE DON'T NEED GUI TO BE THE BEST\n");
 
-        System.out.println("1 - Login");
-        System.out.println("2 - Register\n");
+        System.out.println("1 - Create topic");
+        System.out.println("2 - View topic ideas");
+        System.out.println("3 - List topics");
+        System.out.println("4 - Submit idea");
+        System.out.println("5 - View topic ideas");
+        System.out.println("6 - View ideas nested");
+        System.out.println("7 - View user transactions history");
+        System.out.println("8 - View idea shares");
+        System.out.println("9 - Set Share Value");
+        System.out.println("10 - Delete Idea\n");
 
         System.out.print("Option: ");
+
+        choose = sc.nextInt();
+
+        switch(choose) {
+            case 1:
+                String name;
+                System.out.println(delimiter);
+                System.out.print("Insert new topic: ");
+                name = sc.next();
+                CreateTopic cTopic = new CreateTopic(name);
+                writeObject(cTopic);
+                break;
+            case 2:
+                int topic;
+                System.out.println(delimiter);
+                System.out.println("Insert topic id: ");
+                topic = sc.nextInt();
+                ViewIdeasTopic ideasTopic = new ViewIdeasTopic(topic);
+                writeObject(topic);
+                break;
+            case 3:
+
+        }
     }
 
     protected static void writeObject(Object obj) {
