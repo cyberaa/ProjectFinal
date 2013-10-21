@@ -22,9 +22,11 @@ public class Notifications extends Thread {
         this.sock = sock;
         try {
             inStream = new ObjectInputStream(sock.getInputStream());
+            System.out.println("In created");
         } catch (IOException ioe) {
             System.out.println("Error establishing notification socket.\n"+ ioe );
         }
+        start();
     }
 
 

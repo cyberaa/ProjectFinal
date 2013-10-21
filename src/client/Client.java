@@ -51,10 +51,16 @@ public class Client {
         serverPort2 = Integer.parseInt(args[4]);
         server2_not_port = Integer.parseInt(args[5]);
 
-        Socket notif_socket;
+        Socket notif_socket = null;
 
         try {
             notif_socket = new Socket(serverAddress_1, server1_not_port);
+        } catch (IOException e) {
+            System.out.print(e);
+
+        }
+
+        try {
             s = new Socket(serverAddress_1, serverPort1);
 	        System.out.println("Connections at:\t\t"+serverAddress_1+":"+serverPort1);
 	        System.out.println("Notifications at:\t"+serverAddress_1+":"+server1_not_port);
