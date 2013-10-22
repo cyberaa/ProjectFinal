@@ -1,5 +1,8 @@
 package serverRMI;
 
+import common.rmi.NotEnoughCashException;
+import common.rmi.NotEnoughSharesException;
+
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
@@ -64,6 +67,15 @@ public class ServerRMI
 
 		//Create remote RMI objects and bind them.
 		createAndBindObjects();
+
+		//TODO: DEBUGGING.
+		try {
+			transactions.setShareValue(1, 1, 5);
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		//TODO: END OF DEBUGGING:
 
 		//Menu.
         String command;

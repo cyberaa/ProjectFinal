@@ -25,8 +25,10 @@ public class TransactionalTrading
 	 */
 	public static void enqueue(int user_id, int idea_id, int share_num, int price_per_share, int new_price_share)
 	{
+		System.out.println("Putting new transaction in the queue.");
+
 		PreparedStatement enqueue = null;
-		String query = "INSERT INTO transaction_queue VALUES (transaction_queue_id_inc.nextval, ?, ?, ?, ?, ?)";
+		String query = "INSERT INTO transaction_queue VALUES (transaction_queue_id_inc.nextval, systimestamp, ?, ?, ?, ?, ?)";
 
 		boolean success = false;
 		while(!success)
@@ -47,6 +49,7 @@ public class TransactionalTrading
 
 					success = true;
 				} catch (SQLException e) {
+					System.out.println(e);
 					success = false;
 				} finally {
 					if(enqueue != null)
@@ -64,8 +67,10 @@ public class TransactionalTrading
 	 */
 	public static void checkQueue(int idea_id)
 	{
+		System.out.println("Checking queue for idea "+idea_id);
+
 		PreparedStatement getQueue = null;
-		String query = "SELECT * FROM transaction_queue WHERE idea_id = ? ORDER BY timestamp";
+		String query = "SELECT * FROM transaction_queue WHERE idea_id = ? ORDER BY timestamp ASC";
 		ResultSet rs = null;
 
 		//Get relevant queue.
@@ -85,7 +90,7 @@ public class TransactionalTrading
 				} catch (SQLException e) {
 					success = false;
 				} finally {
-					if(getQueue != null)
+					if(!success && getQueue != null)
 						getQueue.close();
 				}
 			} catch (SQLException e) {
@@ -104,15 +109,27 @@ public class TransactionalTrading
 				try {
 					int res = ServerRMI.transactions.buyShares(rs.getInt("user_id"), rs.getInt("idea_id"), rs.getInt("share_num"), rs.getInt("price_per_share"), rs.getInt("new_price_share"), true);
 
+					System.out.println("Res = " +res);
 					if(res == -1)
 					{
-						removeFromQueue(rs.getTimestamp("timestamp"));
+						System.out.println("Removing from transaction queue.");
+						removeFromQueue(rs.getInt("id"));
 					}
 				} catch (Exception e) {
+					System.out.println(e);
 					continue;
 				}
 			}
 		} catch (SQLException e) {
+		}
+
+		if(getQueue != null)
+		{
+			try {
+				getQueue.close();
+			} catch (SQLException e) {
+				//Cannot close PreparedStatement, ignore.
+			}
 		}
 	}
 
@@ -120,10 +137,10 @@ public class TransactionalTrading
 	 *
 	 * @param ts
 	 */
-	protected static void removeFromQueue(Timestamp ts)
+	protected static void removeFromQueue(int id)
 	{
 		PreparedStatement dequeue = null;
-		String query = "DELETE FROM transaction_queue WHERE timestamp = ?";
+		String query = "DELETE FROM transaction_queue WHERE id = ?";
 
 		boolean success = false;
 		while(!success)
@@ -133,7 +150,7 @@ public class TransactionalTrading
 
 				try {
 					dequeue = db.prepareStatement(query);
-					dequeue.setTimestamp(1, ts);
+					dequeue.setInt(1, id);
 
 					dequeue.executeQuery();
 					db.commit();

@@ -114,7 +114,8 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 					TransactionalTrading.enqueue(user_id, idea_id, share_num, price_per_share, new_price_share);
 					return 0;
 				}
-				return -1;
+				else
+					return 0;
 			}
 
 			//Remove (or update) all selected shares to be bought.
@@ -162,7 +163,8 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			}
 
 			//Check queue.
-			TransactionalTrading.checkQueue(idea_id);
+			if(!fromQueue)
+				TransactionalTrading.checkQueue(idea_id);
 
 			db.commit();
 		} catch (SQLException e) {
@@ -174,7 +176,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			db.setAutoCommit(true);
 		}
 
-		return 0;
+		return -1;
 	}
 
 	/**
@@ -586,7 +588,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		int maxTries = 3;
 		PreparedStatement cShare = null;
 
-		String share = "INSERT INTO idea_transaction VALUES (transaction_id_inc.nextval, ?, ?, ?, ?, ?)";
+		String share = "INSERT INTO idea_transaction VALUES (transaction_id_inc.nextval, ?, ?, ?, ?, ?, systimestamp)";
 
 		while(tries < maxTries)
 		{
