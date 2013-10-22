@@ -185,6 +185,7 @@ public class UserConnection extends Thread
 				transactions.buyShares(userID, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share, false);
 				sendInt(0);
 			} catch (Exception e) {
+                System.out.println("\n"+e);
 				//Send information that requested data cannot be fetched.
 				sendInt(-1);
 			}
