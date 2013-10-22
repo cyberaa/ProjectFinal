@@ -50,6 +50,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
             stmt.executeQuery();
             db.commit();
         } catch (SQLException e) {
+            System.out.println(e);
             if(db != null) {
                 db.rollback();
             }
@@ -79,7 +80,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
         String text;
         PreparedStatement stmt = null;
         ResultSet rs;
-        String query = "SELECT * FROM topics";
+        String query = "SELECT * FROM topic";
 
         while(tries < maxTries)
         {
