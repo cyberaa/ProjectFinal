@@ -109,6 +109,7 @@ public class UserConnection extends Thread
 				//Send information that topic already exists.
 				sendInt(-2);
 			} catch (Exception e) {
+                System.out.println(e);
 				//Send information that topic creation failed but not because it already exists.
 				sendInt(-1);
 			}

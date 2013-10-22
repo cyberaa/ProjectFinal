@@ -164,11 +164,13 @@ public class Client {
                     else {
                         System.out.println("Account creation successful.");
                     }
+                    report = 1;
+                    choose = 1;
                     break;
                 default:
                     System.out.println("Fizeste merda.");
             }
-        } while(report != 0);
+        } while(report != 0 || choose != 1);
 
         System.out.println(delimiter);
 

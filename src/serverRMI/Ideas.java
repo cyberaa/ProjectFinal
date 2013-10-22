@@ -59,12 +59,20 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
 		    //Get topic ID.
 		    String aux;
+            int topic_id;
+            System.out.println("Size 2: "+topics.size());
 		    for(int i=0; i < topics.size(); i++)
 		    {
 			    aux = topics.get(i);
 			    try {
-				    topicIds.add(ServerRMI.topics.getTopicID(aux));
-				    ServerRMI.topics.newTopic(aux);
+                    topic_id = ServerRMI.topics.getTopicID(aux);
+                    if (topic_id != -1) {
+                        topicIds.add(topic_id);
+                    }
+                    else {
+                        topic_id = ServerRMI.topics.newTopic(aux);
+                        topicIds.add(topic_id);
+                    }
 			    } catch (ExistingTopicException ete) {
 				    // Topic already exists
 			    }
@@ -107,6 +115,8 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
             query = "SELECT idea_id_inc.currval as id FROM dual";
 
+            tries = 0;
+
             while(tries < maxTries)
             {
                 try {
@@ -140,14 +150,16 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
             tries = 0;
 
+            System.out.println("Size: "+topicIds.size());
+
 		    for(int i=0; i < topicIds.size(); i++)
 		    {
 			    while(tries < maxTries)
 			    {
 				    try {
 					    stmt = db.prepareStatement(query);
-					    stmt.setInt(1, 1);
-					    stmt.setInt(1, topicIds.get(i));
+					    stmt.setInt(1, idea_id);
+					    stmt.setInt(2, topicIds.get(i));
 
 					    stmt.executeQuery();
 
@@ -184,6 +196,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                     stmt.executeQuery();
                     break;
                 } catch (SQLException e) {
+                    System.out.println(e);
                     if(db != null) {
                         db.rollback();
                     }
