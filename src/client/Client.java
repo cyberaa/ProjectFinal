@@ -7,9 +7,7 @@ import common.TransactionInfo;
 import common.tcp.*;
 import serverRMI.Transaction;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -331,7 +329,22 @@ public class Client {
                     System.out.print("Idea: ");
                     text = scString.nextLine();
 
-                    SubmitIdea sIdea = new SubmitIdea(topics,relatedIdea,nParts,valueShare,stance,text);
+
+
+                    String hasAttach, attach;
+
+                    System.out.println("Do you want attach some file (y/n): ");
+                    hasAttach = scString.nextLine();
+
+                    if(hasAttach.equals("y")) {
+                        System.out.print("Filename: ");
+                        attach = scString.nextLine();
+                    }
+                    else {
+                        attach = "-";
+                    }
+
+                    SubmitIdea sIdea = new SubmitIdea(topics,relatedIdea,nParts,valueShare,stance,text,attach);
 
                     writeObject(sIdea);
 
@@ -560,6 +573,7 @@ public class Client {
     protected static void writeObject(Object obj) {
         try {
             out.writeObject(obj);
+            out.flush();
         } catch (IOException e) {
             System.out.println("Error writting object.\n" + e);
             System.exit(-1);

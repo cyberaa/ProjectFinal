@@ -2,6 +2,7 @@ package common.rmi;
 
 import common.IdeaInfo;
 
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  */
 public interface RemoteIdeas extends Remote
 {
-	public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text) throws RemoteException, SQLException;
+	public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text, byte[] fileData, String filename) throws RemoteException, SQLException, IOException;
 
 	public void deleteIdea(int idea_id, int user_id) throws RemoteException, SQLException, NotFullOwnerException;
 

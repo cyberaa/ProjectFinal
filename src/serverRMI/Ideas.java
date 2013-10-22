@@ -8,6 +8,9 @@ import common.rmi.RemoteIdeas;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
@@ -42,7 +45,14 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
      * @throws SQLException
      */
     //TODO: create idea shares.
-    public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text) throws RemoteException, SQLException {
+    public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text, byte[] fileData, String filename) throws RemoteException, SQLException, IOException {
+
+
+        FileOutputStream fos = new FileOutputStream(filename);
+        BufferedOutputStream bos = new BufferedOutputStream(fos);
+
+        bos.write(fileData, 0 , 1); //TODO: Set current
+        bos.flush();
 
         Connection db = ServerRMI.pool.connectionCheck();
 
