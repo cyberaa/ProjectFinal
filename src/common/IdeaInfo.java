@@ -40,4 +40,14 @@ public class IdeaInfo  implements Serializable
     public int getIdeaStance() {
         return this.stance;
     }
+
+    @Override
+    public String toString() {
+        return "IdeaInfo{" +
+                "idea_id=" + idea_id +
+                ", namealias='" + namealias + '\'' +
+                ", text='" + text + '\'' +
+                ", stance=" + stance +
+                '}';
+    }
 }

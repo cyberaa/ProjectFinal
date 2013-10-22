@@ -8,6 +8,9 @@ import common.rmi.RemoteIdeas;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
@@ -42,56 +45,75 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
      * @throws SQLException
      */
     //TODO: create idea shares.
-    public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text) throws RemoteException, SQLException {
+    public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text, byte[] fileData, String filename) throws RemoteException, SQLException, IOException {
+
+
+        FileOutputStream fos = new FileOutputStream(filename);
+        BufferedOutputStream bos = new BufferedOutputStream(fos);
+
+        bos.write(fileData, 0 , 1); //TODO: Set current
+        bos.flush();
 
         Connection db = ServerRMI.pool.connectionCheck();
+
+        System.out.print("Entrei no submit.\n");
 
         int tries = 0;
         int maxTries = 3;
         PreparedStatement stmt = null;
         ArrayList<Integer> topicIds = new ArrayList<Integer>();
+        ResultSet rs;
 
 	    try {
 		    db.setAutoCommit(false);
 
 		    //Get topic ID.
 		    String aux;
+            int topic_id;
+            System.out.println("Size 2: "+topics.size());
 		    for(int i=0; i < topics.size(); i++)
 		    {
 			    aux = topics.get(i);
 			    try {
-				    topicIds.add(ServerRMI.topics.getTopicID(aux));
-				    ServerRMI.topics.newTopic(aux);
+                    topic_id = ServerRMI.topics.getTopicID(aux);
+                    if (topic_id != -1) {
+                        topicIds.add(topic_id);
+                    }
+                    else {
+                        topic_id = ServerRMI.topics.newTopic(aux);
+                        topicIds.add(topic_id);
+                    }
 			    } catch (ExistingTopicException ete) {
 				    // Topic already exists
 			    }
 		    }
 
 		    //Insert idea.
-		    String query = "INSERT INTO idea (id,user_id,parent_id,number_parts,part_val,stance,text) VALUES (idea_id_inc.nextval,?,?,?,?,?,?)";
+		    String query = "INSERT INTO idea (id,user_id,parent_id,number_parts,stance,active,text) VALUES (idea_id_inc.nextval,?,?,?,?,?,?)";
 
 		    while(tries < maxTries)
 		    {
 			    try {
+                    System.out.println("Merda para isto");
 				    stmt = db.prepareStatement(query);
 				    stmt.setInt(1, user_id);
 				    stmt.setInt(2, parent_id);
 				    stmt.setInt(3, number_parts);
-				    stmt.setInt(4, part_val);
-				    stmt.setInt(5, stance);
+				    stmt.setInt(4, stance);
+                    stmt.setInt(5, 1);
 				    stmt.setString(6, text);
 
 				    stmt.executeQuery();
-
+                    System.out.print("Idea inserted. \n");
 				    break;
 			    } catch (SQLException e) {
+                    System.out.println(e);
 				    if(db != null) {
 					    db.rollback();
 				    }
 				    if(tries++ > maxTries) {
 					    throw new SQLException();
 				    }
-				    db = ServerRMI.pool.connectionCheck();
 			    } finally {
 				    if(stmt != null) {
 					    stmt.close();
@@ -99,8 +121,46 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 			    }
 		    }
 
+            int idea_id = 0;
+
+            query = "SELECT idea_id_inc.currval as id FROM dual";
+
+            tries = 0;
+
+            while(tries < maxTries)
+            {
+                try {
+                    stmt = db.prepareStatement(query);
+
+                    rs = stmt.executeQuery();
+
+                    rs.next();
+
+                    idea_id = rs.getInt("id");
+
+                    System.out.print("Idea ID = " + idea_id);
+                    break;
+                } catch (SQLException e) {
+                    System.out.println(e);
+                    if(db != null) {
+                        db.rollback();
+                    }
+                    if(tries++ > maxTries) {
+                        throw new SQLException();
+                    }
+                } finally {
+                    if(stmt != null) {
+                        stmt.close();
+                    }
+                }
+            }
+
 		    //Create relationship between topic and idea.
 		    query = "INSERT INTO idea_has_topic (idea_id,topic_id) VALUES (?,?)";
+
+            tries = 0;
+
+            System.out.println("Size: "+topicIds.size());
 
 		    for(int i=0; i < topicIds.size(); i++)
 		    {
@@ -108,8 +168,8 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 			    {
 				    try {
 					    stmt = db.prepareStatement(query);
-					    stmt.setInt(1, 1);
-					    stmt.setInt(1, topicIds.get(i));
+					    stmt.setInt(1, idea_id);
+					    stmt.setInt(2, topicIds.get(i));
 
 					    stmt.executeQuery();
 
@@ -128,6 +188,37 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 				    }
 			    }
 		    }
+
+            //Insert initial share of idea
+            query = "INSERT INTO shares (id,idea_id,user_id,parts,value) VALUES (shares_id_inc.nextval,?,?,?,?)";
+
+            tries = 0;
+
+            while(tries < maxTries)
+            {
+                try {
+                    stmt = db.prepareStatement(query);
+                    stmt.setInt(1,idea_id); //TODO
+                    stmt.setInt(2,user_id);
+                    stmt.setInt(3,number_parts);
+                    stmt.setInt(4,part_val);
+
+                    stmt.executeQuery();
+                    break;
+                } catch (SQLException e) {
+                    System.out.println(e);
+                    if(db != null) {
+                        db.rollback();
+                    }
+                    if(tries++ > maxTries) {
+                        throw new SQLException();
+                    }
+                } finally {
+                    if(stmt != null) {
+                        stmt.close();
+                    }
+                }
+            }
 
 		    db.commit();
 	    } catch (SQLException e) {
@@ -228,6 +319,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	 */
     public ArrayList<IdeaInfo> viewIdeasTopic(int topic_id) throws RemoteException, SQLException {
 
+        System.out.print("Entrei");
         Connection db = ServerRMI.pool.connectionCheck();
 
         int tries = 0;
@@ -260,7 +352,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		            stmt.close();
             }
         }
-
+        System.out.println(ideas.size());
         return ideas;
     }
 

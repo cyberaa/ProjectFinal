@@ -31,25 +31,55 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
      * @throws RemoteException
      * @throws ExistingTopicException
      */
-    public void newTopic(String name) throws RemoteException, ExistingTopicException, SQLException {
+    public int newTopic(String name) throws RemoteException, ExistingTopicException, SQLException {
 
         Connection db = ServerRMI.pool.connectionCheck();
 
         PreparedStatement stmt = null;
 
+        String query;
+
+        int topic_id;
+
+        ResultSet rs;
+
         getTopicID(name);
 
-        String query = "INSERT INTO topic (id, text) VALUES (topic_id_inc.nextval,?)";
-
         try {
+
             db.setAutoCommit(false);
+
+            query = "SELECT * FROM topic";
+
+            stmt = db.prepareStatement(query);
+
+            rs = stmt.executeQuery();
+
+            if(rs.next()) {
+                throw new ExistingTopicException();
+            }
+
+            query = "INSERT INTO topic (id, text) VALUES (topic_id_inc.nextval,?)";
 
             stmt = db.prepareStatement(query);
             stmt.setString(1,name);
 
             stmt.executeQuery();
+
+            query = "SELECT topic_id_inc.currval as id FROM dual";
+
+            stmt = db.prepareStatement(query);
+            stmt.setString(1,name);
+
+            rs = stmt.executeQuery();
+
+            rs.next();
+
+            topic_id = rs.getInt("id");
+
             db.commit();
         } catch (SQLException e) {
+            System.out.println(e);
             if(db != null) {
                 db.rollback();
             }
@@ -60,6 +90,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
             }
             db.setAutoCommit(true);
         }
+        return topic_id;
     }
 
     /**
@@ -79,7 +110,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
         String text;
         PreparedStatement stmt = null;
         ResultSet rs;
-        String query = "SELECT * FROM topics";
+        String query = "SELECT * FROM topic";
 
         while(tries < maxTries)
         {
@@ -123,7 +154,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
         PreparedStatement stmt = null;
         ResultSet rs;
 
-        String query = "SELECT topic.id FROM topic WHERE topic.text LIKE ?";
+        String query = "SELECT topic.id as id FROM topic WHERE topic.text LIKE ?";
 
         while(tries < maxTries)
         {
@@ -133,8 +164,8 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
 
                 rs = stmt.executeQuery();
 
-                if(rs.next()) {
-                    throw new ExistingTopicException();
+                if(!rs.next()) {
+                    return -1;
                 }
                 return rs.getInt("id");
             } catch (SQLException e) {

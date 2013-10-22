@@ -3,10 +3,7 @@ package serverTCP;
 import common.rmi.*;
 import common.tcp.*;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.rmi.Naming;
@@ -109,6 +106,7 @@ public class UserConnection extends Thread
 				//Send information that topic already exists.
 				sendInt(-2);
 			} catch (Exception e) {
+                System.out.println(e);
 				//Send information that topic creation failed but not because it already exists.
 				sendInt(-1);
 			}
@@ -125,7 +123,25 @@ public class UserConnection extends Thread
 		{
 			SubmitIdea aux = (SubmitIdea) cmd;
 			try {
-				ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text);
+                if (aux.fileAttachName.equals("-")) {
+                    ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text, null, null);
+                }
+				else {
+                    int bytesRead;
+                    int current = 0;
+                    byte[] bytesArray = new byte[5*1024*1024];
+                    bytesRead = inStream.read(bytesArray,0,bytesArray.length);
+                    current = bytesRead;
+
+                    do {
+                        bytesRead = inStream.read(bytesArray, current, (bytesArray.length - current));
+                        if (bytesRead >= 0) {
+                            current += bytesRead;
+                        }
+                    } while (bytesRead > -1);
+
+                    ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text, bytesArray, aux.fileAttachName);
+                }
 				sendInt(0);
 			} catch (Exception e) {
 				//Send information that idea was not correctly submitted.
@@ -182,9 +198,10 @@ public class UserConnection extends Thread
 		{
 			BuyShares aux = (BuyShares) cmd;
 			try {
-				transactions.buyShares(aux.user_id, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share, false);
+				transactions.buyShares(userID, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share, false);
 				sendInt(0);
 			} catch (Exception e) {
+                System.out.println("\n"+e);
 				//Send information that requested data cannot be fetched.
 				sendInt(-1);
 			}

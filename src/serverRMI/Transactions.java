@@ -56,7 +56,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			db.commit();
 
 			//Check queue.
-			TransactionalTrading.checkQueue(idea_id);
+			//TransactionalTrading.checkQueue(idea_id);
 		} catch (SQLException e) {
 			System.out.println("\n"+e+"\n");
 			if(db != null)
@@ -93,13 +93,15 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 			//Check if user has enough cash.
 			int userCash = getCash(user_id);
-			if(userCash < share_num * price_per_share)
+			if(userCash < share_num * price_per_share) {
 				throw new NotEnoughCashException();
+            }
 
 			//Verify that the idea has enough shares to be bought.
 			int totalShares = getNumberShares(idea_id);
-			if(share_num > totalShares)
+			if(share_num > totalShares) {
 				throw new NotEnoughSharesException();
+            }
 
 			//Get list of idea shares
 			ArrayList<ShareInfo> shares = getShares(idea_id);
@@ -625,7 +627,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 		PreparedStatement gTransactions = null;
 		ResultSet rs;
 
-		String transactions = "SELECT u1.username as buyer, u2.username as seller, idea_transaction.parts, idea_transaction.value FROM sduser u1, sduser u2, idea_transaction WHERE u1.id = idea_transaction.buyer_id AND u2.id = idea_transaction.seller_id AND (seller_id = ? OR buyer_id = ?)";
+		String transactions = "SELECT u1.username as buyer, u2.username as seller, idea_transaction.number_parts, idea_transaction.value FROM sduser u1, sduser u2, idea_transaction WHERE u1.id = idea_transaction.buyer_id AND u2.id = idea_transaction.seller_id AND (seller_id = ? OR buyer_id = ?)";
 
 		while(tries < maxTries)
 		{
