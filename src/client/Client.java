@@ -1,8 +1,11 @@
 package client;
 
 import common.IdeaInfo;
+import common.ShareInfo;
 import common.TopicInfo;
+import common.TransactionInfo;
 import common.tcp.*;
+import serverRMI.Transaction;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -262,7 +265,6 @@ public class Client {
                         returnComand = in.readObject();
 
                         if(returnComand instanceof ArrayList<?>) {
-                            System.out.println(delimiter);
                             ArrayList<TopicInfo> topics = (ArrayList) returnComand;
                             for (int i=0; i<topics.size(); i++) {
                                 System.out.println(topics.get(i));
@@ -390,20 +392,96 @@ public class Client {
                     ViewIdeasNested vIdeasNested = new ViewIdeasNested(ideaId);
 
                     writeObject(vIdeasNested);
+
+                    try {
+                        returnComand = in.readObject();
+
+                        if(returnComand instanceof ArrayList<?>) {
+                            ArrayList<IdeaInfo> ideasNested = (ArrayList) returnComand;
+                            for (int i=0; i<ideasNested.size(); i++) {
+                                System.out.println(ideasNested.get(i));
+                            }
+                            report = 0;
+                        }
+                        else {
+                            report = (Integer) returnComand;
+                        }
+                    } catch (IOException e) {
+                        System.out.println("Error reading authentication report from socket.\n" + e);
+                        return;
+                    } catch (ClassNotFoundException e) {
+                        System.out.println(e);
+                        return;
+                    }
+
+                    if(report == -1) {
+                        System.out.println("Server could not fulfill request.");
+                    }
                     break;
                 case 7:
                     ShowHistory showHist = new ShowHistory();
 
                     writeObject(showHist);
+
+                    try {
+                        returnComand = in.readObject();
+
+                        if(returnComand instanceof ArrayList<?>) {
+                            ArrayList<TransactionInfo> transInfo = (ArrayList) returnComand;
+                            for (int i=0; i<transInfo.size(); i++) {
+                                System.out.println(transInfo.get(i));
+                            }
+                            report = 0;
+                        }
+                        else {
+                            report = (Integer) returnComand;
+                        }
+                    } catch (IOException e) {
+                        System.out.println("Error reading authentication report from socket.\n" + e);
+                        return;
+                    } catch (ClassNotFoundException e) {
+                        System.out.println(e);
+                        return;
+                    }
+
+                    if(report == -1) {
+                        System.out.println("Server could not fulfill request.");
+                    }
                     break;
                 case 8:
                     int ideaId_shares;
                     System.out.print("Idea ID: ");
                     ideaId_shares = scInt.nextInt();
 
-                    ViewIdeasNested vIdeasShares = new ViewIdeasNested(ideaId_shares);
+                    ViewIdeasShares vIdeasShares = new ViewIdeasShares(ideaId_shares);
 
                     writeObject(vIdeasShares);
+
+                    try {
+                        returnComand = in.readObject();
+
+                        if(returnComand instanceof ArrayList<?>) {
+                            ArrayList<ShareInfo> sharesIdea = (ArrayList) returnComand;
+                            for (int i=0; i<sharesIdea.size(); i++) {
+                                System.out.println(sharesIdea.get(i));
+                            }
+                            report = 0;
+                        }
+                        else {
+                            report = (Integer) returnComand;
+                        }
+                    } catch (IOException e) {
+                        System.out.println("Error reading authentication report from socket.\n" + e);
+                        return;
+                    } catch (ClassNotFoundException e) {
+                        System.out.println(e);
+                        return;
+                    }
+
+                    if(report == -1) {
+                        System.out.println("Server could not fulfill request.");
+                    }
+
                     break;
                 case 9:
                     int ideaId_Set;
@@ -417,6 +495,26 @@ public class Client {
                     SetShareValue setValue = new SetShareValue(ideaId_Set,newValue);
 
                     writeObject(setValue);
+
+                    try {
+
+                        returnComand = in.readObject();
+
+                        report = (Integer) returnComand;
+                    } catch (IOException e) {
+                        System.out.println("Error reading authentication report from socket.\n" + e);
+                        return;
+                    } catch (ClassNotFoundException e) {
+                        System.out.println(e);
+                        return;
+                    }
+
+                    if(report == -1) {
+                        System.out.println("Server could not fulfill request."); //TODO: Se no SQL der merda, gerar esta excepção. VERIFICAR IMPORTANTE
+                    }
+                    else {
+                        System.out.println("Share value successfully changed.");
+                    }
                     break;
                 case 10:
                     int ideaToDelete;
@@ -426,6 +524,28 @@ public class Client {
                     DeleteIdea del = new DeleteIdea(ideaToDelete);
 
                     writeObject(del);
+
+                    try {
+                        returnComand = in.readObject();
+                        report = (Integer) returnComand;
+                    } catch (IOException e) {
+                        System.out.println("Error reading authentication report from socket.\n" + e);
+                        return;
+                    } catch (ClassNotFoundException e) {
+                        System.out.println(e);
+                        return;
+                    }
+
+                    if(report == -1) {
+                        System.out.println("Server could not fulfill request.");
+                    }
+                    else if (report == -2) {
+                        System.out.println("You're not ideal full owner");
+                    }
+                    else {
+                        System.out.println("Share value successfully changed.");
+                    }
+
                     break;
                 case 11:
                     System.out.println("Exiting...");
