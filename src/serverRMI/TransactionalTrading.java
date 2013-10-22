@@ -15,6 +15,8 @@ import java.sql.*;
  */
 public class TransactionalTrading
 {
+	//FIXME: implement database commits and rollbacks.
+
 	/**
 	 *
 	 * @param user_id
@@ -23,7 +25,7 @@ public class TransactionalTrading
 	 * @param price_per_share
 	 * @param new_price_share
 	 */
-	public static void enqueue(int user_id, int idea_id, int share_num, int price_per_share, int new_price_share)
+	public synchronized static void enqueue(int user_id, int idea_id, int share_num, int price_per_share, int new_price_share)
 	{
 		System.out.println("Putting new transaction in the queue.");
 
@@ -65,7 +67,7 @@ public class TransactionalTrading
 	 *
 	 * @param idea_id
 	 */
-	public static void checkQueue(int idea_id)
+	public synchronized static void checkQueue(int idea_id)
 	{
 		System.out.println("Checking queue for idea "+idea_id);
 
@@ -137,7 +139,7 @@ public class TransactionalTrading
 	 *
 	 * @param ts
 	 */
-	protected static void removeFromQueue(int id)
+	protected synchronized static void removeFromQueue(int id)
 	{
 		PreparedStatement dequeue = null;
 		String query = "DELETE FROM transaction_queue WHERE id = ?";
