@@ -164,6 +164,8 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				createTransaction(idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
 			}
 
+			//TODO: create notification.
+
 			//Check queue.
 			if(!fromQueue)
 				TransactionalTrading.checkQueue(idea_id);

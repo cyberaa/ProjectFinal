@@ -1,9 +1,5 @@
 package serverRMI;
 
-import common.rmi.NotEnoughCashException;
-import common.rmi.NotEnoughSharesException;
-
-import java.rmi.RemoteException;
 import java.sql.*;
 
 /**
@@ -15,8 +11,6 @@ import java.sql.*;
  */
 public class TransactionalTrading
 {
-	//FIXME: implement database commits and rollbacks.
-
 	/**
 	 *
 	 * @param user_id
@@ -27,7 +21,7 @@ public class TransactionalTrading
 	 */
 	public synchronized static void enqueue(int user_id, int idea_id, int share_num, int price_per_share, int new_price_share)
 	{
-		System.out.println("Putting new transaction in the queue.");
+		//System.out.println("Putting new transaction in the queue.");
 
 		PreparedStatement enqueue = null;
 		String query = "INSERT INTO transaction_queue VALUES (transaction_queue_id_inc.nextval, systimestamp, ?, ?, ?, ?, ?)";
@@ -67,21 +61,22 @@ public class TransactionalTrading
 	 *
 	 * @param idea_id
 	 */
-	public synchronized static void checkQueue(int idea_id)
+	//FIXME: implement database commits and rollbacks correctly.
+	public synchronized static void checkQueue(int idea_id) throws SQLException
 	{
 		System.out.println("Checking queue for idea "+idea_id);
 
+		Connection db = ServerRMI.pool.connectionCheck();
 		PreparedStatement getQueue = null;
-		String query = "SELECT * FROM transaction_queue WHERE idea_id = ? ORDER BY timestamp ASC";
-		ResultSet rs = null;
 
-		//Get relevant queue.
-		boolean success = false;
-		while(!success)
-		{
-			try {
-				Connection db = ServerRMI.pool.connectionCheck();
+		try {
+			String query = "SELECT * FROM transaction_queue WHERE idea_id = ? ORDER BY timestamp ASC";
+			ResultSet rs = null;
 
+			//Get relevant queue.
+			boolean success = false;
+			while(!success)
+			{
 				try {
 					getQueue = db.prepareStatement(query);
 					getQueue.setInt(1, idea_id);
@@ -95,26 +90,22 @@ public class TransactionalTrading
 					if(!success && getQueue != null)
 						getQueue.close();
 				}
-			} catch (SQLException e) {
-				success = false;
 			}
-		}
 
-		//Return if result set was not correctly fetched.
-		if(rs == null)
-			return;
+			//Return if result set was not correctly fetched.
+			if(rs == null)
+				return;
 
-		//Retry transaction on everything in the queue.
-		try {
+			//Retry transaction on everything in the queue.
 			while(rs.next())
 			{
 				try {
 					int res = ServerRMI.transactions.buyShares(rs.getInt("user_id"), rs.getInt("idea_id"), rs.getInt("share_num"), rs.getInt("price_per_share"), rs.getInt("new_price_share"), true);
 
-					System.out.println("Res = " +res);
+					//System.out.println("Res = " +res);
 					if(res == -1)
 					{
-						System.out.println("Removing from transaction queue.");
+						//System.out.println("Removing from transaction queue.");
 						removeFromQueue(rs.getInt("id"));
 					}
 				} catch (Exception e) {
@@ -122,15 +113,20 @@ public class TransactionalTrading
 					continue;
 				}
 			}
-		} catch (SQLException e) {
-		}
 
-		if(getQueue != null)
-		{
-			try {
-				getQueue.close();
-			} catch (SQLException e) {
-				//Cannot close PreparedStatement, ignore.
+			db.commit();
+		} catch (SQLException e) {
+			System.out.println("\n"+e+"\n");
+			if(db != null)
+				db.rollback();
+		} finally {
+			if(getQueue != null)
+			{
+				try {
+					getQueue.close();
+				} catch (SQLException e) {
+					//Cannot close PreparedStatement, ignore.
+				}
 			}
 		}
 	}
