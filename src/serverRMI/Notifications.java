@@ -19,6 +19,8 @@ import java.util.ArrayList;
  */
 public class Notifications implements RemoteNotifications
 {
+	public Notifications() {}
+
 	/**
 	 * Insert a notification into the database. Notifications are
 	 * fetched and delivered later.
@@ -85,8 +87,8 @@ public class Notifications implements RemoteNotifications
 	}
 
 	/**
-	 *
-	 * @param not_ids
+	 * Remove the given notifications from the database.
+	 * @param not_ids The notifications to remove.
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
@@ -114,5 +116,50 @@ public class Notifications implements RemoteNotifications
 			if(remove != null)
 				remove.close();
 		}
+	}
+
+
+	/**
+	 * Create a notification string describing a transaction.
+	 * @param idea_id The id of the idea.
+	 * @param seller_id The seller id.
+	 * @param buyer_id The buyer id.
+	 * @param parts The number of parts of the idea sold.
+	 * @param totalPrice The total amount of money involved in the transaction.
+	 * @return A <em>String</em> describing the transaction.
+	 */
+	public String createNotificationString(int idea_id, int seller_id, int buyer_id, int parts, int totalPrice) throws SQLException
+	{
+		String buyer, seller;
+
+		Connection db = ServerRMI.pool.connectionCheck();
+
+		PreparedStatement getNotifications = null;
+		String query = "SELECT username FROM sduser WHERE id = ?";
+		ResultSet rs = null;
+
+		try {
+			getNotifications = db.prepareStatement(query);
+
+			//Get buyer's username.
+			getNotifications.setInt(1, buyer_id);
+			rs = getNotifications.executeQuery();
+
+			rs.next();
+			buyer = rs.getString("username");
+
+			//Get seller's username.
+			getNotifications.setInt(1, seller_id);
+			rs = getNotifications.executeQuery();
+
+			rs.next();
+			seller = rs.getString("username");
+
+		} finally {
+			if(getNotifications != null)
+				getNotifications.close();
+		}
+
+		return buyer + "bought " + parts + " from " + seller + " (idea " + idea_id +") for a total of " + totalPrice + " coins.";
 	}
 }

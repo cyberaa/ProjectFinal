@@ -35,6 +35,7 @@ public class ServerRMI
 	protected static Topics topics;
     protected static Ideas ideas;
 	protected static Transactions transactions;
+	protected static Notifications notifications;
 
 	public static void main(String args[])
 	{
@@ -152,6 +153,9 @@ public class ServerRMI
 			transactions = new Transactions();
 			rmiRegistry.rebind("Transactions", transactions);
 
+			notifications = new Notifications();
+			rmiRegistry.rebind("Notifications", notifications);
+
 			System.out.println("Objects successfully bound to RMI registry.");
 		} catch (RemoteException e) {
 			System.out.println("Failed to create and bind RMI objects.\n" + e);
@@ -176,6 +180,9 @@ public class ServerRMI
 
 			rmiRegistry.unbind("Transactions");
 			UnicastRemoteObject.unexportObject(transactions, true);
+
+			rmiRegistry.unbind("Notifications");
+			UnicastRemoteObject.unexportObject(notifications, true);
 
 			System.out.println("Objects successfully unbound.");
 		} catch (RemoteException re) {

@@ -111,7 +111,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 					    db.rollback();
 				    }
 				    if(tries++ > maxTries) {
-					    throw new SQLException();
+					    throw e;
 				    }
 			    } finally {
 				    if(stmt != null) {
@@ -145,7 +145,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                         db.rollback();
                     }
                     if(tries++ > maxTries) {
-                        throw new SQLException();
+                        throw e;
                     }
                 } finally {
                     if(stmt != null) {
@@ -178,7 +178,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 						    db.rollback();
 					    }
 					    if(tries++ > maxTries) {
-						    throw new SQLException();
+						    throw e;
 					    }
 				    } finally {
 					    if(stmt != null) {
@@ -210,7 +210,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                         db.rollback();
                     }
                     if(tries++ > maxTries) {
-                        throw new SQLException();
+                        throw e;
                     }
                 } finally {
                     if(stmt != null) {
@@ -224,7 +224,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		    System.out.println("\n"+e+"\n");
 		    if(db != null)
 			    db.rollback();
-		    throw new SQLException();
+		    throw e;
 	    } finally {
 		    db.setAutoCommit(true);
 	    }
@@ -271,7 +271,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 					    throw new NotFullOwnerException();
 			    } catch (SQLException e) {
 				    if(tries++ > maxTries) {
-					    throw new SQLException();
+					    throw e;
 				    }
 			    } finally {
 				    if(stmt != null)
@@ -294,7 +294,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 			    } catch (SQLException e) {
 				    System.out.println(e);
 				    if(tries++ > maxTries)
-					    throw new SQLException();
+					    throw e;
 			    } finally {
 				    if(stmt != null)
 					    stmt.close();
@@ -344,7 +344,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                 break;
             } catch (SQLException e) {
                 if(tries++ > maxTries) {
-                    throw new SQLException();
+                    throw e;
                 }
             } finally {
 	            if(stmt != null)
@@ -429,7 +429,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
             } catch (SQLException e) {
                 System.out.println(e);
                 if(tries++ > maxTries) {
-                    throw new SQLException();
+                    throw e;
                 }
             } finally {
 	            if(stmt != null)

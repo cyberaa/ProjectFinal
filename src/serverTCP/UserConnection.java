@@ -325,7 +325,6 @@ public class UserConnection extends Thread
 	 * in that user's notification queue.
 	 * @param obj The object to be sent over the socket.
 	 */
-	//TODO: allow for passing of a notification.
 	protected void sendObject(Object obj)
 	{
 		try {
@@ -335,7 +334,7 @@ public class UserConnection extends Thread
 			System.out.println("Client disconnected.");
 			shutdown = false;
 		} catch (IOException e) {
-			//TODO: put notification in a queue.
+			//Do nothing.
 		}
 	}
 

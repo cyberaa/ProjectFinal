@@ -69,7 +69,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 			} catch (SQLException e) {
 				System.out.println("\n"+e+"\n");
 				if(tries++ > maxTries)
-					throw new SQLException();
+					throw e;
 			} finally {
 				if(queryUser != null)
 					queryUser.close();
@@ -116,7 +116,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 			} catch (SQLException e) {
 				System.out.println("\n"+e+"\n");
 				if(tries++ > maxTries)
-					throw new SQLException();
+					throw e;
 			} finally {
 				if(queryUser != null)
 					queryUser.close();
@@ -140,7 +140,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 			System.out.println("\n"+e+"\n");
 			if(db != null)
 				db.rollback();
-			throw new SQLException();
+			throw e;
 		}
 		finally {
 			if(insertUser != null)

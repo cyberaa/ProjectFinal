@@ -61,7 +61,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			System.out.println("\n"+e+"\n");
 			if(db != null)
 				db.rollback();
-			throw new SQLException();
+			throw e;
 		} finally {
 			if(updateValue != null)
 				updateValue.close();
@@ -162,9 +162,10 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				giveOrTakeUserCash(aux2.user_id, transactionMoney, true);
 				//Update transaction history.
 				createTransaction(idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
-			}
 
-			//TODO: create notification.
+				//Create and store notification.
+				ServerRMI.notifications.insertNotification(user_id, ServerRMI.notifications.createNotificationString(idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
+			}
 
 			//Check queue.
 			if(!fromQueue)
@@ -175,7 +176,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			System.out.println("\n"+e+"\n");
 			if(db != null)
 				db.rollback();
-			throw new SQLException();
+			throw e;
 		} finally {
 			db.setAutoCommit(true);
 		}
@@ -215,7 +216,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			} catch (SQLException e) {
 				System.out.println(e);
 				if(tries++ > maxTries)
-					throw new SQLException();
+					throw e;
 			} finally {
 				if(gCash != null)
 					gCash.close();
@@ -262,7 +263,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 				break;
 			} catch (SQLException e) {
 				if(tries++ > maxTries)
-					throw new SQLException();
+					throw e;
 			} finally {
 				if(gShares != null)
 					gShares.close();
@@ -303,7 +304,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			} catch (SQLException e) {
 				System.out.println(e);
 				if(tries++ > maxTries)
-					throw new SQLException();
+					throw e;
 			} finally {
 				if(gParts != null)
 					gParts.close();
@@ -398,7 +399,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			} catch (SQLException e) {
 				System.out.println(e);
 				if(tries++ > maxTries)
-					throw new SQLException();
+					throw e;
 			} finally {
 				if(dShare != null)
 					dShare.close();
@@ -437,7 +438,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			} catch (SQLException e) {
 				System.out.println("updateShare():\n"+e);
 				if(tries++ > maxTries)
-					throw new SQLException();
+					throw e;
 			} finally {
 				if(uShare != null)
 					uShare.close();
@@ -478,7 +479,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			} catch (SQLException e) {
 				System.out.println(e);
 				if(tries++ > maxTries)
-					throw new SQLException();
+					throw e;
 			} finally {
 				if(cShare != null)
 					cShare.close();
@@ -521,7 +522,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			} catch (SQLException e) {
 				System.out.println(e);
 				if(tries++ > maxTries)
-					throw new SQLException();
+					throw e;
 			} finally {
 				if(gotCash != null)
 					gotCash.close();
@@ -565,7 +566,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			} catch (SQLException e) {
 				System.out.println(e);
 				if(tries++ > maxTries)
-					throw new SQLException();
+					throw e;
 			}
 			finally {
 				if(uShare != null)
@@ -609,7 +610,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			} catch (SQLException e) {
 				System.out.println(e);
 				if(tries++ > maxTries)
-					throw new SQLException();
+					throw e;
 			} finally {
 				if(cShare != null)
 					cShare.close();
@@ -647,7 +648,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			} catch (SQLException e) {
 				System.out.println(e);
 				if(tries++ > maxTries)
-					throw new SQLException();
+					throw e;
 			}
 			finally {
 				if(gTransactions != null)

@@ -90,7 +90,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
             if(db != null) {
                 db.rollback();
             }
-            throw new SQLException();
+            throw e;
         } finally {
             if(stmt != null) {
                 stmt.close();
@@ -134,7 +134,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
             } catch (SQLException e) {
                 System.out.println(e);
                 if(tries++ > maxTries) {
-                    throw new SQLException();
+                    throw e;
                 }
             } finally {
 	            if(stmt != null)
@@ -178,7 +178,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
                 return rs.getInt("id");
             } catch (SQLException e) {
                 if(tries++ > maxTries) {
-                    throw new SQLException();
+                    throw e;
                 }
             } finally {
 	            if(stmt != null)
