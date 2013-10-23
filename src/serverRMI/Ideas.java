@@ -280,8 +280,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		    }
 
 		    //Update active field to 0.
-
-		    String update = "UPDATE idea SET parts = 0 WHERE id = ?";
+		    String update = "UPDATE idea SET active = 0 WHERE id = ?";
 
 		    while(tries < maxTries)
 		    {
@@ -300,6 +299,48 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 					    stmt.close();
 			    }
 		    }
+
+		    //Remove from idea_has_topic.
+		    String remove = "DELETE FROM idea_has_topic WHERE idea_id = ?";
+		    while(tries < maxTries)
+		    {
+			    try {
+				    stmt = db.prepareStatement(remove);
+				    stmt.setInt(1, idea_id);
+
+				    stmt.executeQuery();
+				    break;
+			    } catch (SQLException e) {
+				    System.out.println(e);
+				    if(tries++ > maxTries)
+					    throw e;
+			    } finally {
+				    if(stmt != null)
+					    stmt.close();
+			    }
+		    }
+
+		    //Remove from shares.
+		    remove = "DELETE FROM shares WHERE idea_id = ?";
+		    while(tries < maxTries)
+		    {
+			    try {
+				    stmt = db.prepareStatement(remove);
+				    stmt.setInt(1, idea_id);
+
+				    stmt.executeQuery();
+				    break;
+			    } catch (SQLException e) {
+				    System.out.println(e);
+				    if(tries++ > maxTries)
+					    throw e;
+			    } finally {
+				    if(stmt != null)
+					    stmt.close();
+			    }
+		    }
+
+		    db.commit();
 	    } catch (SQLException e) {
 		    System.out.println("\n"+e+"\n");
 		    if(db != null)
