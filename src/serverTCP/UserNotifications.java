@@ -46,8 +46,8 @@ public class UserNotifications extends Thread
 		}
 
 		//Bind RMI object.
-		String rmiAddress = "rmi://"+ServerTCP.rmiServerAddress+":"+ServerTCP.rmiRegistryPort+"/";
-		try {
+        String rmiAddress = "rmi://"+ServerTCP.rmiServerAddress+":"+ServerTCP.rmiRegistryPort+"/";
+        try {
 			notifications = (RemoteNotifications) Naming.lookup(rmiAddress + "Notifications");
 		} catch (MalformedURLException mue) {
 			System.out.println("Wrong URL passed as argument:\n" + mue);
@@ -59,6 +59,8 @@ public class UserNotifications extends Thread
 			System.out.println("Error looking up remote objects:\n" + re);
 			System.exit(-1);
 		}
+
+        start();
 	}
 
 	@Override

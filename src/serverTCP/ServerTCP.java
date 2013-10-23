@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.rmi.RMISecurityManager;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,7 +44,7 @@ public class ServerTCP {
 
 	    //Set system policies.
 	    //System.getProperties().put("java.security.policy", "policy.all");
-	    //System.setSecurityManager(new RMISecurityManager());
+        //System.setSecurityManager(new RMISecurityManager());
 
         try {
             conListenSocket = new ServerSocket(conPort);
