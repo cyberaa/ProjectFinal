@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Time: 6:27 PM
  * To change this template use File | Settings | File Templates.
  */
-public class IdeaInfo  implements Serializable
+public class IdeaInfo implements Serializable
 {
 	private static final long serialVersionUID = 1470130151433907211L;
 
