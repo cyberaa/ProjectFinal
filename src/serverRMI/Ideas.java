@@ -270,6 +270,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 				    else
 					    throw new NotFullOwnerException();
 			    } catch (SQLException e) {
+                    System.out.println(e);
 				    if(tries++ > maxTries) {
 					    throw e;
 				    }

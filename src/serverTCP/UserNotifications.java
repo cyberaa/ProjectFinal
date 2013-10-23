@@ -59,8 +59,6 @@ public class UserNotifications extends Thread
 			System.out.println("Error looking up remote objects:\n" + re);
 			System.exit(-1);
 		}
-
-        start();
 	}
 
 	@Override
