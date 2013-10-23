@@ -1,9 +1,6 @@
 package client;
 
-import common.IdeaInfo;
-import common.ShareInfo;
-import common.TopicInfo;
-import common.TransactionInfo;
+import common.*;
 import common.tcp.*;
 import serverRMI.Transaction;
 
@@ -333,7 +330,7 @@ public class Client {
 
                     String hasAttach, attach;
 
-                    System.out.println("Do you want attach some file (y/n): ");
+                    System.out.println("Do you want attach some file? (y/n): ");
                     hasAttach = scString.nextLine();
 
                     if(hasAttach.equals("y")) {
@@ -347,6 +344,24 @@ public class Client {
                     SubmitIdea sIdea = new SubmitIdea(topics,relatedIdea,nParts,valueShare,stance,text,attach);
 
                     writeObject(sIdea);
+
+                    if (hasAttach.equals("y")) {
+                        try {
+                            File fileToSend = new File(attach);
+                            int fileLength = (int)fileToSend.length();
+                            out.writeObject(fileLength);
+                            byte[] fileData = new byte[fileLength];
+                            FileInputStream fis = new FileInputStream(fileToSend);
+                            BufferedInputStream bis = new BufferedInputStream(fis);
+                            bis.read(fileData,0,fileData.length);
+                            out.write(fileData,0,fileData.length);
+                            out.flush();
+                            System.out.println("File successfully sent!");
+                        } catch (IOException ioe) {
+                            System.out.println("Error sending file.\n" + ioe);
+                            return;
+                        }
+                    }
 
                     try {
                         returnComand = in.readObject();
@@ -401,20 +416,34 @@ public class Client {
                     break;
                 case 6:
                     int ideaId;
+                    String load;
+                    boolean loadAttach;
+
                     System.out.print("Idea ID: ");
                     ideaId = scInt.nextInt();
+                    System.out.println("Do you want load attached file? (y/n)");
+                    load = scString.nextLine();
 
-                    ViewIdeasNested vIdeasNested = new ViewIdeasNested(ideaId);
+                    if(load.equals("y")) {
+                        loadAttach = true;
+                    }
+                    else {
+                        loadAttach = false;
+                    }
+
+                    ViewIdeasNested vIdeasNested = new ViewIdeasNested(ideaId, loadAttach);
 
                     writeObject(vIdeasNested);
+
+                    IdeasNestedPack pack = null;
 
                     try {
                         returnComand = in.readObject();
 
                         if(returnComand instanceof ArrayList<?>) {
-                            ArrayList<IdeaInfo> ideasNested = (ArrayList) returnComand;
-                            for (int i=0; i<ideasNested.size(); i++) {
-                                System.out.println(ideasNested.get(i));
+                            IdeasNestedPack ideasNested = (IdeasNestedPack) returnComand;
+                            for (int i=0; i<ideasNested.ideasNested.size(); i++) {
+                                System.out.println(ideasNested.ideasNested.get(i));
                             }
                             report = 0;
                         }
@@ -428,6 +457,41 @@ public class Client {
                         System.out.println(e);
                         return;
                     }
+
+
+                    if (loadAttach) {
+                        try {
+                            System.out.println("File Size: " + pack.fileSize);
+                            int bytesRead;
+                            int current = 0;
+                            byte[] bytesArray = new byte[5*1024*1024];
+                            bytesRead = in.read(bytesArray,0,bytesArray.length);
+                            System.out.print("File successfully read.");
+                            current = bytesRead;
+                            System.out.println("Read Complete: "+bytesRead+" Current: "+current);
+
+                            do {
+                                System.out.println("Reading");
+                                bytesRead = in.read(bytesArray, current, (bytesArray.length - current));
+                                if (bytesRead >= 0) {
+                                    current += bytesRead;
+                                }
+                                System.out.println("Read Complete: "+bytesRead+" Current: "+current);
+                                if(current == pack.fileSize)
+                                    break;
+                            } while (bytesRead > -1);
+
+                            FileOutputStream fos = new FileOutputStream("downloads/"+"merda.zip");
+                            BufferedOutputStream bos = new BufferedOutputStream(fos);
+
+                            bos.write(bytesArray, 0 , current); //TODO: Set current
+                            bos.flush();
+                            bos.close();
+                        } catch (IOException ioe) {
+                            System.out.println(ioe);
+                        }
+                    }
+
 
                     if(report == -1) {
                         System.out.println("Server could not fulfill request.");

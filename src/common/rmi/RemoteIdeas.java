@@ -1,6 +1,7 @@
 package common.rmi;
 
 import common.IdeaInfo;
+import common.IdeasNestedPack;
 
 import java.io.IOException;
 import java.rmi.Remote;
@@ -17,11 +18,11 @@ import java.util.ArrayList;
  */
 public interface RemoteIdeas extends Remote
 {
-	public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text, byte[] fileData, String filename) throws RemoteException, SQLException, IOException;
+	public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text, byte[] fileData, String filename, int current) throws RemoteException, SQLException, IOException;
 
 	public void deleteIdea(int idea_id, int user_id) throws RemoteException, SQLException, NotFullOwnerException;
 
 	public ArrayList<IdeaInfo> viewIdeasTopic(int topic_id) throws RemoteException, SQLException;
 
-	public ArrayList<IdeaInfo> viewIdeasNested(int idea_id) throws RemoteException, SQLException, NonExistingIdeaException;
+	public IdeasNestedPack viewIdeasNested(int idea_id, boolean loadAttach) throws RemoteException, SQLException, NonExistingIdeaException, IOException;
 }

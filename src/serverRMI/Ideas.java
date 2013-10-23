@@ -1,16 +1,12 @@
 package serverRMI;
 
 import common.IdeaInfo;
-import common.rmi.ExistingTopicException;
-import common.rmi.NonExistingIdeaException;
-import common.rmi.NotFullOwnerException;
-import common.rmi.RemoteIdeas;
+import common.IdeasNestedPack;
+import common.rmi.*;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
@@ -45,14 +41,16 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
      * @throws SQLException
      */
     //TODO: create idea shares.
-    public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text, byte[] fileData, String filename) throws RemoteException, SQLException, IOException {
+    public void submitIdea(ArrayList<String> topics, int user_id, int parent_id, int number_parts, int part_val, int stance, String text, byte[] fileData, String filename, int current) throws RemoteException, SQLException, IOException {
 
+        if (!filename.equals("-")) {
+            FileOutputStream fos = new FileOutputStream("assets/"+filename);
+            BufferedOutputStream bos = new BufferedOutputStream(fos);
 
-        FileOutputStream fos = new FileOutputStream(filename);
-        BufferedOutputStream bos = new BufferedOutputStream(fos);
-
-        bos.write(fileData, 0 , 1); //TODO: Set current
-        bos.flush();
+            bos.write(fileData, 0 , current); //TODO: Set current
+            bos.flush();
+            bos.close();
+        }
 
         Connection db = ServerRMI.pool.connectionCheck();
 
@@ -89,7 +87,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		    }
 
 		    //Insert idea.
-		    String query = "INSERT INTO idea (id,user_id,parent_id,number_parts,stance,active,text) VALUES (idea_id_inc.nextval,?,?,?,?,?,?)";
+		    String query = "INSERT INTO idea (id,user_id,parent_id,number_parts,stance,active,text,attach) VALUES (idea_id_inc.nextval,?,?,?,?,?,?,?)";
 
 		    while(tries < maxTries)
 		    {
@@ -102,6 +100,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 				    stmt.setInt(4, stance);
                     stmt.setInt(5, 1);
 				    stmt.setString(6, text);
+                    stmt.setString(7, filename);
 
 				    stmt.executeQuery();
                     System.out.print("Idea inserted. \n");
@@ -364,7 +363,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	 * @throws SQLException
 	 * @throws NonExistingIdeaException
 	 */
-    public ArrayList<IdeaInfo> viewIdeasNested(int idea_id) throws RemoteException, SQLException, NonExistingIdeaException {
+    public IdeasNestedPack viewIdeasNested(int idea_id, boolean loadAttach) throws RemoteException, SQLException, NonExistingIdeaException, IOException {
 
         Connection db = ServerRMI.pool.connectionCheck();
 
@@ -372,9 +371,39 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
         int maxTries = 3;
         PreparedStatement stmt = null;
         ResultSet rs;
+        String query;
         ArrayList<IdeaInfo> ideas = new ArrayList<IdeaInfo>();
+        byte[] fileData = null;
+        int fileLength = 0;
 
-        String query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, sduser WHERE parent_id = ? AND idea.user_id = sduser.id AND idea.active = 1";
+        if (loadAttach) {
+            try {
+                query = "SELECT idea.attach as attach FROM idea WHERE idea.id = ?";
+                stmt = db.prepareStatement(query);
+                stmt.setInt(1, idea_id);
+
+                rs = stmt.executeQuery();
+
+                rs.next();
+
+                String attachPath = rs.getString("attach");
+
+                File fileToSend = new File("assets/"+attachPath);
+                fileLength = (int)fileToSend.length();
+                fileData = new byte[fileLength];
+                FileInputStream fis = new FileInputStream(fileToSend);
+                BufferedInputStream bis = new BufferedInputStream(fis);
+                bis.read(fileData,0,fileData.length);
+                System.out.println("File successfully sent!");
+            } catch (SQLException e) {
+                System.out.println(e);
+            } catch (IOException ioe) {
+                System.out.println(ioe);
+            }
+        }
+
+
+        query = "SELECT idea.id, sduser.namealias, stance, text FROM idea, sduser WHERE parent_id = ? AND idea.user_id = sduser.id AND idea.active = 1";
 
         while(tries < maxTries)
         {
@@ -384,9 +413,13 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
                 rs = stmt.executeQuery();
 
+                System.out.println("Passsei");
+
                 if(!rs.next()) {
                     throw new NonExistingIdeaException();
                 }
+
+
 
                 do {
                     ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("namealias"), rs.getString("text"), rs.getInt("stance")));
@@ -394,6 +427,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
                 break;
             } catch (SQLException e) {
+                System.out.println(e);
                 if(tries++ > maxTries) {
                     throw new SQLException();
                 }
@@ -403,6 +437,12 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
             }
         }
 
-        return ideas;
+        System.out.print("Passei");
+
+        System.out.println("File length: "+fileLength);
+
+        IdeasNestedPack pack = new IdeasNestedPack(ideas, fileData, fileLength);
+
+        return pack;
     }
 }

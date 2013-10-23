@@ -124,26 +124,37 @@ public class UserConnection extends Thread
 			SubmitIdea aux = (SubmitIdea) cmd;
 			try {
                 if (aux.fileAttachName.equals("-")) {
-                    ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text, null, null);
+                    ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text, null, "-", -1);
                 }
 				else {
+                    Object fileLengthObj = inStream.readObject();
+                    int fileLength = (Integer) fileLengthObj;
+                    System.out.println("File Size: " + fileLength);
                     int bytesRead;
                     int current = 0;
                     byte[] bytesArray = new byte[5*1024*1024];
                     bytesRead = inStream.read(bytesArray,0,bytesArray.length);
+                    System.out.print("File successfully read.");
                     current = bytesRead;
+                    System.out.println("Read Complete: "+bytesRead+" Current: "+current);
 
                     do {
+                        System.out.println("Reading");
                         bytesRead = inStream.read(bytesArray, current, (bytesArray.length - current));
                         if (bytesRead >= 0) {
                             current += bytesRead;
                         }
+                        System.out.println("Read Complete: "+bytesRead+" Current: "+current);
+                        if(current == fileLength)
+                            break;
                     } while (bytesRead > -1);
 
-                    ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text, bytesArray, aux.fileAttachName);
+                    ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text, bytesArray, aux.fileAttachName, current);
+
                 }
 				sendInt(0);
 			} catch (Exception e) {
+                System.out.println(e);
 				//Send information that idea was not correctly submitted.
 				sendInt(-1);
 			}
@@ -177,7 +188,10 @@ public class UserConnection extends Thread
 		{
 			ViewIdeasNested aux = (ViewIdeasNested) cmd;
 			try {
-				sendObject(ideas.viewIdeasNested(aux.idea_id));
+                if (aux.loadAttach)
+                    sendObject(ideas.viewIdeasNested(aux.idea_id,true));
+                else
+                    sendObject(ideas.viewIdeasNested(aux.idea_id,false));
 			} catch (Exception e) {
 				//Send information that requested data cannot be fetched.
 				sendInt(-1);
