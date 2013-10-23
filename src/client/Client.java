@@ -435,13 +435,13 @@ public class Client {
 
                     writeObject(vIdeasNested);
 
-                    IdeasNestedPack pack = null;
+                    IdeasNestedPack ideasNested = null;
 
                     try {
                         returnComand = in.readObject();
 
-                        if(returnComand instanceof ArrayList<?>) {
-                            IdeasNestedPack ideasNested = (IdeasNestedPack) returnComand;
+                        if(returnComand instanceof IdeasNestedPack) {
+                            ideasNested = (IdeasNestedPack) returnComand;
                             for (int i=0; i<ideasNested.ideasNested.size(); i++) {
                                 System.out.println(ideasNested.ideasNested.get(i));
                             }
@@ -459,32 +459,14 @@ public class Client {
                     }
 
 
-                    if (loadAttach) {
+                    if (loadAttach == true && report == 0) {
                         try {
-                            System.out.println("File Size: " + pack.fileSize);
-                            int bytesRead;
-                            int current = 0;
-                            byte[] bytesArray = new byte[5*1024*1024];
-                            bytesRead = in.read(bytesArray,0,bytesArray.length);
-                            System.out.print("File successfully read.");
-                            current = bytesRead;
-                            System.out.println("Read Complete: "+bytesRead+" Current: "+current);
 
-                            do {
-                                System.out.println("Reading");
-                                bytesRead = in.read(bytesArray, current, (bytesArray.length - current));
-                                if (bytesRead >= 0) {
-                                    current += bytesRead;
-                                }
-                                System.out.println("Read Complete: "+bytesRead+" Current: "+current);
-                                if(current == pack.fileSize)
-                                    break;
-                            } while (bytesRead > -1);
 
                             FileOutputStream fos = new FileOutputStream("downloads/"+"merda.zip");
                             BufferedOutputStream bos = new BufferedOutputStream(fos);
 
-                            bos.write(bytesArray, 0 , current); //TODO: Set current
+                            bos.write(ideasNested.attachFile, 0 , ideasNested.fileSize); //TODO: Set current
                             bos.flush();
                             bos.close();
                         } catch (IOException ioe) {

@@ -416,10 +416,10 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                 System.out.println("Passsei");
 
                 if(!rs.next()) {
-                    throw new NonExistingIdeaException();
+                    break;
                 }
 
-
+                System.out.print("Bode");
 
                 do {
                     ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("namealias"), rs.getString("text"), rs.getInt("stance")));
