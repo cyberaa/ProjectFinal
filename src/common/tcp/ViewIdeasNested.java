@@ -14,8 +14,10 @@ public class ViewIdeasNested implements Serializable {
 	private static final long serialVersionUID = -1630261562598510737L;
 
 	public int idea_id;
+    public boolean loadAttach;
 
-    public ViewIdeasNested(int idea_id) {
+    public ViewIdeasNested(int idea_id, boolean loadAttach) {
         this.idea_id = idea_id;
+        this.loadAttach = loadAttach;
     }
 }

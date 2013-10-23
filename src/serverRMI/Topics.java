@@ -45,6 +45,8 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
 
         getTopicID(name);
 
+        System.out.print("Entrei");
+
         try {
 
             db.setAutoCommit(false);
@@ -59,6 +61,8 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
                 throw new ExistingTopicException();
             }
 
+            System.out.println("Entrei 1");
+
             query = "INSERT INTO topic (id, text) VALUES (topic_id_inc.nextval,?)";
 
             stmt = db.prepareStatement(query);
@@ -66,10 +70,11 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
 
             stmt.executeQuery();
 
+            System.out.println("Entrei 2");
+
             query = "SELECT topic_id_inc.currval as id FROM dual";
 
             stmt = db.prepareStatement(query);
-            stmt.setString(1,name);
 
             rs = stmt.executeQuery();
 
@@ -77,9 +82,11 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
 
             topic_id = rs.getInt("id");
 
+            System.out.println("Entrei 3");
+
             db.commit();
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Bode: "+e);
             if(db != null) {
                 db.rollback();
             }
@@ -125,6 +132,7 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
                 }
                 break;
             } catch (SQLException e) {
+                System.out.println(e);
                 if(tries++ > maxTries) {
                     throw new SQLException();
                 }
