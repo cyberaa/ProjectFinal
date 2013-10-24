@@ -45,14 +45,15 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 			insert.executeQuery();
 			db.commit();
 		} catch (SQLException e) {
+			System.out.println(e);
 			if(db != null)
 				db.rollback();
 		} finally {
 			if(insert != null)
 				insert.close();
-		}
 
-		ServerRMI.pool.releaseConnection(db);
+			ServerRMI.pool.releaseConnection(db);
+		}
 	}
 
 	/**
@@ -84,9 +85,9 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 		} finally {
 			if(getNotifications != null)
 				getNotifications.close();
-		}
 
-		ServerRMI.pool.releaseConnection(db);
+			ServerRMI.pool.releaseConnection(db);
+		}
 
 		return ret;
 	}
@@ -115,14 +116,15 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 
 			db.commit();
 		} catch (SQLException e) {
+			System.out.println(e);
 			if(db != null)
 				db.rollback();
 		} finally {
 			if(remove != null)
 				remove.close();
-		}
 
-		ServerRMI.pool.releaseConnection(db);
+			ServerRMI.pool.releaseConnection(db);
+		}
 	}
 
 
@@ -165,9 +167,9 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 		} finally {
 			if(getNotifications != null)
 				getNotifications.close();
-		}
 
-		ServerRMI.pool.releaseConnection(db);
+			ServerRMI.pool.releaseConnection(db);
+		}
 
 		return buyer + "bought " + parts + " from " + seller + " (idea " + idea_id +") for a total of " + totalPrice + " coins.";
 	}

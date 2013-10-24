@@ -136,7 +136,8 @@ public class TransactionalTrading
 
 	/**
 	 *
-	 * @param ts
+	 * @param db
+	 * @param id
 	 */
 	protected synchronized static void removeFromQueue(Connection db, int id)
 	{
