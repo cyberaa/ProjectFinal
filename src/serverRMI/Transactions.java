@@ -644,8 +644,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 	public ArrayList<TransactionInfo> showHistory(int user_id) throws RemoteException, SQLException
 	{
-
-        Connection db = ServerRMI.pool.connectionCheck();
+		Connection db = ServerRMI.pool.connectionCheck();
 
 		ArrayList<TransactionInfo> ret = new ArrayList<TransactionInfo>();
 
