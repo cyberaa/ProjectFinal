@@ -94,29 +94,39 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			db.setAutoCommit(false);
 
 			//Check if user has enough cash.
+            System.out.println("Start getCash");
 			int userCash = getCash(db, user_id);
 			if(userCash < share_num * price_per_share) {
 				throw new NotEnoughCashException();
             }
+            System.out.println("End getCash");
 
 			//Verify that the idea has enough shares to be bought.
+            System.out.println("Start getNumberShares");
 			int totalShares = getNumberShares(db, idea_id);
 			if(share_num > totalShares) {
 				throw new NotEnoughSharesException();
             }
+            System.out.println("End getNumberShares");
 
 			//Get list of idea shares
+            System.out.println("Start _getShares");
 			ArrayList<ShareInfo> shares = _getShares(db, idea_id);
+            System.out.println("End _getShares");
 
 			//Select ideas to be bought and add them to sharesToBuy.
 			ArrayList<ShareToBuy> sharesToBuy;
 			try {
+                System.out.println("Start getSharesToBuy");
 				sharesToBuy = getSharesToBuy(shares, share_num, price_per_share, user_id);
+                System.out.println("End getSharesToBuy");
 			} catch (NotEnoughSharesAtDesiredPriceException e) {
 				if(!fromQueue)
 				{
+                    System.out.println("Start enqueue");
 					TransactionalTrading.enqueue(user_id, idea_id, share_num, price_per_share, new_price_share);
-					return 0;
+                    System.out.println("End enqueue");
+                    return 0;
 				}
 				else
 					return 0;
@@ -175,7 +185,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 			db.commit();
 		} catch (SQLException e) {
-			System.out.println("\n"+e+"\n");
+			System.out.println("Merda\n"+e+"\n");
 			if(db != null)
 				db.rollback();
 			throw e;
@@ -286,25 +296,25 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 		String parts = "SELECT number_parts FROM idea WHERE id = ?";
 
-		while(tries < maxTries)
-		{
-			try {
-				gParts = db.prepareStatement(parts);
-				gParts.setInt(1, idea_id);
+        try {
+            gParts = db.prepareStatement(parts);
+            gParts.setInt(1, idea_id);
 
-				rs = gParts.executeQuery();
+            rs = gParts.executeQuery();
 
-				if(rs.next())
-					return rs.getInt("number_parts");
-			} catch (SQLException e) {
-				System.out.println(e);
-				if(tries++ > maxTries)
-					throw e;
-			} finally {
-				if(gParts != null)
-					gParts.close();
-			}
-		}
+            if(rs.next()) {
+                int x = rs.getInt("number_parts");
+                return x;
+            }
+        } catch (SQLException e) {
+            System.out.println("Cona frita: "+ e);
+            if(tries++ > maxTries)
+                throw e;
+        } finally {
+            if(gParts != null)
+                gParts.close();;
+
+        }
 
 		return 0;
 	}

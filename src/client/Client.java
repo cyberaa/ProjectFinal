@@ -20,6 +20,8 @@ public class Client {
 
     protected static Socket s;
 
+    protected static Notifications nots;
+
     protected static String serverAddress_1;
     protected static String serverAddress_2;
 
@@ -69,12 +71,15 @@ public class Client {
             return;
         }
 
-        new Notifications(notif_socket);
+        nots = new Notifications(notif_socket);
+
+        System.out.println("Notification Created");
 
 
         try {
             out = new ObjectOutputStream(s.getOutputStream());
             in = new ObjectInputStream(s.getInputStream());
+            System.out.println("Streams Created");
         } catch (IOException ioe) {
 	        System.out.println("Could not create data streams:\n"+ioe);
         }
@@ -98,9 +103,8 @@ public class Client {
         Object returnComand;
 
         int report;
-
         do {
-            report = -1;
+            report = -3;
             switch(choose) {
                 case 1:
                     System.out.println(delimiter);
@@ -155,8 +159,11 @@ public class Client {
                     else if (report == -2) {
                         System.out.println("Username is already in use.");
                     }
-                    else {
+                    else if (report == 0) {
                         System.out.println("Account creation successful.");
+                    }
+                    else {
+                        System.out.println("Could not connect to server.");
                     }
                     report = 1;
                     choose = 1;
@@ -318,7 +325,7 @@ public class Client {
                         stance = scInt.nextInt();
                     }
                     else {
-                        stance = -2;
+                        stance = 0;
                     }
 
                     // Get idea text
@@ -608,8 +615,17 @@ public class Client {
 
                     break;
                 case 11:
+                    try {
+                        in.close();
+                        out.close();
+                        s.close();
+                        nots.shutdown = true;
+                    } catch (IOException ioe) {
+                        System.out.print(ioe);
+                    }
+
                     System.out.println("Exiting...");
-                    break;
+                    System.exit(0);
             }
             System.out.print(delimiter);
         } while(choose != 11);
@@ -622,6 +638,28 @@ public class Client {
         } catch (IOException e) {
             System.out.println("Error writting object.\n" + e);
             System.exit(-1);
+        }
+    }
+
+    protected static void reconnectUser() {
+        try {
+            s = new Socket(serverAddress_1, serverPort1);
+            out = new ObjectOutputStream(s.getOutputStream());
+            in = new ObjectInputStream(s.getInputStream());
+            System.out.println("Reconnected User");
+            System.out.println();
+        } catch (IOException ioe) {
+            System.out.println("Failed reconnect.");
+        }
+    }
+
+    protected static void reconnectNotifications() {
+        try {
+            nots.sock = new Socket(serverAddress_1, server1_not_port);
+            nots.inStream = new ObjectInputStream(nots.sock.getInputStream());
+            System.out.println("Reconnected Notifications.");
+        } catch (IOException ioe) {
+            System.out.print("Failed Reconnect");
         }
     }
 

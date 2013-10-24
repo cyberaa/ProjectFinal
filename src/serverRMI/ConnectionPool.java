@@ -38,8 +38,11 @@ public class ConnectionPool implements Runnable {
 
 
     public synchronized void releaseConnection(Connection con) throws SQLException{
+        //System.out.println("Connections Available: " + connectionsAvailable.size()+" | Connections Used: " + connectionsUsed.size());
         connectionsUsed.remove(con);
+        //System.out.println("Connections Available: " + connectionsAvailable.size()+" | Connections Used: " + connectionsUsed.size());
         connectionsAvailable.add(con);
+        //System.out.println("Connections Available: " + connectionsAvailable.size()+" | Connections Used: " + connectionsUsed.size());
     }
 
     public synchronized void closeConnection(Connection con) throws SQLException {
@@ -55,6 +58,7 @@ public class ConnectionPool implements Runnable {
             // adding Connection to used list
             connectionsUsed.addElement(newConnection);
         } else {
+
             newConnection = (Connection) connectionsAvailable.lastElement();
 
             connectionsAvailable.removeElement(newConnection);

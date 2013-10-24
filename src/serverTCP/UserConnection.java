@@ -81,6 +81,7 @@ public class UserConnection extends Thread
 		    //Read next command.
 		    try {
 			    cmd = inStream.readObject();
+
 		    } catch (ClassNotFoundException cnfe) {
 			    System.out.println("Object class not found:\n" + cnfe);
 			    continue;

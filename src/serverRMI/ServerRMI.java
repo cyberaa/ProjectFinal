@@ -69,15 +69,6 @@ public class ServerRMI
 		//Create remote RMI objects and bind them.
 		createAndBindObjects();
 
-		//TODO: DEBUGGING.
-		try {
-			transactions.setShareValue(1, 1, 5);
-		} catch (Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
-		//TODO: END OF DEBUGGING:
-
 		//Menu.
         String command;
         Scanner sc = new Scanner(System.in);

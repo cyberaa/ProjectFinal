@@ -1,5 +1,8 @@
 package client;
 
+import com.sun.corba.se.impl.io.IIOPInputStream;
+
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
@@ -27,6 +30,7 @@ public class Notifications extends Thread {
         this.sock = sock;
         try {
             inStream = new ObjectInputStream(sock.getInputStream());
+            System.out.println("Notification inStream created.");
         } catch (IOException ioe) {
             System.out.println("Error establishing notification socket.\n"+ ioe );
         }
@@ -38,11 +42,32 @@ public class Notifications extends Thread {
     @Override
     public void run() {
         String notification = "";
+        int max = 3;
+        int tries = 0;
 
-        while (!shutdown) {
+        while (!shutdown && tries<max) {
             try {
                 notification = (String) inStream.readObject();
+                System.out.println("Getting notification.");
                 gui.notifyUser(notification);
+            } catch (EOFException eofe) {
+                System.out.println(eofe);
+                if(tries<max) {
+                   if (reconnectToServer()) {
+                       tries=0;
+                   }
+                   else {
+                       tries++;
+                       try {
+                           Thread.sleep(5000);
+                       } catch (InterruptedException e) {
+                           e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                       }
+                   }
+                }
+                else {
+                    shutdown = true;
+                }
             } catch (IOException ioe) {
                 System.out.println(ioe);
                 shutdown = true;
@@ -51,5 +76,25 @@ public class Notifications extends Thread {
                 shutdown = true;
             }
         }
+
+        try {
+            inStream.close();
+            sock.close();
+        } catch (IOException ioe) {
+           System.out.println(ioe);
+        }
+    }
+
+    public boolean reconnectToServer() {
+        try {
+            System.out.print("\nReconnecting\n");
+            sock = new Socket(Client.serverAddress_1, Client.server1_not_port);
+            System.out.print("Socket Established");
+            inStream = new ObjectInputStream(sock.getInputStream());
+            System.out.println("Reconnected.");
+        } catch (IOException ioe) {
+            return false;
+        }
+        return true;
     }
 }

@@ -232,6 +232,8 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		    //Verify that user owns all shares.
 		    int numParts = ServerRMI.transactions.getNumberShares(db, idea_id);
 
+            System.out.println("Bode do caralhooooooooooooooooo");
+
 		    int tries = 0;
 		    int maxTries = 3;
 		    PreparedStatement stmt = null;
@@ -329,7 +331,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
 		    db.commit();
 	    } catch (SQLException e) {
-		    System.out.println("\n"+e+"\n");
+		    System.out.println("Manel----\n"+e+"\n");
 		    if(db != null)
 			    db.rollback();
 	    } finally {
