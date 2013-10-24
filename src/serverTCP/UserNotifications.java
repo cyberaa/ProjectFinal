@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 public class UserNotifications extends Thread
 {
-	protected static final long timeToSleep = 500; //In milliseconds.
+	protected static final long timeToSleep = 3000; //In milliseconds.
 
 	//Socket and streams.
 	protected Socket clientSocket;
@@ -64,6 +64,9 @@ public class UserNotifications extends Thread
 	@Override
 	public void run()
 	{
+
+        int count = 0;
+
 		System.out.println("Notifications thread started.");
 
 		ArrayList<NotificationInfo> nots;

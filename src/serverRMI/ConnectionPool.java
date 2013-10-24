@@ -37,6 +37,16 @@ public class ConnectionPool implements Runnable {
     }
 
 
+    public synchronized void releaseConnection(Connection con) throws SQLException{
+        connectionsUsed.remove(con);
+        connectionsAvailable.add(con);
+    }
+
+    public synchronized void closeConnection(Connection con) throws SQLException {
+        connectionsUsed.remove(con);
+        con.close();
+    }
+
     public synchronized Connection connectionCheck() throws SQLException {
         Connection newConnection = null;
         if (connectionsAvailable.size() == 0) {
@@ -69,7 +79,6 @@ public class ConnectionPool implements Runnable {
 
                         connection.close();
                     }
-
                 }
             }
         } catch (SQLException se) {

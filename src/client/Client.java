@@ -69,7 +69,6 @@ public class Client {
             return;
         }
 
-
         new Notifications(notif_socket);
 
 
