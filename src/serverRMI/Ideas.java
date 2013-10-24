@@ -230,7 +230,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
 	    try {
 		    //Verify that user owns all shares.
-		    int numParts = ServerRMI.transactions.getNumberShares(idea_id);
+		    int numParts = ServerRMI.transactions.getNumberShares(db, idea_id);
 
 		    int tries = 0;
 		    int maxTries = 3;

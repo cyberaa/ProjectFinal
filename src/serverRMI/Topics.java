@@ -97,6 +97,9 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
             }
             db.setAutoCommit(true);
         }
+
+	    ServerRMI.pool.releaseConnection(db);
+
         return topic_id;
     }
 
@@ -142,6 +145,8 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
             }
 	    }
 
+	    ServerRMI.pool.releaseConnection(db);
+
         return topics;
     }
 
@@ -185,6 +190,8 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
 		            stmt.close();
             }
         }
+
+	    ServerRMI.pool.releaseConnection(db);
 
         return -1;
     }

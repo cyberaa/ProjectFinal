@@ -51,6 +51,8 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 			if(insert != null)
 				insert.close();
 		}
+
+		ServerRMI.pool.releaseConnection(db);
 	}
 
 	/**
@@ -83,6 +85,8 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 			if(getNotifications != null)
 				getNotifications.close();
 		}
+
+		ServerRMI.pool.releaseConnection(db);
 
 		return ret;
 	}
@@ -117,6 +121,8 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 			if(remove != null)
 				remove.close();
 		}
+
+		ServerRMI.pool.releaseConnection(db);
 	}
 
 
@@ -160,6 +166,8 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 			if(getNotifications != null)
 				getNotifications.close();
 		}
+
+		ServerRMI.pool.releaseConnection(db);
 
 		return buyer + "bought " + parts + " from " + seller + " (idea " + idea_id +") for a total of " + totalPrice + " coins.";
 	}

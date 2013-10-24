@@ -26,12 +26,11 @@ public class TransactionalTrading
 		PreparedStatement enqueue = null;
 		String query = "INSERT INTO transaction_queue VALUES (transaction_queue_id_inc.nextval, systimestamp, ?, ?, ?, ?, ?)";
 
-		boolean success = false;
-		while(!success)
-		{
-			try {
-				Connection db = ServerRMI.pool.connectionCheck();
-
+		try {
+			Connection db = ServerRMI.pool.connectionCheck();
+			boolean success = false;
+			while(!success)
+			{
 				try {
 					enqueue = db.prepareStatement(query);
 					enqueue.setInt(1, user_id);
@@ -51,9 +50,11 @@ public class TransactionalTrading
 					if(enqueue != null)
 						enqueue.close();
 				}
-			} catch (SQLException e) {
-				success = false;
 			}
+
+			ServerRMI.pool.releaseConnection(db);
+		} catch (SQLException e) {
+			//Gosto imenso de vaginas.
 		}
 	}
 
@@ -106,7 +107,7 @@ public class TransactionalTrading
 					if(res == -1)
 					{
 						//System.out.println("Removing from transaction queue.");
-						removeFromQueue(rs.getInt("id"));
+						removeFromQueue(db, rs.getInt("id"));
 					}
 				} catch (Exception e) {
 					System.out.println(e);
@@ -129,13 +130,15 @@ public class TransactionalTrading
 				}
 			}
 		}
+
+		ServerRMI.pool.releaseConnection(db);
 	}
 
 	/**
 	 *
 	 * @param ts
 	 */
-	protected synchronized static void removeFromQueue(int id)
+	protected synchronized static void removeFromQueue(Connection db, int id)
 	{
 		PreparedStatement dequeue = null;
 		String query = "DELETE FROM transaction_queue WHERE id = ?";
@@ -144,7 +147,6 @@ public class TransactionalTrading
 		while(!success)
 		{
 			try {
-				Connection db = ServerRMI.pool.connectionCheck();
 
 				try {
 					dequeue = db.prepareStatement(query);
