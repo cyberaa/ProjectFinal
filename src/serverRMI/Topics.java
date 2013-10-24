@@ -51,15 +51,18 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
 
             db.setAutoCommit(false);
 
-            query = "SELECT * FROM topic";
+            query = "SELECT * FROM topic WHERE text LIKE ?";
 
             stmt = db.prepareStatement(query);
+	        stmt.setString(1, name);
 
             rs = stmt.executeQuery();
 
             if(rs.next()) {
                 throw new ExistingTopicException();
             }
+	        if(stmt != null)
+		        stmt.close();
 
             System.out.println("Entrei 1");
 
@@ -74,6 +77,8 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
 
             query = "SELECT topic_id_inc.currval as id FROM dual";
 
+	        if(stmt != null)
+		        stmt.close();
             stmt = db.prepareStatement(query);
 
             rs = stmt.executeQuery();
