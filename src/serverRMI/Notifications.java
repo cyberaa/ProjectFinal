@@ -4,6 +4,7 @@ import common.NotificationInfo;
 import common.rmi.RemoteNotifications;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,9 +18,9 @@ import java.util.ArrayList;
  * Time: 10:32 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Notifications implements RemoteNotifications
+public class Notifications extends UnicastRemoteObject implements RemoteNotifications
 {
-	public Notifications() {}
+	public Notifications() throws RemoteException{}
 
 	/**
 	 * Insert a notification into the database. Notifications are

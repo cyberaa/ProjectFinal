@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.Scanner;
 
 /**
  * Created with IntelliJ IDEA.
@@ -48,10 +49,13 @@ public class UserConnection extends Thread
 	        System.out.println("[Connection] Could not create input and output streams:\n" + ie);
         }
 
+        Scanner sc = new Scanner(System.in);
+
 	    try {
 		    lookupRemotes();
 	    } catch (RemoteException re) {
 		    System.out.println("Error looking up remote objects:\n" + re);
+            sc.nextLine();
 	    }
 
 	    start();

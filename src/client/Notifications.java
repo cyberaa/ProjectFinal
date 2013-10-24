@@ -16,7 +16,12 @@ public class Notifications extends Thread {
     public Socket sock;
     public ObjectInputStream inStream;
     public boolean shutdown;
+    public ClientGUI gui;
 
+    /**
+     * Create notification thread in client side to receive notifications from server.
+     * @param sock
+     */
     public Notifications(Socket sock) {
         shutdown = false;
         this.sock = sock;
@@ -25,12 +30,26 @@ public class Notifications extends Thread {
         } catch (IOException ioe) {
             System.out.println("Error establishing notification socket.\n"+ ioe );
         }
+        gui = new ClientGUI();
         start();
     }
 
 
     @Override
     public void run() {
+        String notification = "";
 
+        while (!shutdown) {
+            try {
+                notification = (String) inStream.readObject();
+                gui.notifyUser(notification);
+            } catch (IOException ioe) {
+                System.out.println(ioe);
+                shutdown = true;
+            } catch (ClassNotFoundException clfe) {
+                System.out.println(clfe);
+                shutdown = true;
+            }
+        }
     }
 }

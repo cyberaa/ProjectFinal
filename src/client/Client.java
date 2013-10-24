@@ -69,7 +69,6 @@ public class Client {
             return;
         }
 
-
         new Notifications(notif_socket);
 
 
@@ -601,10 +600,10 @@ public class Client {
                         System.out.println("Server could not fulfill request.");
                     }
                     else if (report == -2) {
-                        System.out.println("You're not ideal full owner");
+                        System.out.println("You're not idea full owner.");
                     }
                     else {
-                        System.out.println("Share value successfully changed.");
+                        System.out.println("Idea deleted successfully.");
                     }
 
                     break;

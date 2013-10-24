@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 public class UserNotifications extends Thread
 {
-	protected static final long timeToSleep = 500; //In milliseconds.
+	protected static final long timeToSleep = 3000; //In milliseconds.
 
 	//Socket and streams.
 	protected Socket clientSocket;
@@ -46,8 +46,8 @@ public class UserNotifications extends Thread
 		}
 
 		//Bind RMI object.
-		String rmiAddress = "rmi://"+ServerTCP.rmiServerAddress+":"+ServerTCP.rmiRegistryPort+"/";
-		try {
+        String rmiAddress = "rmi://"+ServerTCP.rmiServerAddress+":"+ServerTCP.rmiRegistryPort+"/";
+        try {
 			notifications = (RemoteNotifications) Naming.lookup(rmiAddress + "Notifications");
 		} catch (MalformedURLException mue) {
 			System.out.println("Wrong URL passed as argument:\n" + mue);
@@ -64,6 +64,9 @@ public class UserNotifications extends Thread
 	@Override
 	public void run()
 	{
+
+        int count = 0;
+
 		System.out.println("Notifications thread started.");
 
 		ArrayList<NotificationInfo> nots;

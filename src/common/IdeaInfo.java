@@ -18,6 +18,13 @@ public class IdeaInfo implements Serializable
     private String text;
     private int stance;
 
+    /**
+     *
+     * @param idea_id
+     * @param namealias
+     * @param text
+     * @param stance
+     */
     public IdeaInfo(int idea_id, String namealias, String text, int stance) {
         this.idea_id = idea_id;
         this.namealias = namealias;
