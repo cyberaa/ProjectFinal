@@ -96,6 +96,8 @@ public class UserNotifications extends Thread
 		} catch (IOException e) {
 			//Do nothing, close thread.
 		}
+
+		System.out.println("Notifications thread closed.");
 	}
 
 	/**

@@ -76,6 +76,8 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 			}
 		}
 
+		ServerRMI.pool.releaseConnection(db);
+
 		return -1;
 	}
 
@@ -141,13 +143,14 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 			if(db != null)
 				db.rollback();
 			throw e;
-		}
-		finally {
+		} finally {
 			if(insertUser != null)
 				insertUser.close();
 
 			db.setAutoCommit(true);
 		}
+
+		ServerRMI.pool.releaseConnection(db);
 	}
 
 	/**

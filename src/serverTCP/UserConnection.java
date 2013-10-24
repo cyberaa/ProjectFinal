@@ -70,6 +70,9 @@ public class UserConnection extends Thread
 
 	    //Start notifications thread.
 	    notifsThread.setUserID(userID);
+	    if(shutdown)
+		    return;
+
 	    notifsThread.start();
 
 	    //Loop to receive commands.
@@ -85,12 +88,21 @@ public class UserConnection extends Thread
 			    System.out.println("Client disconnected.");
 			    return;
 		    } catch (IOException ioe) {
-			    System.out.println("Could not read from socket:\n" + ioe);
+			    System.out.println("[1]Could not read from socket:\n" + ioe);
 			    continue;
 		    }
 
 		    //Interpret and execute command. Send answer back.
 		    executeCommand(cmd);
+	    }
+
+	    //Close streams and socket.
+	    try {
+		    inStream.close();
+		    outStream.close();
+		    clientSocket.close();
+	    } catch (IOException e) {
+		    //Do nothing, close thread.
 	    }
     }
 
@@ -260,7 +272,7 @@ public class UserConnection extends Thread
 			//Read next command.
 			try {
 				cmd = inStream.readObject();
-				System.out.println();
+				System.out.println(cmd);
 			} catch (ClassNotFoundException cnfe) {
 				System.out.println("Object class not found:\n" + cnfe);
 				ret = -1;
@@ -269,7 +281,7 @@ public class UserConnection extends Thread
 				shutdown = true;
 				return;
 			} catch (IOException ioe) {
-				System.out.println("Could not read from socket:\n" + ioe);
+				System.out.println("[2]Could not read from socket:\n" + ioe);
 				ret = -1;
 			}
 
@@ -285,6 +297,7 @@ public class UserConnection extends Thread
 				} catch (ExistingUserException e) {
 					ret = -2;
 				} catch (Exception e) {
+					System.out.println(e);
 					ret = -1;
 				}
 			}
@@ -305,15 +318,6 @@ public class UserConnection extends Thread
 			//Send return.
 			sendInt(ret);
 		}
-
-		//Close streams and socket.
-		try {
-			inStream.close();
-			outStream.close();
-			clientSocket.close();
-		} catch (IOException e) {
-			//Do nothing, close thread.
-		}
 	}
 
 	/**
@@ -330,7 +334,7 @@ public class UserConnection extends Thread
 			shutdown = true;
 			return;
 		} catch (IOException ioe) {
-			System.out.println("Could not read from socket:\n" + ioe);
+			System.out.println("[1]Could not write to socket:\n" + ioe);
 		}
 	}
 
@@ -348,7 +352,7 @@ public class UserConnection extends Thread
 			System.out.println("Client disconnected.");
 			shutdown = false;
 		} catch (IOException e) {
-			//Do nothing.
+			System.out.println("[2]Could not write to socket:\n" + e);
 		}
 	}
 
