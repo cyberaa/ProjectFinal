@@ -15,6 +15,7 @@ public class ClientGUI extends JFrame {
 
     JLabel labelNot;
 
+
     public ClientGUI() {
         this.setLocationRelativeTo(null);
         labelNot = new JLabel();

@@ -18,6 +18,10 @@ public class Notifications extends Thread {
     public boolean shutdown;
     public ClientGUI gui;
 
+    /**
+     * Create notification thread in client side to receive notifications from server.
+     * @param sock
+     */
     public Notifications(Socket sock) {
         shutdown = false;
         this.sock = sock;
