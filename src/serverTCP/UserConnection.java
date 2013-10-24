@@ -66,9 +66,13 @@ public class UserConnection extends Thread
     {
 	    Object cmd;
 
-	    authenticateOrRegister();
+        try {
+            authenticateOrRegister();
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
-	    //Start notifications thread.
+        //Start notifications thread.
 	    notifsThread.setUserID(userID);
 	    if(shutdown)
 		    return;
@@ -462,9 +466,14 @@ public class UserConnection extends Thread
 	 * Wait for user authentication but allowing for registration
 	 * in the meantime.
 	 */
-	protected void authenticateOrRegister()
+	protected void authenticateOrRegister() throws InterruptedException
 	{
+
+        int timeoutRMI = 3000;
+
 		Object cmd = null;
+        int max = 3;
+        int tries;
 
 		int ret = -1;
 		boolean success = false;
@@ -491,29 +500,65 @@ public class UserConnection extends Thread
 				continue;
 			else if(cmd instanceof Register)
 			{
-				Register aux = (Register) cmd;
-				try {
-					um.register(aux.name, aux.pass, aux.nameAlias);
-					ret = 0;
-				} catch (ExistingUserException e) {
-					ret = -2;
-				} catch (Exception e) {
-					System.out.println(e);
-					ret = -1;
-				}
+                tries = 0;
+                while (tries < max) {
+                    Register aux = (Register) cmd;
+                    try {
+                        um.register(aux.name, aux.pass, aux.nameAlias);
+                        ret = 0;
+                    } catch (ExistingUserException e) {
+                        ret = -2;
+                    } catch (RemoteException e) {
+                        System.out.println(e);
+                        if(tries < max) {
+                            try {
+                                System.out.println("Reconnecting to RMI.");
+                                lookupRemotes();
+                                System.out.println("Connected to RMI again.");
+                            } catch (RemoteException e1) {
+                                tries++;
+                                Thread.sleep(timeoutRMI);
+                            }
+                        }
+                        else {
+                            //Send information that topic creation failed but not because it already exists.
+                            ret = -3;
+                        }
+                    } catch (Exception e) {
+                        ret = -1;
+                    }
+                }
 			}
 			else if(cmd instanceof Authenticate)
 			{
-				Authenticate aux = (Authenticate) cmd;
-				try {
-					userID = um.authenticate(aux.username, aux.password);
-					success = true;
-					ret = 0;
-				} catch (UserAuthenticationException e) {
-					ret = -2;
-				} catch (Exception e) {
-					ret = -1;
-				}
+                tries = 0;
+                while (tries < max) {
+                    Authenticate aux = (Authenticate) cmd;
+                    try {
+                        userID = um.authenticate(aux.username, aux.password);
+                        success = true;
+                        ret = 0;
+                    } catch (UserAuthenticationException e) {
+                        ret = -2;
+                    } catch (RemoteException e) {
+                        System.out.println(e);
+                        if(tries < max) {
+                            try {
+                                System.out.println("Reconnecting to RMI.");
+                                lookupRemotes();
+                                System.out.println("Connected to RMI again.");
+                            } catch (RemoteException e1) {
+                                tries++;
+                                Thread.sleep(timeoutRMI);
+                            }
+                        }
+                        else {
+                            ret = -3;
+                        }
+                    } catch (Exception e) {
+                        ret = -1;
+                    }
+                }
 			}
 
 			//Send return.
