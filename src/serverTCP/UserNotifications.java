@@ -45,20 +45,9 @@ public class UserNotifications extends Thread
 			System.out.println("[Notifications] Could not create input and output streams:\n" + ie);
 		}
 
-		//Bind RMI object.
-        String rmiAddress = "rmi://"+ServerTCP.rmiServerAddress+":"+ServerTCP.rmiRegistryPort+"/";
-        try {
-			notifications = (RemoteNotifications) Naming.lookup(rmiAddress + "Notifications");
-		} catch (MalformedURLException mue) {
-			System.out.println("Wrong URL passed as argument:\n" + mue);
-			System.exit(-1);
-		} catch (NotBoundException nbe) {
-			System.out.println("Object is not bound:\n" + nbe);
-			System.exit(-1);
-		} catch (RemoteException re) {
-			System.out.println("Error looking up remote objects:\n" + re);
-			System.exit(-1);
-		}
+
+        bindRMIObjects();
+
 	}
 
 	@Override
@@ -108,4 +97,21 @@ public class UserNotifications extends Thread
 	{
 		this.userID = userID;
 	}
+
+    public void bindRMIObjects() {
+        //Bind RMI object.
+        String rmiAddress = "rmi://"+ServerTCP.rmiServerAddress+":"+ServerTCP.rmiRegistryPort+"/";
+        try {
+            notifications = (RemoteNotifications) Naming.lookup(rmiAddress + "Notifications");
+        } catch (MalformedURLException mue) {
+            System.out.println("Wrong URL passed as argument:\n" + mue);
+            System.exit(-1);
+        } catch (NotBoundException nbe) {
+            System.out.println("Object is not bound:\n" + nbe);
+            System.exit(-1);
+        } catch (RemoteException re) {
+            System.out.println("Error looking up remote objects:\n" + re);
+            System.exit(-1);
+        }
+    }
 }

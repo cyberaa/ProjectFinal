@@ -68,16 +68,20 @@ public class ServerTCP {
 
 	        try {
 		        s1 = notListenSocket.accept();
+                System.out.println("New Notifications Connection Accepted.");
 	        } catch (SocketTimeoutException e) {
 		        //Do nothing.
 		        continue;
 	        } catch (IOException e) {
-		        System.out.print("UserConnection listen socket error:\n" + e);
+		        System.out.println("UserConnection listen socket error:\n" + e);
 		        continue;
 	        }
 
 	        try {
+                System.out.println("Waiting for connection");
                 s2 = conListenSocket.accept();
+                System.out.println("New User Connection Accepted.");
+                System.out.println("Passei");
 		        notifs = new UserNotifications(s1);
                 new UserConnection(s2, notifs);
             } catch (SocketTimeoutException e) {

@@ -51,7 +51,12 @@ public class Notifications extends Thread {
                 System.out.println("Getting notification.");
                 gui.notifyUser(notification);
             } catch (EOFException eofe) {
-                System.out.println(eofe);
+                System.out.println("EOF Notifications: "+eofe);
+                try {
+                    Thread.sleep(9000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
                 if(tries<max) {
                    if (reconnectToServer()) {
                        tries=0;
@@ -87,11 +92,12 @@ public class Notifications extends Thread {
 
     public boolean reconnectToServer() {
         try {
-            System.out.print("\nReconnecting\n");
+            sock.close();
+            System.out.println("\nReconnecting Notifications\n");
             sock = new Socket(Client.serverAddress_1, Client.server1_not_port);
-            System.out.print("Socket Established");
+            System.out.println("Socket Established Notifications");
             inStream = new ObjectInputStream(sock.getInputStream());
-            System.out.println("Reconnected.");
+            System.out.println("Reconnected Notifications.");
         } catch (IOException ioe) {
             return false;
         }

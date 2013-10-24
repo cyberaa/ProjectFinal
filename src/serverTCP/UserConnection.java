@@ -94,8 +94,12 @@ public class UserConnection extends Thread
 		    }
 
 		    //Interpret and execute command. Send answer back.
-		    executeCommand(cmd);
-	    }
+            try {
+                executeCommand(cmd);
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
 
 	    //Close streams and socket.
 	    try {
@@ -111,150 +115,346 @@ public class UserConnection extends Thread
 	 * Execute the next command.
 	 * @param cmd The next command to be executed.
 	 */
-	protected void executeCommand(Object cmd)
-	{
+	protected void executeCommand(Object cmd) throws InterruptedException {
+        int max = 3;
+        int tries;
+        int timeoutRMI = 3000;
+
+
+
 		if(cmd instanceof CreateTopic)
 		{
-			CreateTopic aux = (CreateTopic) cmd;
-			try {
-				topics.newTopic(aux.name);
-				sendInt(0);
-			} catch (ExistingTopicException e) {
-				//Send information that topic already exists.
-				sendInt(-2);
-			} catch (Exception e) {
-                System.out.println(e);
-				//Send information that topic creation failed but not because it already exists.
-				sendInt(-1);
-			}
+            tries = 0;
+            while(tries < max) {
+                CreateTopic aux = (CreateTopic) cmd;
+                try {
+                    topics.newTopic(aux.name);
+                    sendInt(0);
+                    break;
+                } catch (ExistingTopicException e) {
+                    //Send information that topic already exists.
+                    sendInt(-2);
+                    break;
+                } catch (RemoteException e) {
+                    System.out.println(e);
+                    if(tries < max) {
+                        try {
+                            System.out.println("Reconnecting to RMI.");
+                            lookupRemotes();
+                            System.out.println("Connected to RMI again.");
+                        } catch (RemoteException e1) {
+                            tries++;
+                            Thread.sleep(timeoutRMI);
+                        }
+                    }
+                    else {
+                        //Send information that topic creation failed but not because it already exists.
+                        sendInt(-3);
+                        break;
+                    }
+                } catch (Exception e) {
+                    sendInt(-1);
+                    break;
+                }
+            }
 		}
 		else if(cmd instanceof ListTopics)
 		{
-			try {
-				sendObject(topics.listTopics());
-			} catch (Exception e) {
-				sendInt(-1);
-			}
+            tries = 0;
+            while(tries < max) {
+                try {
+                    sendObject(topics.listTopics());
+                } catch (RemoteException e) {
+                    System.out.println(e);
+                    if(tries < max) {
+                        try {
+                            System.out.println("Reconnecting to RMI.");
+                            lookupRemotes();
+                            System.out.println("Connected to RMI again.");
+                        } catch (RemoteException e1) {
+                            tries++;
+                            Thread.sleep(timeoutRMI);
+                        }
+                    }
+                    else {
+                        //Send information that topic creation failed but not because it already exists.
+                        sendInt(-3);
+                        break;
+                    }
+                } catch (Exception e) {
+                    sendInt(-1);
+                    break;
+                }
+            }
 		}
 		else if(cmd instanceof SubmitIdea)
 		{
 			SubmitIdea aux = (SubmitIdea) cmd;
-			try {
-                if (aux.fileAttachName.equals("-")) {
-                    ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text, null, "-", -1);
-                }
-				else {
-                    Object fileLengthObj = inStream.readObject();
-                    int fileLength = (Integer) fileLengthObj;
-                    System.out.println("File Size: " + fileLength);
-                    int bytesRead;
-                    int current = 0;
-                    byte[] bytesArray = new byte[5*1024*1024];
-                    bytesRead = inStream.read(bytesArray,0,bytesArray.length);
-                    System.out.print("File successfully read.");
-                    current = bytesRead;
-                    System.out.println("Read Complete: "+bytesRead+" Current: "+current);
-
-                    do {
-                        System.out.println("Reading");
-                        bytesRead = inStream.read(bytesArray, current, (bytesArray.length - current));
-                        if (bytesRead >= 0) {
-                            current += bytesRead;
-                        }
+            tries = 0;
+            while (tries < max) {
+                try {
+                    if (aux.fileAttachName.equals("-")) {
+                        ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text, null, "-", -1);
+                    }
+                    else {
+                        Object fileLengthObj = inStream.readObject();
+                        int fileLength = (Integer) fileLengthObj;
+                        System.out.println("File Size: " + fileLength);
+                        int bytesRead;
+                        int current = 0;
+                        byte[] bytesArray = new byte[5*1024*1024];
+                        bytesRead = inStream.read(bytesArray,0,bytesArray.length);
+                        System.out.print("File successfully read.");
+                        current = bytesRead;
                         System.out.println("Read Complete: "+bytesRead+" Current: "+current);
-                        if(current == fileLength)
-                            break;
-                    } while (bytesRead > -1);
 
-                    ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text, bytesArray, aux.fileAttachName, current);
+                        do {
+                            System.out.println("Reading");
+                            bytesRead = inStream.read(bytesArray, current, (bytesArray.length - current));
+                            if (bytesRead >= 0) {
+                                current += bytesRead;
+                            }
+                            System.out.println("Read Complete: "+bytesRead+" Current: "+current);
+                            if(current == fileLength)
+                                break;
+                        } while (bytesRead > -1);
 
+                        ideas.submitIdea(aux.topics, userID, aux.parent_id, aux.number_parts, aux.part_val, aux.stance, aux.text, bytesArray, aux.fileAttachName, current);
+
+                    }
+                    sendInt(0);
+                } catch (RemoteException e) {
+                    System.out.println(e);
+                    if(tries < max) {
+                        try {
+                            System.out.println("Reconnecting to RMI.");
+                            lookupRemotes();
+                            System.out.println("Connected to RMI again.");
+                        } catch (RemoteException e1) {
+                            tries++;
+                            Thread.sleep(timeoutRMI);
+                        }
+                    }
+                    else {
+                        //Send information that topic creation failed but not because it already exists.
+                        sendInt(-3);
+                        break;
+                    }
+                } catch (Exception e) {
+                    sendInt(-1);
+                    break;
                 }
-				sendInt(0);
-			} catch (Exception e) {
-                System.out.println(e);
-				//Send information that idea was not correctly submitted.
-				sendInt(-1);
-			}
+            }
 		}
 		else if(cmd instanceof DeleteIdea)
 		{
 			DeleteIdea aux = (DeleteIdea) cmd;
-			try {
-				ideas.deleteIdea(aux.idea_id, userID);
-				sendInt(0);
-			} catch (NotFullOwnerException e) {
-				//Send information that to delete idea one must own all of its shares.
-				sendInt(-2);
-			} catch (Exception e) {
-				//Send information that deletion was unsuccessful.
-				sendInt(-1);
-			}
+            tries = 0;
+            while (tries < max) {
+                try {
+                    ideas.deleteIdea(aux.idea_id, userID);
+                    sendInt(0);
+                } catch (NotFullOwnerException e) {
+                    //Send information that to delete idea one must own all of its shares.
+                    sendInt(-2);
+                } catch (RemoteException e) {
+                    System.out.println(e);
+                    if(tries < max) {
+                        try {
+                            System.out.println("Reconnecting to RMI.");
+                            lookupRemotes();
+                            System.out.println("Connected to RMI again.");
+                        } catch (RemoteException e1) {
+                            tries++;
+                            Thread.sleep(timeoutRMI);
+                        }
+                    }
+                    else {
+                        //Send information that topic creation failed but not because it already exists.
+                        sendInt(-3);
+                        break;
+                    }
+                } catch (Exception e) {
+                    sendInt(-1);
+                    break;
+                }
+            }
 		}
 		else if(cmd instanceof ViewIdeasTopic)
 		{
+            tries = 0;
 			ViewIdeasTopic aux = (ViewIdeasTopic) cmd;
-			try {
-				sendObject(ideas.viewIdeasTopic(aux.topic_id));
-			} catch (Exception e) {
-				//Send information that requested data cannot be fetched.
-                System.out.print("Merda\n");
-				sendInt(-1);
-			}
+            while (tries < max) {
+                try {
+                    sendObject(ideas.viewIdeasTopic(aux.topic_id));
+                } catch (RemoteException e) {
+                    System.out.println(e);
+                    if(tries < max) {
+                        try {
+                            System.out.println("Reconnecting to RMI.");
+                            lookupRemotes();
+                            System.out.println("Connected to RMI again.");
+                        } catch (RemoteException e1) {
+                            tries++;
+                            Thread.sleep(timeoutRMI);
+                        }
+                    }
+                    else {
+                        //Send information that topic creation failed but not because it already exists.
+                        sendInt(-3);
+                        break;
+                    }
+                } catch (Exception e) {
+                    sendInt(-1);
+                    break;
+                }
+            }
 		}
 		else if(cmd instanceof ViewIdeasNested)
 		{
+            tries = 0;
 			ViewIdeasNested aux = (ViewIdeasNested) cmd;
-			try {
-                if (aux.loadAttach)
-                    sendObject(ideas.viewIdeasNested(aux.idea_id,true));
-                else
-                    sendObject(ideas.viewIdeasNested(aux.idea_id,false));
-			} catch (Exception e) {
-				//Send information that requested data cannot be fetched.
-				sendInt(-1);
-			}
+            while (tries < max) {
+                try {
+                    if (aux.loadAttach)
+                        sendObject(ideas.viewIdeasNested(aux.idea_id,true));
+                    else
+                        sendObject(ideas.viewIdeasNested(aux.idea_id,false));
+                } catch (RemoteException e) {
+                    System.out.println(e);
+                    if(tries < max) {
+                        try {
+                            System.out.println("Reconnecting to RMI.");
+                            lookupRemotes();
+                            System.out.println("Connected to RMI again.");
+                        } catch (RemoteException e1) {
+                            tries++;
+                            Thread.sleep(timeoutRMI);
+                        }
+                    }
+                    else {
+                        //Send information that topic creation failed but not because it already exists.
+                        sendInt(-3);
+                    }
+                } catch (Exception e) {
+                    sendInt(-1);
+                }
+            }
 		}
 		else if(cmd instanceof SetShareValue)
 		{
+            tries = 0;
 			SetShareValue aux = (SetShareValue) cmd;
-			try {
-				transactions.setShareValue(userID, aux.idea_id, aux.new_value);
-				sendInt(0);
-			} catch (Exception e) {
-				//Send information that requested data cannot be fetched.
-				sendInt(-1);
-			}
+            while (tries < max) {
+                try {
+                    transactions.setShareValue(userID, aux.idea_id, aux.new_value);
+                    sendInt(0);
+                } catch (RemoteException e) {
+                    System.out.println(e);
+                    if(tries < max) {
+                        try {
+                            System.out.println("Reconnecting to RMI.");
+                            lookupRemotes();
+                            System.out.println("Connected to RMI again.");
+                        } catch (RemoteException e1) {
+                            tries++;
+                            Thread.sleep(timeoutRMI);
+                        }
+                    }
+                    else {
+                        //Send information that topic creation failed but not because it already exists.
+                        sendInt(-3);
+                        break;
+                    }
+                } catch (Exception e) {
+                    sendInt(-1);
+                    break;
+                }
+            }
 		}
 		else if(cmd instanceof BuyShares)
 		{
+            tries = 0;
 			BuyShares aux = (BuyShares) cmd;
-			try {
-				transactions.buyShares(userID, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share, false);
-				sendInt(0);
-			} catch (Exception e) {
-                System.out.println("\n"+e);
-				//Send information that requested data cannot be fetched.
-				sendInt(-1);
-			}
+            while (tries < max) {
+                try {
+                    transactions.buyShares(userID, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share, false);
+                    sendInt(0);
+                } catch (RemoteException e) {
+                    System.out.println(e);
+                    if(tries < max) {
+                        try {
+                            System.out.println("Reconnecting to RMI.");
+                            lookupRemotes();
+                            System.out.println("Connected to RMI again.");
+                        } catch (RemoteException e1) {
+                            tries++;
+                            Thread.sleep(timeoutRMI);
+                        }
+                    }
+                    else {
+                        //Send information that topic creation failed but not because it already exists.
+                        sendInt(-3);
+                    }
+                } catch (Exception e) {
+                    sendInt(-1);
+                }
+            }
 		}
 		else if(cmd instanceof ViewIdeasShares)
 		{
-			ViewIdeasShares aux = (ViewIdeasShares) cmd;
-			try {
-				sendObject(transactions.getShares(aux.idea_id));
-			} catch (Exception e) {
-				//Send information that requested data cannot be fetched.
-				sendInt(-1);
-			}
+            tries = 0;
+            while (tries < max) {
+                ViewIdeasShares aux = (ViewIdeasShares) cmd;
+                try {
+                    sendObject(transactions.getShares(aux.idea_id));
+                } catch (RemoteException e) {
+                    System.out.println(e);
+                    if(tries < max) {
+                        try {
+                            System.out.println("Reconnecting to RMI.");
+                            lookupRemotes();
+                            System.out.println("Connected to RMI again.");
+                        } catch (RemoteException e1) {
+                            tries++;
+                            Thread.sleep(timeoutRMI);
+                        }
+                    }
+                    else {
+                        //Send information that topic creation failed but not because it already exists.
+                        sendInt(-3);
+                    }
+                } catch (Exception e) {
+                    sendInt(-1);
+                }
+            }
 		}
 		else if(cmd instanceof ShowHistory)
 		{
-			try {
-				sendObject(transactions.showHistory(userID));
-			} catch (Exception e) {
-				//Send information that requested data cannot be fetched.
-				sendInt(-1);
-			}
+            tries = 0;
+            while (tries < max) {
+                try {
+                    sendObject(transactions.showHistory(userID));
+                } catch (RemoteException e) {
+                    System.out.println(e);
+                    if(tries < max) {
+                        try {
+                            System.out.println("Reconnecting to RMI.");
+                            lookupRemotes();
+                            System.out.println("Connected to RMI again.");
+                        } catch (RemoteException e1) {
+                            tries++;
+                            Thread.sleep(timeoutRMI);
+                        }
+                    }
+                    else {
+                        //Send information that topic creation failed but not because it already exists.
+                        sendInt(-3);
+                    }
+                } catch (Exception e) {
+                    sendInt(-1);
+                }
+            }
 		}
 	}
 

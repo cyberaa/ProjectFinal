@@ -6,6 +6,7 @@ import serverRMI.Transaction;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -33,6 +34,9 @@ public class Client {
 
     protected static ObjectInputStream in;
     protected static ObjectOutputStream out;
+
+    protected static Scanner scString = new Scanner(System.in);
+    protected static Scanner scInt = new Scanner(System.in);
 
     protected static String delimiter = "\n----------------------------------------------\n";
 
@@ -75,7 +79,6 @@ public class Client {
 
         System.out.println("Notification Created");
 
-
         try {
             out = new ObjectOutputStream(s.getOutputStream());
             in = new ObjectInputStream(s.getInputStream());
@@ -85,11 +88,6 @@ public class Client {
         }
 
         int choose;
-        String username;
-        String password;
-
-        Scanner scString = new Scanner(System.in);
-        Scanner scInt = new Scanner(System.in);
 
         System.out.println("\t \t IDEA BROKER - WE DON'T NEED GUI TO BE THE BEST\n");
 
@@ -102,7 +100,59 @@ public class Client {
 
         Object returnComand;
 
+
+        authAndReg(choose);
+
+        try {
+            execMenu();
+        } catch (EOFException eofe) {
+            System.out.print("EOF: "+eofe);
+        } catch (IOException io) {
+            System.out.println("IO: " + io);
+        }
+
+    }
+
+    protected static void writeObject(Object obj) {
+
+        int max = 3;
+        int tries = 0;
+
+        while (tries < max) {
+            try {
+                out.writeObject(obj);
+                out.flush();
+                break;
+            } catch (SocketException ioe) {
+                System.out.println("IO Exc"+ioe);
+                if(tries<max) {
+                    if (reconnectUserToServer()) {
+                        tries = 0;
+                    }
+                    else {
+                        tries++;
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        }
+                    }
+                }
+                else {
+                    break;
+                }
+            } catch (IOException io) {
+                System.out.println(io);
+                System.exit(-1);
+            }
+        }
+    }
+
+    protected static void authAndReg(int choose) {
         int report;
+        String username;
+        String password;
+        Object returnComand;
         do {
             report = -3;
             switch(choose) {
@@ -172,13 +222,34 @@ public class Client {
                     System.out.println("Fizeste merda.");
             }
         } while(report != 0 || choose != 1);
+    }
+
+    public static boolean reconnectUserToServer() {
+        try {
+            s.close();
+            System.out.println("\nReconnecting User\n");
+            s = new Socket(Client.serverAddress_1, Client.serverPort1);
+            System.out.println("Socket Established User");
+            out = new ObjectOutputStream(s.getOutputStream());
+            in = new ObjectInputStream(s.getInputStream());
+            System.out.println("Reconnected User.");
+        } catch (Exception ioe) {
+            System.out.println(ioe);
+            return false;
+        }
+        return true;
+    }
+
+    public static void execMenu() throws IOException{
+
+        int choose;
+        Object returnComand;
+        int report;
 
         System.out.println(delimiter);
-
         System.out.println("\t \t IDEA BROKER - WE DON'T NEED GUI TO BE THE BEST\n");
 
         do {
-
             System.out.println("1 - Create topic");
             System.out.println("2 - View topic ideas");
             System.out.println("3 - List topics");
@@ -206,9 +277,6 @@ public class Client {
                     try {
                         returnComand = in.readObject();
                         report = (Integer) returnComand;
-                    } catch (IOException e) {
-                        System.out.println("Error reading authentication report from socket.\n" + e);
-                        return;
                     } catch (ClassNotFoundException e) {
                         System.out.println(e);
                         return;
@@ -219,6 +287,10 @@ public class Client {
                     }
                     else if (report == -2) {
                         System.out.println("Topic already exists.");
+                    }
+                    else if (report == -3) {
+                        System.out.println("RMI is down.");
+                        System.exit(-1);
                     }
                     else {
                         System.out.println("Topic created successful!");
@@ -246,9 +318,6 @@ public class Client {
                         else {
                             report = (Integer) returnComand;
                         }
-                    } catch (IOException e) {
-                        System.out.println("Error reading authentication report from socket.\n" + e);
-                        return;
                     } catch (ClassNotFoundException e) {
                         System.out.println(e);
                         return;
@@ -257,9 +326,12 @@ public class Client {
                     if(report == -1) {
                         System.out.println("Server could not fulfill request.");
                     }
+                    else if (report == -3) {
+                        System.out.println("RMI is down.");
+                        System.exit(-1);
+                    }
                     break;
                 case 3:
-                    //TODO: Read topics from socket.
                     System.out.println(delimiter);
                     ListTopics lTopics = new ListTopics();
                     writeObject(lTopics);
@@ -277,9 +349,6 @@ public class Client {
                         else {
                             report = (Integer) returnComand;
                         }
-                    } catch (IOException e) {
-                        System.out.println("Error reading authentication report from socket.\n" + e);
-                        return;
                     } catch (ClassNotFoundException e) {
                         System.out.println(e);
                         return;
@@ -287,6 +356,10 @@ public class Client {
 
                     if(report == -1) {
                         System.out.println("Server could not fulfill request.");
+                    }
+                    else if (report == -3) {
+                        System.out.println("RMI is down.");
+                        System.exit(-1);
                     }
                     break;
                 case 4:
@@ -372,9 +445,6 @@ public class Client {
                     try {
                         returnComand = in.readObject();
                         report = (Integer) returnComand;
-                    } catch (IOException e) {
-                        System.out.println("Error reading authentication report from socket.\n" + e);
-                        return;
                     } catch (ClassNotFoundException e) {
                         System.out.println(e);
                         return;
@@ -382,6 +452,10 @@ public class Client {
 
                     if(report == -1) {
                         System.out.println("Server could not fulfill request."); //TODO: Se no SQL der merda, gerar esta excepção. VERIFICAR IMPORTANTE
+                    }
+                    else if (report == -3) {
+                        System.out.println("RMI is down.");
+                        System.exit(-1);
                     }
                     else {
                         System.out.println("Idea submitted successfully.");
@@ -405,9 +479,6 @@ public class Client {
                     try {
                         returnComand = in.readObject();
                         report = (Integer) returnComand;
-                    } catch (IOException e) {
-                        System.out.println("Error reading authentication report from socket.\n" + e);
-                        return;
                     } catch (ClassNotFoundException e) {
                         System.out.println(e);
                         return;
@@ -415,6 +486,10 @@ public class Client {
 
                     if(report == -1) {
                         System.out.println("Server could not fulfill request.");
+                    }
+                    else if (report == -3) {
+                        System.out.println("RMI is down.");
+                        System.exit(-1);
                     }
                     else {
                         System.out.println("Share successfully bought.");
@@ -456,9 +531,6 @@ public class Client {
                         else {
                             report = (Integer) returnComand;
                         }
-                    } catch (IOException e) {
-                        System.out.println("Error reading authentication report from socket.\n" + e);
-                        return;
                     } catch (ClassNotFoundException e) {
                         System.out.println(e);
                         return;
@@ -484,6 +556,10 @@ public class Client {
                     if(report == -1) {
                         System.out.println("Server could not fulfill request.");
                     }
+                    else if (report == -3) {
+                        System.out.println("RMI is down.");
+                        System.exit(-1);
+                    }
                     break;
                 case 7:
                     ShowHistory showHist = new ShowHistory();
@@ -503,9 +579,6 @@ public class Client {
                         else {
                             report = (Integer) returnComand;
                         }
-                    } catch (IOException e) {
-                        System.out.println("Error reading authentication report from socket.\n" + e);
-                        return;
                     } catch (ClassNotFoundException e) {
                         System.out.println(e);
                         return;
@@ -513,6 +586,10 @@ public class Client {
 
                     if(report == -1) {
                         System.out.println("Server could not fulfill request.");
+                    }
+                    else if (report == -3) {
+                        System.out.println("RMI is down.");
+                        System.exit(-1);
                     }
                     break;
                 case 8:
@@ -537,9 +614,6 @@ public class Client {
                         else {
                             report = (Integer) returnComand;
                         }
-                    } catch (IOException e) {
-                        System.out.println("Error reading authentication report from socket.\n" + e);
-                        return;
                     } catch (ClassNotFoundException e) {
                         System.out.println(e);
                         return;
@@ -547,6 +621,10 @@ public class Client {
 
                     if(report == -1) {
                         System.out.println("Server could not fulfill request.");
+                    }
+                    else if (report == -3) {
+                        System.out.println("RMI is down.");
+                        System.exit(-1);
                     }
 
                     break;
@@ -568,9 +646,6 @@ public class Client {
                         returnComand = in.readObject();
 
                         report = (Integer) returnComand;
-                    } catch (IOException e) {
-                        System.out.println("Error reading authentication report from socket.\n" + e);
-                        return;
                     } catch (ClassNotFoundException e) {
                         System.out.println(e);
                         return;
@@ -578,6 +653,10 @@ public class Client {
 
                     if(report == -1) {
                         System.out.println("Server could not fulfill request."); //TODO: Se no SQL der merda, gerar esta excepção. VERIFICAR IMPORTANTE
+                    }
+                    else if (report == -3) {
+                        System.out.println("RMI is down.");
+                        System.exit(-1);
                     }
                     else {
                         System.out.println("Share value successfully changed.");
@@ -595,9 +674,6 @@ public class Client {
                     try {
                         returnComand = in.readObject();
                         report = (Integer) returnComand;
-                    } catch (IOException e) {
-                        System.out.println("Error reading authentication report from socket.\n" + e);
-                        return;
                     } catch (ClassNotFoundException e) {
                         System.out.println(e);
                         return;
@@ -609,58 +685,27 @@ public class Client {
                     else if (report == -2) {
                         System.out.println("You're not idea full owner.");
                     }
+                    else if (report == -3) {
+                        System.out.println("RMI is down.");
+                        System.exit(-1);
+                    }
                     else {
                         System.out.println("Idea deleted successfully.");
                     }
 
                     break;
                 case 11:
-                    try {
                         in.close();
                         out.close();
                         s.close();
                         nots.shutdown = true;
-                    } catch (IOException ioe) {
-                        System.out.print(ioe);
-                    }
 
                     System.out.println("Exiting...");
                     System.exit(0);
             }
             System.out.print(delimiter);
         } while(choose != 11);
-    }
 
-    protected static void writeObject(Object obj) {
-        try {
-            out.writeObject(obj);
-            out.flush();
-        } catch (IOException e) {
-            System.out.println("Error writting object.\n" + e);
-            System.exit(-1);
-        }
-    }
-
-    protected static void reconnectUser() {
-        try {
-            s = new Socket(serverAddress_1, serverPort1);
-            out = new ObjectOutputStream(s.getOutputStream());
-            in = new ObjectInputStream(s.getInputStream());
-            System.out.println("Reconnected User");
-            System.out.println();
-        } catch (IOException ioe) {
-            System.out.println("Failed reconnect.");
-        }
-    }
-
-    protected static void reconnectNotifications() {
-        try {
-            nots.sock = new Socket(serverAddress_1, server1_not_port);
-            nots.inStream = new ObjectInputStream(nots.sock.getInputStream());
-            System.out.println("Reconnected Notifications.");
-        } catch (IOException ioe) {
-            System.out.print("Failed Reconnect");
-        }
     }
 
 }
