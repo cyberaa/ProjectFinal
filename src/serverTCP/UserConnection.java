@@ -39,6 +39,11 @@ public class UserConnection extends Thread
 
     public UserConnection(Socket cSocket, UserNotifications notifs)
     {
+        int tries;
+        int max = 3;
+        int timeoutRMI = 5000;
+
+
         clientSocket = cSocket;
 	    notifsThread = notifs;
 
@@ -51,12 +56,33 @@ public class UserConnection extends Thread
 
         Scanner sc = new Scanner(System.in);
 
-	    try {
-		    lookupRemotes();
-	    } catch (RemoteException re) {
-		    System.out.println("Error looking up remote objects:\n" + re);
-            sc.nextLine();
-	    }
+        tries = 0;
+        while (tries < max) {
+            try {
+                lookupRemotes();
+                System.out.println("Objects lookup");
+                break;
+            } catch (RemoteException re) {
+                System.out.println(re);
+                if(tries < max) {
+                    try {
+                        System.out.println("Reconnecting to RMI.");
+                        lookupRemotes();
+                        System.out.println("Connected to RMI again.");
+                    } catch (RemoteException e1) {
+                        tries++;
+                        try {
+                            Thread.sleep(timeoutRMI);
+                        } catch (InterruptedException e) {
+                             System.out.println(e);
+                        }
+                    }
+                }
+                else {
+                    System.exit(-1);
+                }
+            }
+        }
 
 	    start();
 	}
@@ -168,6 +194,7 @@ public class UserConnection extends Thread
             while(tries < max) {
                 try {
                     sendObject(topics.listTopics());
+                    break;
                 } catch (RemoteException e) {
                     System.out.println(e);
                     if(tries < max) {
@@ -227,6 +254,7 @@ public class UserConnection extends Thread
 
                     }
                     sendInt(0);
+                    break;
                 } catch (RemoteException e) {
                     System.out.println(e);
                     if(tries < max) {
@@ -258,6 +286,7 @@ public class UserConnection extends Thread
                 try {
                     ideas.deleteIdea(aux.idea_id, userID);
                     sendInt(0);
+                    break;
                 } catch (NotFullOwnerException e) {
                     //Send information that to delete idea one must own all of its shares.
                     sendInt(-2);
@@ -291,6 +320,7 @@ public class UserConnection extends Thread
             while (tries < max) {
                 try {
                     sendObject(ideas.viewIdeasTopic(aux.topic_id));
+                    break;
                 } catch (RemoteException e) {
                     System.out.println(e);
                     if(tries < max) {
@@ -324,6 +354,8 @@ public class UserConnection extends Thread
                         sendObject(ideas.viewIdeasNested(aux.idea_id,true));
                     else
                         sendObject(ideas.viewIdeasNested(aux.idea_id,false));
+
+                    break;
                 } catch (RemoteException e) {
                     System.out.println(e);
                     if(tries < max) {
@@ -353,6 +385,7 @@ public class UserConnection extends Thread
                 try {
                     transactions.setShareValue(userID, aux.idea_id, aux.new_value);
                     sendInt(0);
+                    break;
                 } catch (RemoteException e) {
                     System.out.println(e);
                     if(tries < max) {
@@ -384,6 +417,7 @@ public class UserConnection extends Thread
                 try {
                     transactions.buyShares(userID, aux.idea_id, aux.share_num, aux.price_per_share, aux.new_price_share, false);
                     sendInt(0);
+                    break;
                 } catch (RemoteException e) {
                     System.out.println(e);
                     if(tries < max) {
@@ -412,6 +446,7 @@ public class UserConnection extends Thread
                 ViewIdeasShares aux = (ViewIdeasShares) cmd;
                 try {
                     sendObject(transactions.getShares(aux.idea_id));
+                    break;
                 } catch (RemoteException e) {
                     System.out.println(e);
                     if(tries < max) {
@@ -439,6 +474,7 @@ public class UserConnection extends Thread
             while (tries < max) {
                 try {
                     sendObject(transactions.showHistory(userID));
+                    break;
                 } catch (RemoteException e) {
                     System.out.println(e);
                     if(tries < max) {
@@ -506,6 +542,7 @@ public class UserConnection extends Thread
                     try {
                         um.register(aux.name, aux.pass, aux.nameAlias);
                         ret = 0;
+                        break;
                     } catch (ExistingUserException e) {
                         ret = -2;
                     } catch (RemoteException e) {
@@ -538,6 +575,7 @@ public class UserConnection extends Thread
                         userID = um.authenticate(aux.username, aux.password);
                         success = true;
                         ret = 0;
+                        break;
                     } catch (UserAuthenticationException e) {
                         ret = -2;
                     } catch (RemoteException e) {
