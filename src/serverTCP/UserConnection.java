@@ -42,8 +42,8 @@ public class UserConnection extends Thread
 	    notifsThread = notifs;
 
         try {
+	        inStream = new ObjectInputStream(cSocket.getInputStream());
 	        outStream = new ObjectOutputStream(cSocket.getOutputStream());
-            inStream = new ObjectInputStream(cSocket.getInputStream());
         } catch (IOException ie) {
 	        System.out.println("[Connection] Could not create input and output streams:\n" + ie);
         }
@@ -256,6 +256,7 @@ public class UserConnection extends Thread
 			//Read next command.
 			try {
 				cmd = inStream.readObject();
+				System.out.println();
 			} catch (ClassNotFoundException cnfe) {
 				System.out.println("Object class not found:\n" + cnfe);
 				ret = -1;
@@ -299,6 +300,15 @@ public class UserConnection extends Thread
 
 			//Send return.
 			sendInt(ret);
+		}
+
+		//Close streams and socket.
+		try {
+			inStream.close();
+			outStream.close();
+			clientSocket.close();
+		} catch (IOException e) {
+			//Do nothing, close thread.
 		}
 	}
 

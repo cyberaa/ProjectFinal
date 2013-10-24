@@ -85,6 +85,14 @@ public class UserNotifications extends Thread
 			} catch (Exception e) {
 			}
 		}
+
+		//Close streams and socket.
+		try {
+			outStream.close();
+			clientSocket.close();
+		} catch (IOException e) {
+			//Do nothing, close thread.
+		}
 	}
 
 	/**
