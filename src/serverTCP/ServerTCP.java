@@ -104,7 +104,10 @@ public class ServerTCP
             try {
                 s1 = notListenSocket.accept();
                 System.out.println("New Notifications Connection Accepted.");
+                notifs = new UserNotifications(s1);
+                System.out.println("\nVagina\n");
             } catch (SocketTimeoutException e) {
+                System.out.println(e);
                 //Do nothing.
                 continue;
             } catch (IOException e) {
@@ -112,12 +115,14 @@ public class ServerTCP
                 continue;
             }
 
+            System.out.println("\nMerda\n");
+
             try {
                 System.out.println("Waiting for connection");
                 s2 = conListenSocket.accept();
                 System.out.println("New User Connection Accepted.");
                 System.out.println("Passei");
-                notifs = new UserNotifications(s1);
+
                 new UserConnection(s2, notifs);
             } catch (SocketTimeoutException e) {
                 //Do nothing.

@@ -41,6 +41,7 @@ public class UserNotifications extends Thread
 		//Create output stream.
 		try {
 			outStream = new ObjectOutputStream(clientSocket.getOutputStream());
+            System.out.println("Output stream created...");
 		} catch (IOException ie) {
 			System.out.println("[Notifications] Could not create input and output streams:\n" + ie);
 		}
@@ -48,12 +49,12 @@ public class UserNotifications extends Thread
 
         bindRMIObjects();
 
+        System.out.println("Objects bound.");
 	}
 
 	@Override
 	public void run()
 	{
-
         int count = 0;
 
 		System.out.println("Notifications thread started.");
@@ -102,7 +103,9 @@ public class UserNotifications extends Thread
         //Bind RMI object.
         String rmiAddress = "rmi://"+ServerTCP.rmiServerAddress+":"+ServerTCP.rmiRegistryPort+"/";
         try {
+            System.out.println(rmiAddress);
             notifications = (RemoteNotifications) Naming.lookup(rmiAddress + "Notifications");
+            System.out.println("Pila");
         } catch (MalformedURLException mue) {
             System.out.println("Wrong URL passed as argument:\n" + mue);
             System.exit(-1);
