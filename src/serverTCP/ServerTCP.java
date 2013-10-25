@@ -77,7 +77,10 @@ public class ServerTCP
 	    }
     }
 
-    protected static void runMainServer() {
+    protected static void runMainServer()
+    {
+	    System.out.println("Becoming main server!");
+
         try {
             conListenSocket = new ServerSocket(conPort);
             conListenSocket.setSoTimeout(timeout);
@@ -126,6 +129,8 @@ public class ServerTCP
 
 	protected static void runSecondaryServer()
 	{
+		System.out.println("Becoming secondary server.");
+
 		while(!isMain)
 			tryReceive();
 	}
