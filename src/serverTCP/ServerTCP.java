@@ -37,7 +37,7 @@ public class ServerTCP
 
     public static void main(String args[]) {
         //Verify the number of given arguments.
-        if(args.length != 6)
+        if(args.length != 7)
         {
             System.out.println("Usage: java ServerTCP <server_udp_port> <server_connection_port> <server_notify_port> <rmi_registry_address> <rmi_registry_port> <other_server_address> <other_server_port>");
             return;
@@ -103,6 +103,7 @@ public class ServerTCP
 
             try {
                 s1 = notListenSocket.accept();
+	            notifs = new UserNotifications(s1);
                 System.out.println("New Notifications Connection Accepted.");
             } catch (SocketTimeoutException e) {
                 //Do nothing.
@@ -117,7 +118,6 @@ public class ServerTCP
                 s2 = conListenSocket.accept();
                 System.out.println("New User Connection Accepted.");
                 System.out.println("Passei");
-                notifs = new UserNotifications(s1);
                 new UserConnection(s2, notifs);
             } catch (SocketTimeoutException e) {
                 //Do nothing.
@@ -150,9 +150,11 @@ public class ServerTCP
 
 	protected static void send()
 	{
-		DatagramPacket data = new DatagramPacket(buffer, buffer.length, serverTCPaddress, serverTCPport);
+		byte[] bufferSend = new byte[10];
+		bufferSend = new String("hey").getBytes();
+		DatagramPacket data = new DatagramPacket(bufferSend, bufferSend.length, serverTCPaddress, serverTCPport);
 		try {
-			socketUDP.send(dataUDP);
+			socketUDP.send(data);
 		} catch (IOException e) {
 			System.out.println("Could not send DatagramPacket:\n" + e);
 		}

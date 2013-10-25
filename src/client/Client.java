@@ -34,6 +34,11 @@ public class Client {
     protected static int serverPort1;
     protected static int serverPort2;
 
+	protected static int currentPort;
+	protected static int otherPort;
+	protected static int currentPortNot;
+	protected static int otherPortNot;
+
     protected static int server1_not_port;
     protected static int server2_not_port;
 
@@ -62,6 +67,11 @@ public class Client {
         server2_not_port = Integer.parseInt(args[5]);
 
         reconnectUserToServer();
+	    if(s == null)
+	    {
+		    System.out.println("Could not connect to any server.");
+		    return;
+	    }
 
 	    while(true)
 	    {
@@ -177,26 +187,32 @@ public class Client {
 	    if(current == null)
 	    {
 		    current = serverAddress_1;
+		    currentPort = serverPort1;
+		    currentPortNot = server1_not_port;
 		    other = serverAddress_2;
+		    otherPort = serverPort2;
+		    otherPortNot = server2_not_port;
 	    }
 
-	    if (nots.isAlive())
-		    nots.shutdown = true;
-
 	    //Try to reconnect with the current server.
+	    System.out.println("Establishing connection to "+current+":"+currentPort+" and to "+current+":"+currentPortNot);
 	    while(tries < max)
 	    {
 		    try {
+			    if(nots != null && nots.isAlive())
+				    nots.shutdown = true;
+
 			    //Notifications thread.
-			    Socket aux = new Socket(current, server1_not_port);
+			    Socket aux = new Socket(current, currentPortNot);
+			    System.out.println("Notifications socket established");
 			    nots = new Notifications(aux);
 
-			    System.out.println("Notifications socket established");
+			    System.out.println("Notifications thread started");
 
 			    //Main thread sockets.
 			    s.close();
 
-			    s = new Socket(current, serverPort1);
+			    s = new Socket(current, currentPort);
 			    System.out.println("Main socket established");
 			    out = new ObjectOutputStream(s.getOutputStream());
 			    in = new ObjectInputStream(s.getInputStream());
@@ -204,6 +220,7 @@ public class Client {
 			    reconnect = false;
 			    return true;
 		    } catch (Exception e) {
+			    System.out.println(e);
 			    if(tries++ >= max)
 				    break;
 			    else
@@ -218,12 +235,18 @@ public class Client {
 	    }
 
 	    //Try to reconnect with the other server.
+	    int auxPort1, auxPort2;
 	    String auxString;
+	    tries = 0;
+	    System.out.println("Establishing connection to "+other+":"+otherPort+" and to "+other+":"+otherPortNot);
 	    while(tries < max)
 	    {
 		    try {
+			    if(nots != null && nots.isAlive())
+				    nots.shutdown = true;
+
 			    //Notifications thread.
-			    Socket aux = new Socket(other, server2_not_port);
+			    Socket aux = new Socket(other, otherPortNot);
 			    nots = new Notifications(aux);
 
 			    System.out.println("Notifications socket established");
@@ -231,7 +254,7 @@ public class Client {
 			    //Main thread sockets.
 			    s.close();
 
-			    s = new Socket(other, serverPort2);
+			    s = new Socket(other, otherPort);
 			    System.out.println("Main socket established");
 			    out = new ObjectOutputStream(s.getOutputStream());
 			    in = new ObjectInputStream(s.getInputStream());
@@ -241,9 +264,18 @@ public class Client {
 			    current = other;
 			    other = auxString;
 
+			    auxPort1 = currentPort;
+			    currentPort = otherPort;
+			    otherPort = auxPort1;
+
+			    auxPort2 = currentPortNot;
+			    currentPortNot = otherPortNot;
+			    otherPortNot = auxPort2;
+
 			    reconnect = false;
 			    return true;
 		    } catch (Exception e) {
+			    System.out.println(e);
 			    if(tries++ >= max)
 				    break;
 			    else
