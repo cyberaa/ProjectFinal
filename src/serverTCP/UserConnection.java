@@ -371,9 +371,11 @@ public class UserConnection extends Thread
                     else {
                         //Send information that topic creation failed but not because it already exists.
                         sendInt(-3);
+                        break;
                     }
                 } catch (Exception e) {
                     sendInt(-1);
+                    break;
                 }
             }
 		}
@@ -433,9 +435,11 @@ public class UserConnection extends Thread
                     else {
                         //Send information that topic creation failed but not because it already exists.
                         sendInt(-3);
+                        break;
                     }
                 } catch (Exception e) {
                     sendInt(-1);
+                    break;
                 }
             }
 		}
@@ -462,9 +466,11 @@ public class UserConnection extends Thread
                     else {
                         //Send information that topic creation failed but not because it already exists.
                         sendInt(-3);
+                        break;
                     }
                 } catch (Exception e) {
                     sendInt(-1);
+                    break;
                 }
             }
 		}
@@ -490,9 +496,11 @@ public class UserConnection extends Thread
                     else {
                         //Send information that topic creation failed but not because it already exists.
                         sendInt(-3);
+                        break;
                     }
                 } catch (Exception e) {
                     sendInt(-1);
+                    break;
                 }
             }
 		}
@@ -529,6 +537,7 @@ public class UserConnection extends Thread
 			} catch (IOException ioe) {
 				System.out.println("[2]Could not read from socket:\n" + ioe);
 				ret = -1;
+                break;
 			}
 
 			//Interpret and execute command.
@@ -562,9 +571,11 @@ public class UserConnection extends Thread
                         else {
                             //Send information that topic creation failed but not because it already exists.
                             ret = -3;
+                            break;
                         }
                     } catch (Exception e) {
                         ret = -1;
+                        break;
                     }
                 }
 			}
@@ -595,9 +606,11 @@ public class UserConnection extends Thread
                         }
                         else {
                             ret = -3;
+                            break;
                         }
                     } catch (Exception e) {
                         ret = -1;
+                        break;
                     }
                 }
 			}
