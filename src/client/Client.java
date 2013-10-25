@@ -180,7 +180,7 @@ public class Client {
 		    other = serverAddress_2;
 	    }
 
-	    if (nots.isAlive())
+	    if (nots != null && nots.isAlive())
 		    nots.shutdown = true;
 
 	    //Try to reconnect with the current server.

@@ -37,7 +37,7 @@ public class ServerTCP
 
     public static void main(String args[]) {
         //Verify the number of given arguments.
-        if(args.length != 6)
+        if(args.length != 7)
         {
             System.out.println("Usage: java ServerTCP <server_udp_port> <server_connection_port> <server_notify_port> <rmi_registry_address> <rmi_registry_port> <other_server_address> <other_server_port>");
             return;
@@ -150,9 +150,12 @@ public class ServerTCP
 
 	protected static void send()
 	{
-		DatagramPacket data = new DatagramPacket(buffer, buffer.length, serverTCPaddress, serverTCPport);
+        String msg = "merda";
+        byte[] bufferSend  = new byte[10];
+        bufferSend = msg.getBytes();
+		DatagramPacket data = new DatagramPacket(bufferSend, bufferSend.length, serverTCPaddress, serverTCPport);
 		try {
-			socketUDP.send(dataUDP);
+			socketUDP.send(data);
 		} catch (IOException e) {
 			System.out.println("Could not send DatagramPacket:\n" + e);
 		}
