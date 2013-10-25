@@ -19,12 +19,17 @@ import java.util.Scanner;
  */
 public class Client {
 
+	protected static long timeout = 500;
+	public static boolean reconnect = false;
     protected static Socket s;
 
     protected static Notifications nots;
 
     protected static String serverAddress_1;
     protected static String serverAddress_2;
+
+	protected static String current;
+	protected static String other;
 
     protected static int serverPort1;
     protected static int serverPort2;
@@ -56,104 +61,50 @@ public class Client {
         serverPort2 = Integer.parseInt(args[4]);
         server2_not_port = Integer.parseInt(args[5]);
 
-        Socket notif_socket = null;
+        reconnectUserToServer();
 
-        try {
-            notif_socket = new Socket(serverAddress_1, server1_not_port);
-        } catch (IOException e) {
-            System.out.print(e);
-
-        }
-
-        try {
-            s = new Socket(serverAddress_1, serverPort1);
-	        System.out.println("Connections at:\t\t"+serverAddress_1+":"+serverPort1);
-	        System.out.println("Notifications at:\t"+serverAddress_1+":"+server1_not_port);
-	        System.out.println();
-        } catch(IOException ioe) {
-            System.out.println("Error in socket creation.\n" + ioe);
-            return;
-        }
-
-        nots = new Notifications(notif_socket);
-
-        System.out.println("Notification Created");
-
-        try {
-            out = new ObjectOutputStream(s.getOutputStream());
-            in = new ObjectInputStream(s.getInputStream());
-            System.out.println("Streams Created");
-        } catch (IOException ioe) {
-	        System.out.println("Could not create data streams:\n"+ioe);
-        }
-
-        int choose;
-
-        System.out.println("\t \t IDEA BROKER - WE DON'T NEED GUI TO BE THE BEST\n");
-
-        System.out.println("1 - Login");
-        System.out.println("2 - Register\n");
-
-        System.out.print("Option: ");
-
-        choose = scInt.nextInt();
-
-        Object returnComand;
-
-
-        authAndReg(choose);
-
-        try {
-            execMenu();
-        } catch (EOFException eofe) {
-            System.out.print("EOF: "+eofe);
-        } catch (IOException io) {
-            System.out.println("IO: " + io);
-        }
+	    while(true)
+	    {
+		    try {
+			    authAndReg();
+			    execMenu();
+		    } catch (IOException io) {
+			    reconnectUserToServer();
+		    }
+	    }
 
     }
 
     protected static void writeObject(Object obj) {
 
-        int max = 3;
-        int tries = 0;
-
-        while (tries < max) {
-            try {
-                out.writeObject(obj);
-                out.flush();
-                break;
-            } catch (SocketException ioe) {
-                System.out.println("IO Exc"+ioe);
-                if(tries<max) {
-                    if (reconnectUserToServer()) {
-                        tries = 0;
-                    }
-                    else {
-                        tries++;
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                        }
-                    }
-                }
-                else {
-                    break;
-                }
-            } catch (IOException io) {
-                System.out.println(io);
-                System.exit(-1);
-            }
-        }
+	    try {
+		    out.writeObject(obj);
+		    out.flush();
+	    } catch (Exception e) {
+		    reconnect = true;
+	    }
     }
 
-    protected static void authAndReg(int choose) {
+    protected static void authAndReg() throws IOException {
+	    int choose;
         int report;
         String username;
         String password;
-        Object returnComand;
+        Object returnCommand;
+
         do {
+	        if(reconnect)
+		        throw new IOException();
+
+	        System.out.println("\t \t IDEA BROKER - WE DON'T NEED GUI TO BE THE BEST\n");
+
+	        System.out.println("1 - Login");
+	        System.out.println("2 - Register\n");
+
+	        System.out.print("Option: ");
+
+	        choose = scInt.nextInt();
+
             report = -3;
             switch(choose) {
                 case 1:
@@ -165,11 +116,8 @@ public class Client {
                     Authenticate auth = new Authenticate(username,password);
                     writeObject(auth);
                     try {
-                        returnComand = in.readObject();
-                        report = (Integer) returnComand;
-                    } catch (IOException e) {
-                        System.out.println("Error reading authentication report from socket.\n" + e);
-                        return;
+                        returnCommand = in.readObject();
+                        report = (Integer) returnCommand;
                     } catch (ClassNotFoundException e) {
                         System.out.println(e);
                         return;
@@ -194,11 +142,8 @@ public class Client {
                     Register reg = new Register(username,password, "");
                     writeObject(reg);
                     try {
-                        returnComand = in.readObject();
-                        report = (Integer) returnComand;
-                    } catch (IOException e) {
-                        System.out.println("Error reading authentication report from socket.\n" + e);
-                        return;
+                        returnCommand = in.readObject();
+                        report = (Integer) returnCommand;
                     } catch (ClassNotFoundException e) {
                         System.out.println(e);
                         return;
@@ -224,20 +169,95 @@ public class Client {
         } while(report != 0 || choose != 1);
     }
 
-    public static boolean reconnectUserToServer() {
-        try {
-            s.close();
-            System.out.println("\nReconnecting User\n");
-            s = new Socket(Client.serverAddress_1, Client.serverPort1);
-            System.out.println("Socket Established User");
-            out = new ObjectOutputStream(s.getOutputStream());
-            in = new ObjectInputStream(s.getInputStream());
-            System.out.println("Reconnected User.");
-        } catch (Exception ioe) {
-            System.out.println(ioe);
-            return false;
-        }
-        return true;
+    protected static boolean reconnectUserToServer()
+    {
+	    int tries=0, max=3;
+
+	    //Check which server we are/were connected to.
+	    if(current == null)
+	    {
+		    current = serverAddress_1;
+		    other = serverAddress_2;
+	    }
+
+	    if (nots.isAlive())
+		    nots.shutdown = true;
+
+	    //Try to reconnect with the current server.
+	    while(tries < max)
+	    {
+		    try {
+			    //Notifications thread.
+			    Socket aux = new Socket(current, server1_not_port);
+			    nots = new Notifications(aux);
+
+			    System.out.println("Notifications socket established");
+
+			    //Main thread sockets.
+			    s.close();
+
+			    s = new Socket(current, serverPort1);
+			    System.out.println("Main socket established");
+			    out = new ObjectOutputStream(s.getOutputStream());
+			    in = new ObjectInputStream(s.getInputStream());
+
+			    reconnect = false;
+			    return true;
+		    } catch (Exception e) {
+			    if(tries++ >= max)
+				    break;
+			    else
+			    {
+				    try {
+					    Thread.sleep(timeout);
+				    } catch (InterruptedException e1) {
+					    //Do nothing.
+				    }
+			    }
+		    }
+	    }
+
+	    //Try to reconnect with the other server.
+	    String auxString;
+	    while(tries < max)
+	    {
+		    try {
+			    //Notifications thread.
+			    Socket aux = new Socket(other, server2_not_port);
+			    nots = new Notifications(aux);
+
+			    System.out.println("Notifications socket established");
+
+			    //Main thread sockets.
+			    s.close();
+
+			    s = new Socket(other, serverPort2);
+			    System.out.println("Main socket established");
+			    out = new ObjectOutputStream(s.getOutputStream());
+			    in = new ObjectInputStream(s.getInputStream());
+
+			    //Change current and other.
+			    auxString = current;
+			    current = other;
+			    other = auxString;
+
+			    reconnect = false;
+			    return true;
+		    } catch (Exception e) {
+			    if(tries++ >= max)
+				    break;
+			    else
+			    {
+				    try {
+					    Thread.sleep(timeout);
+				    } catch (InterruptedException e1) {
+					    //Do nothing.
+				    }
+			    }
+		    }
+	    }
+
+        return false;
     }
 
     public static void execMenu() throws IOException{
@@ -250,6 +270,9 @@ public class Client {
         System.out.println("\t \t IDEA BROKER - WE DON'T NEED GUI TO BE THE BEST\n");
 
         do {
+	        if(reconnect)
+		        throw new IOException();
+
             System.out.println("1 - Create topic");
             System.out.println("2 - View topic ideas");
             System.out.println("3 - List topics");
@@ -707,5 +730,4 @@ public class Client {
         } while(choose != 11);
 
     }
-
 }

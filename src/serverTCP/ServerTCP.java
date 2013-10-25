@@ -2,10 +2,7 @@ package serverTCP;
 
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.rmi.RMISecurityManager;
+import java.net.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,11 +11,19 @@ import java.rmi.RMISecurityManager;
  * Time: 4:44 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ServerTCP {
-
-    //RMI UserConnection
+public class ServerTCP
+{
+    //RMI connection
     protected static String rmiServerAddress;
     protected static int rmiRegistryPort;
+
+	//UDP connection to other server;
+	protected static int ownUDPport;
+	protected static InetAddress serverTCPaddress;
+	protected static int serverTCPport;
+	protected static DatagramSocket socketUDP;
+	protected static byte[] buffer;
+	protected static DatagramPacket dataUDP;
 
     //TCP UserConnection
     protected static int conPort;
@@ -26,34 +31,53 @@ public class ServerTCP {
 	protected static int notPort;
 	protected static ServerSocket notListenSocket;
 
-
+	protected static boolean isMain = false;
 
 	private static final int timeout = 10;
 
     public static void main(String args[]) {
         //Verify the number of given arguments.
-        if(args.length != 4)
+        if(args.length != 6)
         {
-            System.out.println("Usage: java ServerTCP <server_connection_port> <server_notify_port> <rmi_registry_address> <rmi_registry_port>");
+            System.out.println("Usage: java ServerTCP <server_udp_port> <server_connection_port> <server_notify_port> <rmi_registry_address> <rmi_registry_port> <other_server_address> <other_server_port>");
             return;
         }
 
 	    //Get command line arguments.
-        conPort = Integer.parseInt(args[0]);
-	    notPort = Integer.parseInt(args[1]);
-        rmiServerAddress = args[2];
-        rmiRegistryPort = Integer.parseInt(args[3]);
+	    ownUDPport = Integer.parseInt(args[0]);
+        conPort = Integer.parseInt(args[1]);
+	    notPort = Integer.parseInt(args[2]);
+        rmiServerAddress = args[3];
+        rmiRegistryPort = Integer.parseInt(args[4]);
+	    try {
+		    serverTCPaddress = InetAddress.getByName(args[5]);
+	    } catch (UnknownHostException e) {
+		    System.out.println("Invalid IP address for other server:\n" + e);
+	    }
+	    serverTCPport = Integer.parseInt(args[6]);
 
-	    //Set system policies.
-	    //System.getProperties().put("java.security.policy", "policy.all");
-        //System.setSecurityManager(new RMISecurityManager());
+	    try {
+		    socketUDP = new DatagramSocket(ownUDPport);
+		    buffer = new byte[1];
+		    dataUDP = new DatagramPacket(buffer, buffer.length);
+	    } catch (SocketException e) {
+		    System.out.println("Could not create UDP listener socket:\n" + e);
+		    return;
+	    }
 
-        new ServerTCP().runServer();
+	    //Check if other server is up and as a main.
+	    tryReceive();
+
+	    while (true)
+	    {
+		    if (isMain)
+			    runMainServer();
+		    else
+			    runSecondaryServer();
+	    }
     }
 
-
-
-    public void runServer() {
+    protected static void runMainServer() {
         try {
             conListenSocket = new ServerSocket(conPort);
             conListenSocket.setSoTimeout(timeout);
@@ -70,9 +94,9 @@ public class ServerTCP {
         Socket s1, s2;
         UserNotifications notifs;
 
-        while (true)
+        while (isMain)
         {
-            //TODO: UDP fail-over stuff.
+            send();
 
             try {
                 s1 = notListenSocket.accept();
@@ -99,4 +123,33 @@ public class ServerTCP {
             }
         }
     }
+
+	protected static void runSecondaryServer()
+	{
+		while(!isMain)
+			tryReceive();
+	}
+
+	protected static void tryReceive()
+	{
+		try {
+			socketUDP.setSoTimeout(1000);
+			socketUDP.receive(dataUDP);
+			isMain = false;
+		} catch (SocketException e) {
+			isMain = true;
+		} catch (IOException e) {
+			isMain = true;
+		}
+	}
+
+	protected static void send()
+	{
+		DatagramPacket data = new DatagramPacket(buffer, buffer.length, serverTCPaddress, serverTCPport);
+		try {
+			socketUDP.send(dataUDP);
+		} catch (IOException e) {
+			System.out.println("Could not send DatagramPacket:\n" + e);
+		}
+	}
 }
