@@ -537,7 +537,8 @@ public class UserConnection extends Thread
 			else if(cmd instanceof Register)
 			{
                 tries = 0;
-                while (tries < max) {
+                while (tries < max)
+                {
                     Register aux = (Register) cmd;
                     try {
                         um.register(aux.name, aux.pass, aux.nameAlias);
@@ -545,6 +546,7 @@ public class UserConnection extends Thread
                         break;
                     } catch (ExistingUserException e) {
                         ret = -2;
+	                    break;
                     } catch (RemoteException e) {
                         System.out.println(e);
                         if(tries < max) {
@@ -578,6 +580,7 @@ public class UserConnection extends Thread
                         break;
                     } catch (UserAuthenticationException e) {
                         ret = -2;
+	                    break;
                     } catch (RemoteException e) {
                         System.out.println(e);
                         if(tries < max) {
