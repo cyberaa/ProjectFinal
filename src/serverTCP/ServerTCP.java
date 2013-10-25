@@ -103,9 +103,11 @@ public class ServerTCP
 
             try {
                 s1 = notListenSocket.accept();
-	            notifs = new UserNotifications(s1);
                 System.out.println("New Notifications Connection Accepted.");
+                notifs = new UserNotifications(s1);
+                System.out.println("\nVagina\n");
             } catch (SocketTimeoutException e) {
+                System.out.println(e);
                 //Do nothing.
                 continue;
             } catch (IOException e) {
@@ -113,11 +115,14 @@ public class ServerTCP
                 continue;
             }
 
+            System.out.println("\nMerda\n");
+
             try {
                 System.out.println("Waiting for connection");
                 s2 = conListenSocket.accept();
                 System.out.println("New User Connection Accepted.");
                 System.out.println("Passei");
+
                 new UserConnection(s2, notifs);
             } catch (SocketTimeoutException e) {
                 //Do nothing.
@@ -150,8 +155,9 @@ public class ServerTCP
 
 	protected static void send()
 	{
-		byte[] bufferSend = new byte[10];
-		bufferSend = new String("hey").getBytes();
+        String msg = "merda";
+        byte[] bufferSend  = new byte[10];
+        bufferSend = msg.getBytes();
 		DatagramPacket data = new DatagramPacket(bufferSend, bufferSend.length, serverTCPaddress, serverTCPport);
 		try {
 			socketUDP.send(data);
