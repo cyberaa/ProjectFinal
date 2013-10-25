@@ -33,6 +33,9 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 	public void insertNotification(int user_id, String not) throws RemoteException, SQLException
 	{
 		PreparedStatement insert = null;
+
+        //TODO: Error in notifications
+
 		String query = "INSERT INTO notifications VALUES (notifications_id_inc.nextval, ?, ?)";
 
 		Connection db = ServerRMI.pool.connectionCheck();

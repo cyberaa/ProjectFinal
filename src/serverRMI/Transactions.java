@@ -43,6 +43,9 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 		String query = "UPDATE shares SET value = ? WHERE user_id = ? AND idea_id = ?";
 
+
+        //TODO: After update share value, check transaction queue.
+
 		try {
 			db.setAutoCommit(false);
 
@@ -133,16 +136,26 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			}
 
 			//Remove (or update) all selected shares to be bought.
+
 			int lastIndex = sharesToBuy.size() -1;
-			for(int i=0; i < lastIndex; i++)
+            System.out.print("\nPassei: \n"+ lastIndex);
+			for(int i=0; i < lastIndex; i++) {
+                System.out.println("Deleting...");
 				deleteShare(db, sharesToBuy.get(i).id);
+            }
 
 			ShareToBuy lastShare = sharesToBuy.get(lastIndex);
-			if(lastShare.numToBuy == lastShare.total)
+            System.out.println("\nShares to buy getted.\n");
+			if(lastShare.numToBuy == lastShare.total) {
+                System.out.println("\nEntrei 1\n");
 				deleteShare(db, lastShare.id);
-			else
+            }
+			else {
+                System.out.println("\nEntrei 2\n");
 				updateShare(db, lastShare.id, lastShare.total - lastShare.numToBuy, lastShare.value);
+            }
 
+            System.out.println("\nPassei 2\n");
 			//Create new share for the buyer or update previous amount of shares.
 			ShareInfo aux1;
 			boolean updated = false;
@@ -162,6 +175,8 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			//Remove money from buyer.
 			giveOrTakeUserCash(db, user_id, share_num * price_per_share, false);
 
+            System.out.println("\nPassei 3\n");
+
 			//Give money to sellers and update transaction history.
 			ShareToBuy aux2;
 			int transactionMoney;
@@ -172,16 +187,24 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 				//Give money to sellers.
 				giveOrTakeUserCash(db, aux2.user_id, transactionMoney, true);
+                System.out.println("Money offered");
 				//Update transaction history.
 				createTransaction(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
+                System.out.println("Transaction Created");
 
 				//Create and store notification.
 				ServerRMI.notifications.insertNotification(user_id, ServerRMI.notifications.createNotificationString(idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
-			}
+			    System.out.print("Notification inserted");
+            }
+
+            System.out.println("\nPassei 4\n");
 
 			//Check queue.
 			if(!fromQueue)
 				TransactionalTrading.checkQueue(idea_id);
+
+
+            System.out.println("\nPassei 5\n");
 
 			db.commit();
 		} catch (SQLException e) {

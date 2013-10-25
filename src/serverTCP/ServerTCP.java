@@ -26,6 +26,8 @@ public class ServerTCP {
 	protected static int notPort;
 	protected static ServerSocket notListenSocket;
 
+
+
 	private static final int timeout = 10;
 
     public static void main(String args[]) {
@@ -46,48 +48,54 @@ public class ServerTCP {
 	    //System.getProperties().put("java.security.policy", "policy.all");
         //System.setSecurityManager(new RMISecurityManager());
 
+        new ServerTCP().runServer();
+    }
+
+
+
+    public void runServer() {
         try {
             conListenSocket = new ServerSocket(conPort);
-	        conListenSocket.setSoTimeout(timeout);
+            conListenSocket.setSoTimeout(timeout);
 
-	        notListenSocket = new ServerSocket(notPort);
-	        notListenSocket.setSoTimeout(timeout);
+            notListenSocket = new ServerSocket(notPort);
+            notListenSocket.setSoTimeout(timeout);
         } catch (IOException ie) {
             System.out.println("Error in server socket creation.\n"+ ie);
         }
 
-	    System.out.println("RMI server at: "+rmiServerAddress+":"+rmiRegistryPort);
-	    System.out.println("Ready to accept connections.\nConnection port:\t"+conPort+"\nNotifications port:\t"+notPort+"\n");
+        System.out.println("RMI server at: "+rmiServerAddress+":"+rmiRegistryPort);
+        System.out.println("Ready to accept connections.\nConnection port:\t"+conPort+"\nNotifications port:\t"+notPort+"\n");
 
         Socket s1, s2;
-	    UserNotifications notifs;
+        UserNotifications notifs;
 
         while (true)
         {
-	        //TODO: UDP fail-over stuff.
+            //TODO: UDP fail-over stuff.
 
-	        try {
-		        s1 = notListenSocket.accept();
+            try {
+                s1 = notListenSocket.accept();
                 System.out.println("New Notifications Connection Accepted.");
-	        } catch (SocketTimeoutException e) {
-		        //Do nothing.
-		        continue;
-	        } catch (IOException e) {
-		        System.out.println("UserConnection listen socket error:\n" + e);
-		        continue;
-	        }
+            } catch (SocketTimeoutException e) {
+                //Do nothing.
+                continue;
+            } catch (IOException e) {
+                System.out.println("UserConnection listen socket error:\n" + e);
+                continue;
+            }
 
-	        try {
+            try {
                 System.out.println("Waiting for connection");
                 s2 = conListenSocket.accept();
                 System.out.println("New User Connection Accepted.");
                 System.out.println("Passei");
-		        notifs = new UserNotifications(s1);
+                notifs = new UserNotifications(s1);
                 new UserConnection(s2, notifs);
             } catch (SocketTimeoutException e) {
-	            //Do nothing.
+                //Do nothing.
             } catch (IOException e) {
-	            System.out.print("UserConnection listen socket error:\n" + e);
+                System.out.print("UserConnection listen socket error:\n" + e);
             }
         }
     }
