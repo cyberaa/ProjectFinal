@@ -112,6 +112,8 @@ public class UserNotifications extends Thread
         } catch (RemoteException re) {
             System.out.println("Error looking up remote objects:\n" + re);
             System.exit(-1);
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 }
