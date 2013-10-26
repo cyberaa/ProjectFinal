@@ -31,11 +31,11 @@ public class Notifications extends Thread {
         this.sock = sock;
         try {
             inStream = new ObjectInputStream(sock.getInputStream());
+            System.out.println(inStream);
             System.out.println("Notification inStream created.");
-        } catch (IOException ioe) {
+        } catch (Exception ioe) {
             System.out.println("Error establishing notification socket.\n"+ ioe );
         }
-        gui = new ClientGUI();
         start();
     }
 
@@ -43,11 +43,13 @@ public class Notifications extends Thread {
     @Override
     public void run() {
         String notification = "";
-
+        System.out.println("Merda");
+        gui = new ClientGUI();
         while (!shutdown) {
             try {
-                notification = (String) inStream.readObject();
                 System.out.println("Getting notification.");
+                notification = (String) inStream.readObject();
+                System.out.println("Notification received.");
                 gui.notifyUser(notification);
             } catch (IOException ioe) {
                 System.out.println(ioe);
@@ -58,6 +60,8 @@ public class Notifications extends Thread {
                 shutdown = true;
             }
         }
+
+        gui.dispose();
 
         try {
             inStream.close();

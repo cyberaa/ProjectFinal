@@ -23,7 +23,11 @@ public class Client {
 	public static boolean reconnect = false;
     protected static Socket s;
 
+    protected static Authenticate auth = null;
+
     protected static Notifications nots;
+
+    protected static Object savedCmd = null;
 
     protected static String serverAddress_1;
     protected static String serverAddress_2;
@@ -76,8 +80,14 @@ public class Client {
 	    while(true)
 	    {
 		    try {
-			    authAndReg();
-			    execMenu();
+                if(auth == null) {
+                    authAndReg();
+                }
+                else {
+                    writeObject(auth);
+                }
+                execMenu();
+
 		    } catch (IOException io) {
 			    reconnectUserToServer();
 		    }
@@ -124,6 +134,7 @@ public class Client {
                     System.out.print("Password: ");
                     password = scInt.next();
                     Authenticate auth = new Authenticate(username,password);
+                    Client.auth = auth;
                     writeObject(auth);
                     try {
                         returnCommand = in.readObject();
@@ -199,7 +210,7 @@ public class Client {
 	    while(tries < max)
 	    {
 		    try {
-			    if(nots != null && nots.isAlive())
+			    if(nots != null)
 				    nots.shutdown = true;
 
 			    //Notifications thread.
@@ -210,7 +221,8 @@ public class Client {
 			    System.out.println("Notifications thread started");
 
 			    //Main thread sockets.
-			    s.close();
+                if(s != null)
+                    s.close();
 
 			    s = new Socket(current, currentPort);
 			    System.out.println("Main socket established");
@@ -242,17 +254,19 @@ public class Client {
 	    while(tries < max)
 	    {
 		    try {
-			    if(nots != null && nots.isAlive())
+			    if(nots != null)
 				    nots.shutdown = true;
 
 			    //Notifications thread.
 			    Socket aux = new Socket(other, otherPortNot);
+                System.out.println("Notifications socket established");
 			    nots = new Notifications(aux);
 
-			    System.out.println("Notifications socket established");
+                System.out.println("Notifications thread started");
 
 			    //Main thread sockets.
-			    s.close();
+                if(s != null)
+                    s.close();
 
 			    s = new Socket(other, otherPort);
 			    System.out.println("Main socket established");
@@ -759,6 +773,7 @@ public class Client {
                     System.exit(0);
             }
             System.out.print(delimiter);
+            savedCmd = null;
         } while(choose != 11);
 
     }

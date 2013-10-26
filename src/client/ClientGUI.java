@@ -21,7 +21,6 @@ public class ClientGUI extends JFrame {
         labelNot = new JLabel();
         this.getContentPane().add(labelNot, BorderLayout.CENTER);
         this.setSize(500,100);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
 
