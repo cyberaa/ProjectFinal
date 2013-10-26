@@ -47,15 +47,11 @@ public class UserNotifications extends Thread
 		}
 
         bindRMIObjects();
-
-        System.out.println("Objects bound.");
 	}
 
 	@Override
 	public void run()
 	{
-		System.out.println("Notifications thread started.");
-
 		ArrayList<NotificationInfo> nots;
 		while(!shutdown)
 		{
@@ -83,8 +79,6 @@ public class UserNotifications extends Thread
 		} catch (IOException e) {
 			//Do nothing, close thread.
 		}
-
-		System.out.println("Notifications thread closed.");
 	}
 
 	/**
@@ -100,9 +94,7 @@ public class UserNotifications extends Thread
         //Bind RMI object.
         String rmiAddress = "rmi://"+ServerTCP.rmiServerAddress+":"+ServerTCP.rmiRegistryPort+"/";
         try {
-            System.out.println(rmiAddress);
             notifications = (RemoteNotifications) Naming.lookup(rmiAddress + "Notifications");
-            System.out.println("Pila");
         } catch (MalformedURLException mue) {
             System.out.println("Wrong URL passed as argument:\n" + mue);
             System.exit(-1);

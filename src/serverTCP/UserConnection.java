@@ -60,15 +60,12 @@ public class UserConnection extends Thread
         while (tries < max) {
             try {
                 lookupRemotes();
-                System.out.println("Objects lookup");
                 break;
             } catch (RemoteException re) {
                 System.out.println(re);
                 if(tries < max) {
                     try {
-                        System.out.println("Reconnecting to RMI.");
                         lookupRemotes();
-                        System.out.println("Connected to RMI again.");
                     } catch (RemoteException e1) {
                         tries++;
                         try {
@@ -142,8 +139,6 @@ public class UserConnection extends Thread
 	    }
 
 	    notifsThread.shutdown = true;
-
-	    System.out.println("Client disconnected.");
     }
 
 	/**
@@ -172,9 +167,7 @@ public class UserConnection extends Thread
                     System.out.println(e);
                     if(tries < max) {
                         try {
-                            System.out.println("Reconnecting to RMI.");
                             lookupRemotes();
-                            System.out.println("Connected to RMI again.");
                         } catch (RemoteException e1) {
                             tries++;
                             Thread.sleep(timeoutRMI);
@@ -202,9 +195,7 @@ public class UserConnection extends Thread
                     System.out.println(e);
                     if(tries < max) {
                         try {
-                            System.out.println("Reconnecting to RMI.");
                             lookupRemotes();
-                            System.out.println("Connected to RMI again.");
                         } catch (RemoteException e1) {
                             tries++;
                             Thread.sleep(timeoutRMI);
@@ -233,22 +224,18 @@ public class UserConnection extends Thread
                     else {
                         Object fileLengthObj = inStream.readObject();
                         int fileLength = (Integer) fileLengthObj;
-                        System.out.println("File Size: " + fileLength);
                         int bytesRead;
                         int current = 0;
                         byte[] bytesArray = new byte[5*1024*1024];
                         bytesRead = inStream.read(bytesArray,0,bytesArray.length);
-                        System.out.print("File successfully read.");
                         current = bytesRead;
-                        System.out.println("Read Complete: "+bytesRead+" Current: "+current);
 
                         do {
-                            System.out.println("Reading");
                             bytesRead = inStream.read(bytesArray, current, (bytesArray.length - current));
                             if (bytesRead >= 0) {
                                 current += bytesRead;
                             }
-                            System.out.println("Read Complete: "+bytesRead+" Current: "+current);
+
                             if(current == fileLength)
                                 break;
                         } while (bytesRead > -1);
@@ -262,9 +249,7 @@ public class UserConnection extends Thread
                     System.out.println(e);
                     if(tries < max) {
                         try {
-                            System.out.println("Reconnecting to RMI.");
                             lookupRemotes();
-                            System.out.println("Connected to RMI again.");
                         } catch (RemoteException e1) {
                             tries++;
                             Thread.sleep(timeoutRMI);
@@ -297,9 +282,7 @@ public class UserConnection extends Thread
                     System.out.println(e);
                     if(tries < max) {
                         try {
-                            System.out.println("Reconnecting to RMI.");
                             lookupRemotes();
-                            System.out.println("Connected to RMI again.");
                         } catch (RemoteException e1) {
                             tries++;
                             Thread.sleep(timeoutRMI);
@@ -328,9 +311,7 @@ public class UserConnection extends Thread
                     System.out.println(e);
                     if(tries < max) {
                         try {
-                            System.out.println("Reconnecting to RMI.");
                             lookupRemotes();
-                            System.out.println("Connected to RMI again.");
                         } catch (RemoteException e1) {
                             tries++;
                             Thread.sleep(timeoutRMI);
@@ -363,9 +344,7 @@ public class UserConnection extends Thread
                     System.out.println(e);
                     if(tries < max) {
                         try {
-                            System.out.println("Reconnecting to RMI.");
                             lookupRemotes();
-                            System.out.println("Connected to RMI again.");
                         } catch (RemoteException e1) {
                             tries++;
                             Thread.sleep(timeoutRMI);
@@ -395,9 +374,7 @@ public class UserConnection extends Thread
                     System.out.println(e);
                     if(tries < max) {
                         try {
-                            System.out.println("Reconnecting to RMI.");
                             lookupRemotes();
-                            System.out.println("Connected to RMI again.");
                         } catch (RemoteException e1) {
                             tries++;
                             Thread.sleep(timeoutRMI);
@@ -427,9 +404,7 @@ public class UserConnection extends Thread
                     System.out.println(e);
                     if(tries < max) {
                         try {
-                            System.out.println("Reconnecting to RMI.");
                             lookupRemotes();
-                            System.out.println("Connected to RMI again.");
                         } catch (RemoteException e1) {
                             tries++;
                             Thread.sleep(timeoutRMI);
@@ -458,9 +433,7 @@ public class UserConnection extends Thread
                     System.out.println(e);
                     if(tries < max) {
                         try {
-                            System.out.println("Reconnecting to RMI.");
                             lookupRemotes();
-                            System.out.println("Connected to RMI again.");
                         } catch (RemoteException e1) {
                             tries++;
                             Thread.sleep(timeoutRMI);
@@ -488,9 +461,7 @@ public class UserConnection extends Thread
                     System.out.println(e);
                     if(tries < max) {
                         try {
-                            System.out.println("Reconnecting to RMI.");
                             lookupRemotes();
-                            System.out.println("Connected to RMI again.");
                         } catch (RemoteException e1) {
                             tries++;
                             Thread.sleep(timeoutRMI);
@@ -563,9 +534,7 @@ public class UserConnection extends Thread
                         System.out.println(e);
                         if(tries < max) {
                             try {
-                                System.out.println("Reconnecting to RMI.");
                                 lookupRemotes();
-                                System.out.println("Connected to RMI again.");
                             } catch (RemoteException e1) {
                                 tries++;
                                 Thread.sleep(timeoutRMI);
@@ -599,9 +568,7 @@ public class UserConnection extends Thread
                         System.out.println(e);
                         if(tries < max) {
                             try {
-                                System.out.println("Reconnecting to RMI.");
                                 lookupRemotes();
-                                System.out.println("Connected to RMI again.");
                             } catch (RemoteException e1) {
                                 tries++;
                                 Thread.sleep(timeoutRMI);
