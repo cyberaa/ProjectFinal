@@ -90,7 +90,7 @@ public class UserConnection extends Thread
     @Override
     public void run()
     {
-	    Object cmd;
+	    Object cmd = null;
 
         try {
             authenticateOrRegister();
@@ -116,8 +116,7 @@ public class UserConnection extends Thread
 			    System.out.println("Object class not found:\n" + cnfe);
 			    continue;
 		    } catch (EOFException eofe) {
-			    System.out.println("Client disconnected.");
-			    return;
+			    shutdown = true;
 		    } catch (IOException ioe) {
 			    System.out.println("[1]Could not read from socket:\n" + ioe);
 			    continue;
@@ -139,6 +138,10 @@ public class UserConnection extends Thread
 	    } catch (IOException e) {
 		    //Do nothing, close thread.
 	    }
+
+	    notifsThread.shutdown = true;
+
+	    System.out.println("Client disconnected.");
     }
 
 	/**

@@ -59,7 +59,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			db.commit();
 
 			//Check queue.
-			//TransactionalTrading.checkQueue(idea_id);
+			TransactionalTrading.checkQueue(idea_id);
 		} catch (SQLException e) {
 			System.out.println("\n"+e+"\n");
 			if(db != null)
