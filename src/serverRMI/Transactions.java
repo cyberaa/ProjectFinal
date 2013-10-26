@@ -193,6 +193,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 				//Create and store notification.
 				ServerRMI.notifications.insertNotification(user_id, ServerRMI.notifications.createNotificationString(idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
+				ServerRMI.notifications.insertNotification(aux2.user_id, ServerRMI.notifications.createNotificationString(idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
 			    System.out.print("Notification inserted");
             }
 
