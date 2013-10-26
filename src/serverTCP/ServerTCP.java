@@ -43,6 +43,10 @@ public class ServerTCP
             return;
         }
 
+	    //Set system policies.
+	    System.getProperties().put("java.security.policy", "policy.all");
+	    //System.setSecurityManager(new RMISecurityManager());
+
 	    //Get command line arguments.
 	    ownUDPport = Integer.parseInt(args[0]);
         conPort = Integer.parseInt(args[1]);
