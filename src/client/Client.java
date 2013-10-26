@@ -43,6 +43,9 @@ public class Client {
 	protected static int currentPortNot;
 	protected static int otherPortNot;
 
+    protected static int chooseAuth;
+    protected static int chooseMenu;
+
     protected static int server1_not_port;
     protected static int server2_not_port;
 
@@ -77,6 +80,9 @@ public class Client {
 		    return;
 	    }
 
+        chooseAuth = -1;
+        chooseMenu = -1;
+
 	    while(true)
 	    {
 		    try {
@@ -106,7 +112,6 @@ public class Client {
     }
 
     protected static void authAndReg() throws IOException {
-	    int choose;
         int report;
         String username;
         String password;
@@ -116,17 +121,12 @@ public class Client {
 	        if(reconnect)
 		        throw new IOException();
 
-	        System.out.println("\t \t IDEA BROKER - WE DON'T NEED GUI TO BE THE BEST\n");
-
-	        System.out.println("1 - Login");
-	        System.out.println("2 - Register\n");
-
-	        System.out.print("Option: ");
-
-	        choose = scInt.nextInt();
+            if(chooseAuth == -1) {
+                chooseAuth = registerMenu();
+            }
 
             report = -3;
-            switch(choose) {
+            switch(chooseAuth) {
                 case 1:
                     Authenticate auth;
                     if(savedCmd == null) {
@@ -184,12 +184,14 @@ public class Client {
                         System.out.println("Could not connect to server.");
                     }
                     report = 1;
-                    choose = 1;
+                    chooseAuth = 1;
                     break;
                 default:
                     System.out.println("Fizeste merda.");
             }
-        } while(report != 0 || choose != 1);
+            savedCmd = null;
+            chooseAuth = -1;
+        } while(report != 0);
     }
 
     public static Authenticate mAuthenticate() {
@@ -212,6 +214,19 @@ public class Client {
         password = scString.nextLine();
         Register reg = new Register(username,password, "");
         return reg;
+    }
+
+    public static int registerMenu() {
+        System.out.println("\t \t IDEA BROKER - WE DON'T NEED GUI TO BE THE BEST\n");
+
+        System.out.println("1 - Login");
+        System.out.println("2 - Register\n");
+
+        System.out.print("Option: ");
+
+        chooseAuth = scInt.nextInt();
+
+        return chooseAuth;
     }
 
     protected static boolean reconnectUserToServer()
@@ -332,7 +347,6 @@ public class Client {
 
     public static void execMenu() throws IOException{
 
-        int choose;
         Object returnComand;
         int report;
 
@@ -343,32 +357,28 @@ public class Client {
 	        if(reconnect)
 		        throw new IOException();
 
-            System.out.println("1 - Create topic");
-            System.out.println("2 - View topic ideas");
-            System.out.println("3 - List topics");
-            System.out.println("4 - Submit idea");
-            System.out.println("5 - Buy shares");
-            System.out.println("6 - View ideas nested");
-            System.out.println("7 - View user transactions history");
-            System.out.println("8 - View idea shares");
-            System.out.println("9 - Set share value");
-            System.out.println("10 - Delete idea\n");
+            if (chooseMenu == -1) {
+                chooseMenu = menuOptions();
+            }
 
-            System.out.print("Option: ");
-
-            choose = scInt.nextInt();
-
-            switch(choose) {
+            switch(chooseMenu) {
                 case 1:
+                    System.out.println("\nVou criar tópico\n");
                     CreateTopic cTopic;
                     if(savedCmd == null) {
                         cTopic = mCreateTopic();
+                        savedCmd = cTopic;
                     }
                     else {
+                        System.out.println("Tópico no saveCmd");
                         cTopic = (CreateTopic) savedCmd;
                     }
 
                     writeObject(cTopic);
+                    if(reconnect == true) {
+                        continue;
+                    }
+                    System.out.println("\nPedido enviado\n");
 
                     try {
                         returnComand = in.readObject();
@@ -396,11 +406,15 @@ public class Client {
                     ViewIdeasTopic ideasTopic;
                     if(savedCmd == null) {
                         ideasTopic = mViewIdeasTopic();
+                        savedCmd = ideasTopic;
                     }
                     else {
                         ideasTopic = (ViewIdeasTopic) savedCmd;
                     }
                     writeObject(ideasTopic);
+                    if(reconnect == true) {
+                        continue;
+                    }
 
                     try {
                         returnComand = in.readObject();
@@ -432,7 +446,11 @@ public class Client {
                 case 3:
                     System.out.println(delimiter);
                     ListTopics lTopics = new ListTopics();
+                    savedCmd = lTopics;
                     writeObject(lTopics);
+                    if(reconnect == true) {
+                        continue;
+                    }
 
                     try {
                         returnComand = in.readObject();
@@ -465,12 +483,16 @@ public class Client {
 
                     if(savedCmd == null) {
                         sIdea = mSubmitIdea();
+                        savedCmd = sIdea;
                     }
                     else {
                         sIdea = (SubmitIdea) savedCmd;
                     }
 
                     writeObject(sIdea);
+                    if(reconnect == true) {
+                        continue;
+                    }
 
                     if (!sIdea.fileAttachName.equals("-")) {
                         try {
@@ -513,12 +535,16 @@ public class Client {
                     BuyShares bShares;
                     if(savedCmd == null) {
                         bShares = mBuyShares();
+                        savedCmd = bShares;
                     }
                     else {
                         bShares = (BuyShares) savedCmd;
                     }
 
                     writeObject(bShares);
+                    if(reconnect == true) {
+                        continue;
+                    }
 
 
                     try {
@@ -545,12 +571,16 @@ public class Client {
 
                     if(savedCmd == null) {
                         vIdeasNested = mViewIdeasNested();
+                        savedCmd = vIdeasNested;
                     }
                     else {
                         vIdeasNested = (ViewIdeasNested) savedCmd;
                     }
 
                     writeObject(vIdeasNested);
+                    if(reconnect == true) {
+                        continue;
+                    }
 
                     IdeasNestedPack ideasNested = null;
 
@@ -599,8 +629,12 @@ public class Client {
                     break;
                 case 7:
                     ShowHistory showHist = new ShowHistory();
+                    savedCmd = showHist;
 
                     writeObject(showHist);
+                    if(reconnect == true) {
+                        continue;
+                    }
 
                     try {
                         returnComand = in.readObject();
@@ -633,12 +667,16 @@ public class Client {
 
                     if(savedCmd == null) {
                         vIdeasShares = mViewIdeasShares();
+                        savedCmd = vIdeasShares;
                     }
                     else {
                         vIdeasShares = (ViewIdeasShares) savedCmd;
                     }
 
                     writeObject(vIdeasShares);
+                    if(reconnect == true) {
+                        continue;
+                    }
 
                     try {
                         returnComand = in.readObject();
@@ -672,12 +710,16 @@ public class Client {
 
                     if(savedCmd == null) {
                         setValue = mSetShareValue();
+                        savedCmd = setValue;
                     }
                     else {
                         setValue = (SetShareValue) savedCmd;
                     }
 
                     writeObject(setValue);
+                    if(reconnect == true) {
+                        continue;
+                    }
 
                     try {
 
@@ -705,12 +747,16 @@ public class Client {
 
                     if(savedCmd == null) {
                         del = mDeleteIdea();
+                        savedCmd = del;
                     }
                     else {
                         del = (DeleteIdea) savedCmd;
                     }
 
                     writeObject(del);
+                    if(reconnect == true) {
+                        continue;
+                    }
 
                     try {
                         returnComand = in.readObject();
@@ -746,8 +792,28 @@ public class Client {
             }
             System.out.print(delimiter);
             savedCmd = null;
-        } while(choose != 11);
+            chooseMenu = -1;
+        } while(chooseMenu != 11);
 
+    }
+
+    public static int menuOptions() {
+        System.out.println("1 - Create topic");
+        System.out.println("2 - View topic ideas");
+        System.out.println("3 - List topics");
+        System.out.println("4 - Submit idea");
+        System.out.println("5 - Buy shares");
+        System.out.println("6 - View ideas nested");
+        System.out.println("7 - View user transactions history");
+        System.out.println("8 - View idea shares");
+        System.out.println("9 - Set share value");
+        System.out.println("10 - Delete idea\n");
+
+        System.out.print("Option: ");
+
+        chooseMenu = scInt.nextInt();
+
+        return chooseMenu;
     }
 
     public static CreateTopic mCreateTopic() {
