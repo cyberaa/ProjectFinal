@@ -174,6 +174,6 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 			ServerRMI.pool.releaseConnection(db);
 		}
 
-		return buyer + "bought " + parts + " from " + seller + " (idea " + idea_id +") for a total of " + totalPrice + " coins.";
+		return buyer + " bought " + parts + " from " + seller + " (idea " + idea_id +") for a total of " + totalPrice + " coins.";
 	}
 }

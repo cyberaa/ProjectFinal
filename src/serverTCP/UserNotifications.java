@@ -65,11 +65,8 @@ public class UserNotifications extends Thread
 			try {
 				nots = notifications.getNotifications(userID);
 
-				for(int i=0; i < nots.size() && !shutdown; i++)
+				for(int i=0; i < nots.size(); i++)
 					outStream.writeObject(nots.get(i).text);
-
-				System.out.println("Notification sent to "+ userID);
-
 				outStream.flush();
 
 				notifications.removeNotifications(nots);
@@ -79,8 +76,6 @@ public class UserNotifications extends Thread
 				System.out.println("[Notifications] Client disconnected.");
 				shutdown = true;
 			} catch (Exception e) {
-				System.out.println("[Notifications] Client disconnected.");
-				shutdown = true;
 			}
 		}
 
