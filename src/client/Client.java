@@ -128,13 +128,14 @@ public class Client {
             report = -3;
             switch(choose) {
                 case 1:
-                    System.out.println(delimiter);
-                    System.out.print("Username: ");
-                    username = scInt.next();
-                    System.out.print("Password: ");
-                    password = scInt.next();
-                    Authenticate auth = new Authenticate(username,password);
-                    Client.auth = auth;
+                    Authenticate auth;
+                    if(savedCmd == null) {
+                        auth = mAuthenticate();
+                        Client.auth = auth;
+                    }
+                    else {
+                        auth = Client.auth;
+                    }
                     writeObject(auth);
                     try {
                         returnCommand = in.readObject();
@@ -155,12 +156,13 @@ public class Client {
                     }
                     break;
                 case 2:
-                    System.out.println(delimiter);
-                    System.out.print("Username: ");
-                    username = scInt.next();
-                    System.out.print("Password: ");
-                    password = scInt.next();
-                    Register reg = new Register(username,password, "");
+                    Register reg;
+                    if (savedCmd == null) {
+                        reg = mRegister();
+                    }
+                    else {
+                        reg = (Register) savedCmd;
+                    }
                     writeObject(reg);
                     try {
                         returnCommand = in.readObject();
@@ -188,6 +190,28 @@ public class Client {
                     System.out.println("Fizeste merda.");
             }
         } while(report != 0 || choose != 1);
+    }
+
+    public static Authenticate mAuthenticate() {
+        String username, password;
+        System.out.println(delimiter);
+        System.out.print("Username: ");
+        username = scString.nextLine();
+        System.out.print("Password: ");
+        password = scString.nextLine();
+        Authenticate auth = new Authenticate(username,password);
+        return auth;
+    }
+
+    public static Register mRegister() {
+        String username, password;
+        System.out.println(delimiter);
+        System.out.print("Username: ");
+        username = scString.nextLine();
+        System.out.print("Password: ");
+        password = scString.nextLine();
+        Register reg = new Register(username,password, "");
+        return reg;
     }
 
     protected static boolean reconnectUserToServer()
@@ -336,11 +360,14 @@ public class Client {
 
             switch(choose) {
                 case 1:
-                    String name;
-                    System.out.println(delimiter);
-                    System.out.print("Insert new topic: ");
-                    name = scString.nextLine();
-                    CreateTopic cTopic = new CreateTopic(name);
+                    CreateTopic cTopic;
+                    if(savedCmd == null) {
+                        cTopic = mCreateTopic();
+                    }
+                    else {
+                        cTopic = (CreateTopic) savedCmd;
+                    }
+
                     writeObject(cTopic);
 
                     try {
@@ -366,11 +393,13 @@ public class Client {
                     }
                     break;
                 case 2:
-                    int topic;
-                    System.out.println(delimiter);
-                    System.out.println("Insert topic id: ");
-                    topic = scInt.nextInt();
-                    ViewIdeasTopic ideasTopic = new ViewIdeasTopic(topic);
+                    ViewIdeasTopic ideasTopic;
+                    if(savedCmd == null) {
+                        ideasTopic = mViewIdeasTopic();
+                    }
+                    else {
+                        ideasTopic = (ViewIdeasTopic) savedCmd;
+                    }
                     writeObject(ideasTopic);
 
                     try {
@@ -432,70 +461,20 @@ public class Client {
                     }
                     break;
                 case 4:
-                    String topicName;
-                    int relatedIdea;
-                    int nParts;
-                    int valueShare;
-                    int stance;
-                    String text;
-                    ArrayList<String> topics = new ArrayList<String>();
+                    SubmitIdea sIdea;
 
-                    // Get related topics
-                    do {
-                        System.out.print("Related Topic: ");
-                        topicName = scString.nextLine();
-                        if(!topicName.equals("-1")) {
-                            topics.add(topicName);
-                        }
-                    } while(!topicName.equals("-1"));
-
-                    //Get related idea
-                    System.out.print("Related Idea: ");
-                    relatedIdea = scInt.nextInt();
-
-                    // Get number of parts
-                    System.out.print("Total of shares: ");
-                    nParts = scInt.nextInt();
-
-                    // Get value of each share
-                    System.out.print("Value of each share: ");
-                    valueShare = scInt.nextInt();
-
-                    //Get stance if exists
-                    if (relatedIdea > 0) {
-                        System.out.print("Stance: ");
-                        stance = scInt.nextInt();
+                    if(savedCmd == null) {
+                        sIdea = mSubmitIdea();
                     }
                     else {
-                        stance = 0;
+                        sIdea = (SubmitIdea) savedCmd;
                     }
-
-                    // Get idea text
-                    System.out.print("Idea: ");
-                    text = scString.nextLine();
-
-
-
-                    String hasAttach, attach;
-
-                    System.out.println("Do you want attach some file? (y/n): ");
-                    hasAttach = scString.nextLine();
-
-                    if(hasAttach.equals("y")) {
-                        System.out.print("Filename: ");
-                        attach = scString.nextLine();
-                    }
-                    else {
-                        attach = "-";
-                    }
-
-                    SubmitIdea sIdea = new SubmitIdea(topics,relatedIdea,nParts,valueShare,stance,text,attach);
 
                     writeObject(sIdea);
 
-                    if (hasAttach.equals("y")) {
+                    if (!sIdea.fileAttachName.equals("-")) {
                         try {
-                            File fileToSend = new File(attach);
+                            File fileToSend = new File(sIdea.fileAttachName);
                             int fileLength = (int)fileToSend.length();
                             out.writeObject(fileLength);
                             byte[] fileData = new byte[fileLength];
@@ -531,16 +510,13 @@ public class Client {
                     }
                     break;
                 case 5:
-                    int idea_id, share_num, price_per_share, new_price_share;
-                    System.out.print("Idea ID: ");
-                    idea_id = scInt.nextInt();
-                    System.out.print("Number of shares: ");
-                    share_num = scInt.nextInt();
-                    System.out.print("Buy price: ");
-                    price_per_share = scInt.nextInt();
-                    System.out.print("New price: ");
-                    new_price_share = scInt.nextInt();
-                    BuyShares bShares = new BuyShares(idea_id,share_num,price_per_share,new_price_share);
+                    BuyShares bShares;
+                    if(savedCmd == null) {
+                        bShares = mBuyShares();
+                    }
+                    else {
+                        bShares = (BuyShares) savedCmd;
+                    }
 
                     writeObject(bShares);
 
@@ -565,23 +541,14 @@ public class Client {
                     }
                     break;
                 case 6:
-                    int ideaId;
-                    String load;
-                    boolean loadAttach;
+                    ViewIdeasNested vIdeasNested;
 
-                    System.out.print("Idea ID: ");
-                    ideaId = scInt.nextInt();
-                    System.out.println("Do you want load attached file? (y/n)");
-                    load = scString.nextLine();
-
-                    if(load.equals("y")) {
-                        loadAttach = true;
+                    if(savedCmd == null) {
+                        vIdeasNested = mViewIdeasNested();
                     }
                     else {
-                        loadAttach = false;
+                        vIdeasNested = (ViewIdeasNested) savedCmd;
                     }
-
-                    ViewIdeasNested vIdeasNested = new ViewIdeasNested(ideaId, loadAttach);
 
                     writeObject(vIdeasNested);
 
@@ -606,7 +573,7 @@ public class Client {
                     }
 
 
-                    if (loadAttach == true && report == 0) {
+                    if (vIdeasNested.loadAttach == true && report == 0) {
                         try {
 
 
@@ -662,11 +629,14 @@ public class Client {
                     }
                     break;
                 case 8:
-                    int ideaId_shares;
-                    System.out.print("Idea ID: ");
-                    ideaId_shares = scInt.nextInt();
+                    ViewIdeasShares vIdeasShares;
 
-                    ViewIdeasShares vIdeasShares = new ViewIdeasShares(ideaId_shares);
+                    if(savedCmd == null) {
+                        vIdeasShares = mViewIdeasShares();
+                    }
+                    else {
+                        vIdeasShares = (ViewIdeasShares) savedCmd;
+                    }
 
                     writeObject(vIdeasShares);
 
@@ -698,15 +668,14 @@ public class Client {
 
                     break;
                 case 9:
-                    int ideaId_Set;
-                    int newValue;
-                    System.out.print("Idea ID: ");
-                    ideaId_Set = scInt.nextInt();
+                    SetShareValue setValue;
 
-                    System.out.print("New Share Value: ");
-                    newValue = scInt.nextInt();
-
-                    SetShareValue setValue = new SetShareValue(ideaId_Set,newValue);
+                    if(savedCmd == null) {
+                        setValue = mSetShareValue();
+                    }
+                    else {
+                        setValue = (SetShareValue) savedCmd;
+                    }
 
                     writeObject(setValue);
 
@@ -732,11 +701,14 @@ public class Client {
                     }
                     break;
                 case 10:
-                    int ideaToDelete;
-                    System.out.print("Idea ID: ");
-                    ideaToDelete = scInt.nextInt();
+                    DeleteIdea del;
 
-                    DeleteIdea del = new DeleteIdea(ideaToDelete);
+                    if(savedCmd == null) {
+                        del = mDeleteIdea();
+                    }
+                    else {
+                        del = (DeleteIdea) savedCmd;
+                    }
 
                     writeObject(del);
 
@@ -777,4 +749,158 @@ public class Client {
         } while(choose != 11);
 
     }
+
+    public static CreateTopic mCreateTopic() {
+        String name;
+        System.out.println(delimiter);
+        System.out.print("Insert new topic: ");
+        name = scString.nextLine();
+        CreateTopic cTopic = new CreateTopic(name);
+        return cTopic;
+    }
+
+    public static ViewIdeasTopic mViewIdeasTopic() {
+        int topic;
+        System.out.println(delimiter);
+        System.out.println("Insert topic id: ");
+        topic = scInt.nextInt();
+        ViewIdeasTopic ideasTopic = new ViewIdeasTopic(topic);
+        return ideasTopic;
+    }
+
+    public static SubmitIdea mSubmitIdea() {
+        String topicName;
+        int relatedIdea;
+        int nParts;
+        int valueShare;
+        int stance;
+        String text;
+        ArrayList<String> topics = new ArrayList<String>();
+
+        // Get related topics
+        do {
+            System.out.print("Related Topic: ");
+            topicName = scString.nextLine();
+            if(!topicName.equals("-1")) {
+                topics.add(topicName);
+            }
+        } while(!topicName.equals("-1"));
+
+        //Get related idea
+        System.out.print("Related Idea: ");
+        relatedIdea = scInt.nextInt();
+
+        // Get number of parts
+        System.out.print("Total of shares: ");
+        nParts = scInt.nextInt();
+
+        // Get value of each share
+        System.out.print("Value of each share: ");
+        valueShare = scInt.nextInt();
+
+        //Get stance if exists
+        if (relatedIdea > 0) {
+            System.out.print("Stance: ");
+            stance = scInt.nextInt();
+        }
+        else {
+            stance = 0;
+        }
+
+        // Get idea text
+        System.out.print("Idea: ");
+        text = scString.nextLine();
+
+
+
+        String hasAttach, attach;
+
+        System.out.println("Do you want attach some file? (y/n): ");
+        hasAttach = scString.nextLine();
+
+        if(hasAttach.equals("y")) {
+            System.out.print("Filename: ");
+            attach = scString.nextLine();
+        }
+        else {
+            attach = "-";
+        }
+
+        SubmitIdea sIdea = new SubmitIdea(topics,relatedIdea,nParts,valueShare,stance,text,attach);
+
+        return sIdea;
+    }
+
+    public static BuyShares mBuyShares() {
+        int idea_id, share_num, price_per_share, new_price_share;
+        System.out.print("Idea ID: ");
+        idea_id = scInt.nextInt();
+        System.out.print("Number of shares: ");
+        share_num = scInt.nextInt();
+        System.out.print("Buy price: ");
+        price_per_share = scInt.nextInt();
+        System.out.print("New price: ");
+        new_price_share = scInt.nextInt();
+        BuyShares bShares = new BuyShares(idea_id,share_num,price_per_share,new_price_share);
+        return bShares;
+    }
+
+    public static ViewIdeasNested mViewIdeasNested() {
+        int ideaId;
+        String load;
+        boolean loadAttach;
+
+        System.out.print("Idea ID: ");
+        ideaId = scInt.nextInt();
+        System.out.println("Do you want load attached file? (y/n)");
+        load = scString.nextLine();
+
+        if(load.equals("y")) {
+            loadAttach = true;
+        }
+        else {
+            loadAttach = false;
+        }
+
+        ViewIdeasNested vIdeasNested = new ViewIdeasNested(ideaId, loadAttach);
+
+        return vIdeasNested;
+    }
+
+    public static ViewIdeasShares mViewIdeasShares() {
+        int ideaId_shares;
+        System.out.print("Idea ID: ");
+        ideaId_shares = scInt.nextInt();
+
+        ViewIdeasShares vIdeasShares = new ViewIdeasShares(ideaId_shares);
+
+        return vIdeasShares;
+    }
+
+    public static SetShareValue mSetShareValue() {
+        int ideaId_Set;
+        int newValue;
+        System.out.print("Idea ID: ");
+        ideaId_Set = scInt.nextInt();
+
+        System.out.print("New Share Value: ");
+        newValue = scInt.nextInt();
+
+        SetShareValue setValue = new SetShareValue(ideaId_Set,newValue);
+
+        return setValue;
+    }
+
+    public static DeleteIdea mDeleteIdea() {
+        int ideaToDelete;
+        System.out.print("Idea ID: ");
+        ideaToDelete = scInt.nextInt();
+
+        DeleteIdea del = new DeleteIdea(ideaToDelete);
+
+        return del;
+    }
+
+
+
 }
