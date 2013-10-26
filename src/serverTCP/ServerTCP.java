@@ -83,7 +83,7 @@ public class ServerTCP
 
         try {
             conListenSocket = new ServerSocket(conPort);
-            conListenSocket.setSoTimeout(timeout);
+            //conListenSocket.setSoTimeout(timeout);
 
             notListenSocket = new ServerSocket(notPort);
             notListenSocket.setSoTimeout(timeout);
@@ -105,9 +105,8 @@ public class ServerTCP
                 s1 = notListenSocket.accept();
                 System.out.println("New Notifications Connection Accepted.");
                 notifs = new UserNotifications(s1);
-                System.out.println("\nVagina\n");
+                System.out.println(s1);
             } catch (SocketTimeoutException e) {
-                System.out.println(e);
                 //Do nothing.
                 continue;
             } catch (IOException e) {
