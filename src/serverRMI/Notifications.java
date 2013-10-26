@@ -34,7 +34,7 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 	{
 		PreparedStatement insert = null;
 
-        //TODO: Error in notifications
+        System.out.println("Inserting notification: "+not);
 
 		String query = "INSERT INTO notifications VALUES (notifications_id_inc.nextval, ?, ?)";
 
@@ -148,7 +148,7 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 
 		PreparedStatement getNotifications = null;
 		String query = "SELECT username FROM sduser WHERE id = ?";
-		ResultSet rs = null;
+		ResultSet rs;
 
 		try {
 			getNotifications = db.prepareStatement(query);

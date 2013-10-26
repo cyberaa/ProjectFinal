@@ -129,14 +129,13 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
                     System.out.println("Start enqueue");
 					TransactionalTrading.enqueue(user_id, idea_id, share_num, price_per_share, new_price_share);
                     System.out.println("End enqueue");
-                    return 0;
+                    return -1;
 				}
 				else
 					return 0;
 			}
 
 			//Remove (or update) all selected shares to be bought.
-
 			int lastIndex = sharesToBuy.size() -1;
             System.out.print("\nPassei: \n"+ lastIndex);
 			for(int i=0; i < lastIndex; i++) {
@@ -200,11 +199,12 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
             System.out.println("\nPassei 4\n");
 
 			//Check queue.
-			if(!fromQueue)
+			if(!fromQueue) {
+				System.out.println("\nPassei 6\n");
 				TransactionalTrading.checkQueue(idea_id);
+			}
 
-
-            System.out.println("\nPassei 5\n");
+            System.out.println("\nPassei 6\n");
 
 			db.commit();
 		} catch (SQLException e) {
@@ -214,11 +214,10 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			throw e;
 		} finally {
 			db.setAutoCommit(true);
+			ServerRMI.pool.releaseConnection(db);
+
+			return -1;
 		}
-
-		ServerRMI.pool.releaseConnection(db);
-
-		return -1;
 	}
 
 	/**
