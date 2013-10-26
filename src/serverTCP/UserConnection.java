@@ -111,6 +111,7 @@ public class UserConnection extends Thread
 		    //Read next command.
 		    try {
 			    cmd = inStream.readObject();
+			    System.out.println(cmd);
 
 		    } catch (ClassNotFoundException cnfe) {
 			    System.out.println("Object class not found:\n" + cnfe);
@@ -124,7 +125,8 @@ public class UserConnection extends Thread
 
 		    //Interpret and execute command. Send answer back.
             try {
-                executeCommand(cmd);
+	            if(!shutdown)
+		            executeCommand(cmd);
             } catch (InterruptedException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
@@ -152,8 +154,6 @@ public class UserConnection extends Thread
         int max = 3;
         int tries;
         int timeoutRMI = 3000;
-
-
 
 		if(cmd instanceof CreateTopic)
 		{

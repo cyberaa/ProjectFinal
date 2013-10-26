@@ -46,7 +46,6 @@ public class UserNotifications extends Thread
 			System.out.println("[Notifications] Could not create input and output streams:\n" + ie);
 		}
 
-
         bindRMIObjects();
 
         System.out.println("Objects bound.");
@@ -55,8 +54,6 @@ public class UserNotifications extends Thread
 	@Override
 	public void run()
 	{
-        int count = 0;
-
 		System.out.println("Notifications thread started.");
 
 		ArrayList<NotificationInfo> nots;

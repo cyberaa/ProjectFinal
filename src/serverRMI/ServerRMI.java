@@ -1,8 +1,10 @@
 package serverRMI;
 
+import common.rmi.ExistingTopicException;
 import common.rmi.NotEnoughCashException;
 import common.rmi.NotEnoughSharesException;
 
+import java.io.IOException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
@@ -11,6 +13,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**

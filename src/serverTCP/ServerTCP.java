@@ -154,14 +154,13 @@ public class ServerTCP
 
 	protected static void send()
 	{
-        String msg = "merda";
-        byte[] bufferSend  = new byte[10];
-        bufferSend = msg.getBytes();
+        String msg = "ping";
+        byte[] bufferSend  = msg.getBytes();
 		DatagramPacket data = new DatagramPacket(bufferSend, bufferSend.length, serverTCPaddress, serverTCPport);
 		try {
 			socketUDP.send(data);
 		} catch (IOException e) {
-			System.out.println("Could not send DatagramPacket:\n" + e);
+			//System.out.println("Could not send DatagramPacket:\n" + e);
 		}
 	}
 }
