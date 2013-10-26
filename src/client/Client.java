@@ -61,7 +61,7 @@ public class Client {
 
         if(args.length != 6)
         {
-            System.out.println("Usage: java ServerTCP <server1_address> <server1_port> <server1_not_port> <server2_address> <server2_port> <server2_not_port>");
+            System.out.println("Usage: java Client <server1_address> <server1_port> <server1_not_port> <server2_address> <server2_port> <server2_not_port>");
             return;
         }
 
@@ -384,7 +384,7 @@ public class Client {
                         System.exit(-1);
                     }
                     else {
-                        System.out.println("Topic created successful!");
+                        System.out.println("Topic created successfully!");
                     }
                     break;
                 case 2:
