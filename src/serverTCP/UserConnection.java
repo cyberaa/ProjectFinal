@@ -639,6 +639,7 @@ public class UserConnection extends Thread
 			ideas = (RemoteIdeas) Naming.lookup(rmiAddress+"Ideas");
 			topics = (RemoteTopics) Naming.lookup(rmiAddress+"Topics");
 			transactions = (RemoteTransactions) Naming.lookup(rmiAddress+"Transactions");
+            System.out.println("User Connection binds succe");
 		} catch (MalformedURLException mue) {
 			System.out.println("Wrong URL passed as argument:\n" + mue);
 			System.exit(-1);

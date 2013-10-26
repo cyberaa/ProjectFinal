@@ -3,6 +3,7 @@ package serverTCP;
 
 import java.io.IOException;
 import java.net.*;
+import java.rmi.RMISecurityManager;
 
 /**
  * Created with IntelliJ IDEA.
@@ -45,6 +46,7 @@ public class ServerTCP
 
 	    //Set system policies.
 	    System.getProperties().put("java.security.policy", "policy.all");
+        System.setProperty("java.rmi.server.hostname", "JN-AsusUbuntu");
 	    //System.setSecurityManager(new RMISecurityManager());
 
 	    //Get command line arguments.
