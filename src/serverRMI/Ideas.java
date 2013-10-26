@@ -47,14 +47,12 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
             FileOutputStream fos = new FileOutputStream("assets/"+filename);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
 
-            bos.write(fileData, 0 , current); //TODO: Set current
+            bos.write(fileData, 0 , current);
             bos.flush();
             bos.close();
         }
 
         Connection db = ServerRMI.pool.connectionCheck();
-
-        System.out.print("Entrei no submit.\n");
 
         int tries = 0;
         int maxTries = 3;
@@ -92,7 +90,6 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
 
             try {
-                System.out.println("Merda para isto");
                 stmt = db.prepareStatement(query);
                 stmt.setInt(1, user_id);
                 stmt.setInt(2, parent_id);
@@ -103,7 +100,6 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                 stmt.setString(7, filename);
 
                 stmt.executeQuery();
-                System.out.print("Idea inserted. \n");
             } catch (SQLException e) {
                 System.out.println(e);
                 if(db != null) {
@@ -134,8 +130,6 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                 rs.next();
 
                 idea_id = rs.getInt("id");
-
-                System.out.print("Idea ID = " + idea_id);
             } catch (SQLException e) {
                 System.out.println(e);
                 if(db != null) {
@@ -153,8 +147,6 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		    query = "INSERT INTO idea_has_topic (idea_id,topic_id) VALUES (?,?)";
 
             tries = 0;
-
-            System.out.println("Size: "+topicIds.size());
 
 		    for(int i=0; i < topicIds.size(); i++)
 		    {
@@ -185,7 +177,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
             try {
                 stmt = db.prepareStatement(query);
-                stmt.setInt(1,idea_id); //TODO
+                stmt.setInt(1,idea_id);
                 stmt.setInt(2,user_id);
                 stmt.setInt(3,number_parts);
                 stmt.setInt(4,part_val);
@@ -231,8 +223,6 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	    try {
 		    //Verify that user owns all shares.
 		    int numParts = ServerRMI.transactions.getNumberShares(db, idea_id);
-
-            System.out.println("Bode do caralhooooooooooooooooo");
 
 		    int tries = 0;
 		    int maxTries = 3;
@@ -331,7 +321,7 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
 		    db.commit();
 	    } catch (SQLException e) {
-		    System.out.println("Manel----\n"+e+"\n");
+		    System.out.println(e);
 		    if(db != null)
 			    db.rollback();
 	    } finally {
@@ -346,9 +336,8 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-    public ArrayList<IdeaInfo> viewIdeasTopic(int topic_id) throws RemoteException, SQLException {
-
-        System.out.print("Entrei");
+    public ArrayList<IdeaInfo> viewIdeasTopic(int topic_id) throws RemoteException, SQLException
+    {
         Connection db = ServerRMI.pool.connectionCheck();
 
         int tries = 0;
@@ -424,7 +413,6 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
                 FileInputStream fis = new FileInputStream(fileToSend);
                 BufferedInputStream bis = new BufferedInputStream(fis);
                 bis.read(fileData,0,fileData.length);
-                System.out.println("File successfully sent!");
             } catch (SQLException e) {
                 System.out.println(e);
             } catch (IOException ioe) {
@@ -443,13 +431,9 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 
                 rs = stmt.executeQuery();
 
-                System.out.println("Passsei");
-
                 if(!rs.next()) {
                     break;
                 }
-
-                System.out.print("Bode");
 
                 do {
                     ideas.add(new IdeaInfo(rs.getInt("id"), rs.getString("namealias"), rs.getString("text"), rs.getInt("stance")));
@@ -466,10 +450,6 @@ public class Ideas extends UnicastRemoteObject implements RemoteIdeas
 		            stmt.close();
             }
         }
-
-        System.out.print("Passei");
-
-        System.out.println("File length: "+fileLength);
 
         IdeasNestedPack pack = new IdeasNestedPack(ideas, fileData, fileLength);
 

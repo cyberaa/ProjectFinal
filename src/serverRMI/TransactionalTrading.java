@@ -21,8 +21,6 @@ public class TransactionalTrading
 	 */
 	public synchronized static void enqueue(int user_id, int idea_id, int share_num, int price_per_share, int new_price_share)
 	{
-		System.out.println("Putting new transaction in the queue.");
-
 		PreparedStatement enqueue = null;
 		String query = "INSERT INTO transaction_queue VALUES (transaction_queue_id_inc.nextval, systimestamp, ?, ?, ?, ?, ?)";
 
@@ -65,8 +63,6 @@ public class TransactionalTrading
 	//FIXME: implement database commits and rollbacks correctly.
 	public synchronized static void checkQueue(int idea_id) throws SQLException
 	{
-		System.out.println("Checking queue for idea "+idea_id);
-
 		Connection db = ServerRMI.pool.connectionCheck();
 		PreparedStatement getQueue = null;
 
@@ -102,11 +98,9 @@ public class TransactionalTrading
 			{
 				try {
 					int res = ServerRMI.transactions.buyShares(rs.getInt("user_id"), rs.getInt("idea_id"), rs.getInt("share_num"), rs.getInt("price_per_share"), rs.getInt("new_price_share"), true);
-					System.out.println("Res = "+res);
 
 					if(res == -1)
 					{
-						System.out.println("Removing from transaction queue.");
 						removeFromQueue(db, rs.getInt("id"));
 					}
 				} catch (Exception e) {

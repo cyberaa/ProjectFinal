@@ -34,8 +34,6 @@ public class Notifications extends UnicastRemoteObject implements RemoteNotifica
 	{
 		PreparedStatement insert = null;
 
-        System.out.println("Inserting notification: "+not);
-
 		String query = "INSERT INTO notifications VALUES (notifications_id_inc.nextval, ?, ?)";
 
 		Connection db = ServerRMI.pool.connectionCheck();

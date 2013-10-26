@@ -36,7 +36,6 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
         Connection db = ServerRMI.pool.connectionCheck();
 
         PreparedStatement stmt = null;
-
         String query;
 
         int topic_id;
@@ -44,8 +43,6 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
         ResultSet rs;
 
         getTopicID(name);
-
-        System.out.print("Entrei");
 
         try {
 
@@ -64,16 +61,12 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
 	        if(stmt != null)
 		        stmt.close();
 
-            System.out.println("Entrei 1");
-
             query = "INSERT INTO topic (id, text) VALUES (topic_id_inc.nextval,?)";
 
             stmt = db.prepareStatement(query);
             stmt.setString(1,name);
 
             stmt.executeQuery();
-
-            System.out.println("Entrei 2");
 
             query = "SELECT topic_id_inc.currval as id FROM dual";
 
@@ -86,8 +79,6 @@ public class Topics extends UnicastRemoteObject implements RemoteTopics {
             rs.next();
 
             topic_id = rs.getInt("id");
-
-            System.out.println("Entrei 3");
 
             db.commit();
         } catch (SQLException e) {

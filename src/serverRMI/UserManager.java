@@ -67,7 +67,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 
 				return resultSet.getInt("id");
 			} catch (SQLException e) {
-				System.out.println("\n"+e+"\n");
+				System.out.println(e);
 				if(tries++ > maxTries)
 					throw e;
 			} finally {

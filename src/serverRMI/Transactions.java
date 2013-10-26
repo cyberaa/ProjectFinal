@@ -43,9 +43,6 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 		String query = "UPDATE shares SET value = ? WHERE user_id = ? AND idea_id = ?";
 
-
-        //TODO: After update share value, check transaction queue.
-
 		try {
 			db.setAutoCommit(false);
 
@@ -97,38 +94,28 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			db.setAutoCommit(false);
 
 			//Check if user has enough cash.
-            System.out.println("Start getCash");
 			int userCash = getCash(db, user_id);
 			if(userCash < share_num * price_per_share) {
 				throw new NotEnoughCashException();
             }
-            System.out.println("End getCash");
 
 			//Verify that the idea has enough shares to be bought.
-            System.out.println("Start getNumberShares");
 			int totalShares = getNumberShares(db, idea_id);
 			if(share_num > totalShares) {
 				throw new NotEnoughSharesException();
             }
-            System.out.println("End getNumberShares");
 
 			//Get list of idea shares
-            System.out.println("Start _getShares");
 			ArrayList<ShareInfo> shares = _getShares(db, idea_id);
-            System.out.println("End _getShares");
 
 			//Select ideas to be bought and add them to sharesToBuy.
 			ArrayList<ShareToBuy> sharesToBuy;
 			try {
-                System.out.println("Start getSharesToBuy");
 				sharesToBuy = getSharesToBuy(shares, share_num, price_per_share, user_id);
-                System.out.println("End getSharesToBuy");
 			} catch (NotEnoughSharesAtDesiredPriceException e) {
 				if(!fromQueue)
 				{
-                    System.out.println("Start enqueue");
 					TransactionalTrading.enqueue(user_id, idea_id, share_num, price_per_share, new_price_share);
-                    System.out.println("End enqueue");
                     return -1;
 				}
 				else
@@ -137,24 +124,15 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 			//Remove (or update) all selected shares to be bought.
 			int lastIndex = sharesToBuy.size() -1;
-            System.out.print("\nPassei: \n"+ lastIndex);
-			for(int i=0; i < lastIndex; i++) {
-                System.out.println("Deleting...");
+			for(int i=0; i < lastIndex; i++)
 				deleteShare(db, sharesToBuy.get(i).id);
-            }
 
 			ShareToBuy lastShare = sharesToBuy.get(lastIndex);
-            System.out.println("\nShares to buy getted.\n");
-			if(lastShare.numToBuy == lastShare.total) {
-                System.out.println("\nEntrei 1\n");
+			if(lastShare.numToBuy == lastShare.total)
 				deleteShare(db, lastShare.id);
-            }
-			else {
-                System.out.println("\nEntrei 2\n");
+			else
 				updateShare(db, lastShare.id, lastShare.total - lastShare.numToBuy, lastShare.value);
-            }
 
-            System.out.println("\nPassei 2\n");
 			//Create new share for the buyer or update previous amount of shares.
 			ShareInfo aux1;
 			boolean updated = false;
@@ -174,8 +152,6 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 			//Remove money from buyer.
 			giveOrTakeUserCash(db, user_id, share_num * price_per_share, false);
 
-            System.out.println("\nPassei 3\n");
-
 			//Give money to sellers and update transaction history.
 			ShareToBuy aux2;
 			int transactionMoney;
@@ -186,30 +162,21 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
 
 				//Give money to sellers.
 				giveOrTakeUserCash(db, aux2.user_id, transactionMoney, true);
-                System.out.println("Money offered");
 				//Update transaction history.
 				createTransaction(db, idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney);
-                System.out.println("Transaction Created");
 
 				//Create and store notification.
 				ServerRMI.notifications.insertNotification(user_id, ServerRMI.notifications.createNotificationString(idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
 				ServerRMI.notifications.insertNotification(aux2.user_id, ServerRMI.notifications.createNotificationString(idea_id, aux2.user_id, user_id, aux2.numToBuy, transactionMoney));
-			    System.out.print("Notification inserted");
             }
 
-            System.out.println("\nPassei 4\n");
-
 			//Check queue.
-			if(!fromQueue) {
-				System.out.println("\nPassei 6\n");
+			if(!fromQueue)
 				TransactionalTrading.checkQueue(idea_id);
-			}
-
-            System.out.println("\nPassei 6\n");
 
 			db.commit();
 		} catch (SQLException e) {
-			System.out.println("Merda\n"+e+"\n");
+			System.out.println(e);
 			if(db != null)
 				db.rollback();
 			throw e;
@@ -330,7 +297,7 @@ public class Transactions extends UnicastRemoteObject implements RemoteTransacti
                 return x;
             }
         } catch (SQLException e) {
-            System.out.println("Cona frita: "+ e);
+            System.out.println( e);
             if(tries++ > maxTries)
                 throw e;
         } finally {
