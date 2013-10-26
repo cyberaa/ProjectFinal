@@ -14,8 +14,8 @@ import java.net.Socket;
  * Time: 5:22 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Notifications extends Thread {
-
+public class Notifications extends Thread
+{
     public Socket sock;
     public ObjectInputStream inStream;
     public boolean shutdown;
@@ -43,13 +43,10 @@ public class Notifications extends Thread {
     @Override
     public void run() {
         String notification = "";
-        System.out.println("Merda");
         gui = new ClientGUI();
         while (!shutdown) {
             try {
-                System.out.println("Getting notification.");
                 notification = (String) inStream.readObject();
-                System.out.println("Notification received.");
                 gui.notifyUser(notification);
             } catch (IOException ioe) {
                 System.out.println(ioe);

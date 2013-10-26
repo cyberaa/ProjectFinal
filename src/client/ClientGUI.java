@@ -10,9 +10,8 @@ import java.awt.*;
  * Time: 12:48 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ClientGUI extends JFrame {
-
-
+public class ClientGUI extends JFrame
+{
     JLabel labelNot;
 
 

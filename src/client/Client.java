@@ -186,8 +186,6 @@ public class Client {
                     report = 1;
                     chooseAuth = 1;
                     break;
-                default:
-                    System.out.println("Fizeste merda.");
             }
             savedCmd = null;
             chooseAuth = -1;
@@ -245,7 +243,6 @@ public class Client {
 	    }
 
 	    //Try to reconnect with the current server.
-	    System.out.println("Establishing connection to "+current+":"+currentPort+" and to "+current+":"+currentPortNot);
 	    while(tries < max)
 	    {
 		    try {
@@ -254,17 +251,13 @@ public class Client {
 
 			    //Notifications thread.
 			    Socket aux = new Socket(current, currentPortNot);
-			    System.out.println("Notifications socket established");
 			    nots = new Notifications(aux);
-
-			    System.out.println("Notifications thread started");
 
 			    //Main thread sockets.
                 if(s != null)
                     s.close();
 
 			    s = new Socket(current, currentPort);
-			    System.out.println("Main socket established");
 			    out = new ObjectOutputStream(s.getOutputStream());
 			    in = new ObjectInputStream(s.getInputStream());
 
@@ -289,7 +282,6 @@ public class Client {
 	    int auxPort1, auxPort2;
 	    String auxString;
 	    tries = 0;
-	    System.out.println("Establishing connection to "+other+":"+otherPort+" and to "+other+":"+otherPortNot);
 	    while(tries < max)
 	    {
 		    try {
@@ -298,17 +290,13 @@ public class Client {
 
 			    //Notifications thread.
 			    Socket aux = new Socket(other, otherPortNot);
-                System.out.println("Notifications socket established");
 			    nots = new Notifications(aux);
-
-                System.out.println("Notifications thread started");
 
 			    //Main thread sockets.
                 if(s != null)
                     s.close();
 
 			    s = new Socket(other, otherPort);
-			    System.out.println("Main socket established");
 			    out = new ObjectOutputStream(s.getOutputStream());
 			    in = new ObjectInputStream(s.getInputStream());
 
@@ -363,14 +351,12 @@ public class Client {
 
             switch(chooseMenu) {
                 case 1:
-                    System.out.println("\nVou criar tópico\n");
                     CreateTopic cTopic;
                     if(savedCmd == null) {
                         cTopic = mCreateTopic();
                         savedCmd = cTopic;
                     }
                     else {
-                        System.out.println("Tópico no saveCmd");
                         cTopic = (CreateTopic) savedCmd;
                     }
 
@@ -378,7 +364,6 @@ public class Client {
                     if(reconnect == true) {
                         continue;
                     }
-                    System.out.println("\nPedido enviado\n");
 
                     try {
                         returnComand = in.readObject();
@@ -521,7 +506,7 @@ public class Client {
                     }
 
                     if(report == -1) {
-                        System.out.println("Server could not fulfill request."); //TODO: Se no SQL der merda, gerar esta excepção. VERIFICAR IMPORTANTE
+                        System.out.println("Server could not fulfill request.");
                     }
                     else if (report == -3) {
                         System.out.println("RMI is down.");
@@ -563,7 +548,7 @@ public class Client {
                         System.exit(-1);
                     }
                     else {
-                        System.out.println("Share successfully bought.");
+                        System.out.println("Request successfully enqueued.");
                     }
                     break;
                 case 6:
@@ -607,10 +592,10 @@ public class Client {
                         try {
 
 
-                            FileOutputStream fos = new FileOutputStream("downloads/"+"merda.zip");
+                            FileOutputStream fos = new FileOutputStream("downloads/"+"test.zip");
                             BufferedOutputStream bos = new BufferedOutputStream(fos);
 
-                            bos.write(ideasNested.attachFile, 0 , ideasNested.fileSize); //TODO: Set current
+                            bos.write(ideasNested.attachFile, 0 , ideasNested.fileSize);
                             bos.flush();
                             bos.close();
                         } catch (IOException ioe) {
@@ -732,7 +717,7 @@ public class Client {
                     }
 
                     if(report == -1) {
-                        System.out.println("Server could not fulfill request."); //TODO: Se no SQL der merda, gerar esta excepção. VERIFICAR IMPORTANTE
+                        System.out.println("Server could not fulfill request.");
                     }
                     else if (report == -3) {
                         System.out.println("RMI is down.");
@@ -770,7 +755,7 @@ public class Client {
                         System.out.println("Server could not fulfill request.");
                     }
                     else if (report == -2) {
-                        System.out.println("You're not idea full owner.");
+                        System.out.println("You're not the full owner of the idea.");
                     }
                     else if (report == -3) {
                         System.out.println("RMI is down.");
@@ -966,7 +951,4 @@ public class Client {
 
         return del;
     }
-
-
-
 }
