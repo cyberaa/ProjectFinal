@@ -31,7 +31,6 @@ public class Notifications extends Thread
         this.sock = sock;
         try {
             inStream = new ObjectInputStream(sock.getInputStream());
-            System.out.println(inStream);
             System.out.println("Notification inStream created.");
         } catch (Exception ioe) {
             System.out.println("Error establishing notification socket.\n"+ ioe );

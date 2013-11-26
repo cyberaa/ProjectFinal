@@ -25,8 +25,8 @@ import java.util.Scanner;
  */
 public class ServerRMI
 {
-	protected static final String dbUser = "sd2013";
-	protected static final String dbPass = "sd2013";
+	protected static final String dbUser = "sd2";
+	protected static final String dbPass = "sd2";
 
 	protected static int rmiPort;
 	protected static Registry rmiRegistry;

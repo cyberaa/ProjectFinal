@@ -100,7 +100,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 		ResultSet resultSet = null;
 
 		String query = "SELECT id FROM sduser WHERE username LIKE ?";
-		String insert = "INSERT INTO sduser (id, username, password, namealias, cash) VALUES(sduser_id_inc.nextval,?,?,?,?)";
+		String insert = "INSERT INTO sduser (id, username, password, cash, is_root) VALUES(sq_sduser.nextval,?,?,?,?)";
 
 		//See if username is already in use.
 		while(tries < maxTries)
@@ -160,7 +160,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 	 */
 	protected String hashPassword(String pass)
 	{
-		MessageDigest m = null;
+		/*MessageDigest m = null;
 		try {
 			m = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
@@ -183,6 +183,7 @@ public class UserManager extends UnicastRemoteObject implements RemoteUserManage
 		while(hashText.length() < 32)
 			hashText = "0" + hashText;
 
-		return hashText;
+		return hashText; */
+        return pass;
 	}
 }
